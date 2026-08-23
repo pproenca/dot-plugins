@@ -1,0 +1,28 @@
+;; Thin APS shell — copy to acceptance/runner.clj.
+;; Prefer: generate entrypoints → runtime + step handlers.
+;; Do not grow this file into a per-story mega program (merge hotspot).
+;;
+;; Suite:  bb acceptance          → run-suite!  (human output)
+;; Worker: bb acceptance-worker   → run-worker! (NDJSON for gherkin-mutator)
+;;
+;; (require '[babashka.fs :as fs]
+;;          '[clojure.string :as str])
+;; ;; load acceptance/runtime.clj and generated entrypoints or IR paths
+;;
+;; (defn run-suite! []
+;;   ;; gherkin-parser each features/*.feature → IR → generator (or runtime)
+;;   ;; run all scenarios; println ACCEPTANCE_PASS / exit 1 on fail
+;;   )
+;;
+;; (defn run-worker! []
+;;   ;; each stdin line = JSON job; stdout JSON outcome test_failure|test_success|infrastructure_error
+;;   )
+;;
+;; (if (some #{"--worker"} *command-line-args*)
+;;   (run-worker!)
+;;   (run-suite!))
+
+(binding [*out* *err*]
+  (println "Replace acceptance/runner.clj.example with a real thin acceptance/runner.clj")
+  (println "plus acceptance/runtime.clj, generator, and acceptance/steps/*."))
+(System/exit 2)

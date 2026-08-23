@@ -1,0 +1,125 @@
+--- a/swarmforge/scripts/pack_web.bb
++++ b/swarmforge/scripts/pack_web.bb
+@@ -117,13 +117,30 @@
+       (Thread/sleep 50))
+     (send-keys! socket target "C-j")))
+ 
++(defn target-exists? [socket target]
++  (or (some? (tmux-stub))
++      (try
++        (zero? (:exit (sh "tmux" "-S" socket "list-panes" "-t" target)))
++        (catch Exception _ false))))
++
+ (defn inject-role! [root role text]
+   (try
+     (let [socket (tmux-socket root)
+-          target (when-let [row (role-row root role)]
+-                   (pane-target row))]
++          row (role-row root role)
++          target (when row
++                   (let [pane (pane-target row socket)]
++                     ;; Fall back to session scope if the pane target does not
++                     ;; resolve, so a renamed window cannot silently swallow
++                     ;; New Task, chat, and clarification answers.
++                     (if (or (str/blank? (str socket)) (target-exists? socket pane))
++                       pane
++                       (session-name row))))]
+       (inject-target! socket target text))
+-    (catch Exception _)))
++    (catch Exception e
++      ;; Never silent: this failure mode is invisible from the UI, which still
++      ;; reports success. dashboard.log is the only place it can surface.
++      (binding [*out* *err*]
++        (println "pack_web: inject failed for role" role "-" (ex-message e))))))
+ 
+ (defn inject-master! [root text]
+   (when-let [row (master-row root)]
+@@ -297,12 +314,35 @@
+       (str "swarmforge-" role)
+       session)))
+ 
+-(defn pane-target [row]
+-  (let [session (session-name row)
+-        window (nth row 4 nil)]
+-    (if (str/blank? window)
+-      session
+-      (str session ":" window ".0"))))
++(def ^:private pane-base-cache (atom {}))
++
++(defn pane-base-index
++  "tmux pane-base-index for this server, cached. The launcher honors this
++  setting when it targets agent panes; the dashboard must agree or every
++  injection lands on a pane that does not exist. Defaults to 0, which is both
++  the tmux default and what the argv stub reports under test."
++  [socket]
++  (if (or (str/blank? (str socket)) (tmux-stub))
++    0
++    (or (get @pane-base-cache socket)
++        (let [index (try
++                      (let [result (sh "tmux" "-S" socket "show-options"
++                                       "-gwqv" "pane-base-index")]
++                        (or (when (zero? (:exit result))
++                              (some-> (:out result) str/trim not-empty parse-long))
++                            0))
++                      (catch Exception _ 0))]
++          (swap! pane-base-cache assoc socket index)
++          index))))
++
++(defn pane-target
++  ([row] (pane-target row nil))
++  ([row socket]
++   (let [session (session-name row)
++         window (nth row 4 nil)]
++     (if (str/blank? window)
++       session
++       (str session ":" window "." (pane-base-index socket))))))
+ 
+ (defn backend-name [row]
+   (str/lower-case (or (nth row 5 nil) "")))
+@@ -708,7 +748,7 @@
+   (when-let [row (role-row root role)]
+     (let [socket (tmux-socket root)]
+       (when socket
+-        (or (tmux-capture socket (pane-target row))
++        (or (tmux-capture socket (pane-target row socket))
+             (tmux-capture socket (session-name row)))))))
+ 
+ (defn live-pane-text [root role]
+@@ -896,12 +936,22 @@
+   (if-let [bin (close-swarm-bin)]
+     (sh bin (str root))
+     (swarm-cleanup! root (tmux-socket root))))
++
++(defn teardown-step! [label f]
++  (try
++    (f)
++    (catch Exception e
++      ;; Report and continue. A failure in one step must never leave agents,
++      ;; the handoff daemon, or tmux running -- teardown has to tear down.
++      (binding [*out* *err*]
++        (println "pack_web: teardown step failed:" label "-" (ex-message e)))
++      nil)))
+ 
+ (defn run-teardown! [root]
+-  (close-swarm! root)
+-  (stop-handoffd! root)
+-  (kill-all-sessions-on-socket! (tmux-socket root))
+-  (stop-pack-web! root)
++  (teardown-step! "close-swarm" #(close-swarm! root))
++  (teardown-step! "stop-handoffd" #(stop-handoffd! root))
++  (teardown-step! "kill-sessions" #(kill-all-sessions-on-socket! (tmux-socket root)))
++  (teardown-step! "stop-pack-web" #(stop-pack-web! root))
+   true)
+ 
+ (defn schedule-teardown! [root]
+@@ -911,7 +961,9 @@
+       (Thread/sleep teardown-delay-ms)
+       (try
+         (run-teardown! root)
+-        (catch Exception _))
++        (catch Exception e
++          (binding [*out* *err*]
++            (println "pack_web: teardown failed -" (ex-message e)))))
+       (System/exit 0)))
+   true)
+ 

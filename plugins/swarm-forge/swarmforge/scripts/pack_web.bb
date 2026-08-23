@@ -1,0 +1,1204 @@
+#!/usr/bin/env bb
+
+(ns pack-web
+  (:require [babashka.fs :as fs]
+            [cheshire.core :as json]
+            [clojure.java.shell :refer [sh]]
+            [clojure.string :as str]
+            [org.httpkit.server :as http]))
+
+(def script-dir (fs/parent *file*))
+
+(def usage-text
+  (str "Usage:\n"
+       "  pack_web.sh --serve <root> [port]\n"
+       "  pack_web.sh --test-state <root>\n"
+       "  pack_web.sh --test-html\n"
+       "  pack_web.sh --test-post-task <root> <name> <text>\n"
+       "  pack_web.sh --test-post-chat <root> <text>\n"
+       "  pack_web.sh --test-inject-payload [name text]\n"
+       "  pack_web.sh --test-inject-argv <root> <file> <text>\n"
+       "  pack_web.sh --test-approve <root> <id>\n"
+       "  pack_web.sh --test-reject <root> <id>\n"
+       "  pack_web.sh --test-pane <root> <role>\n"
+       "  pack_web.sh --test-agent-page [role]\n"
+       "  pack_web.sh --test-heat <root>\n"
+       "  pack_web.sh --test-heat-codex <root>\n"
+       "  pack_web.sh --test-heat-reorder <root>\n"
+       "  pack_web.sh --test-heat-head <root>\n"
+       "  pack_web.sh --test-heat-mail <root>\n"
+       "  pack_web.sh --test-heat-collapse <root>\n"
+       "  pack_web.sh --test-status-pane <root> <text>\n"
+       "  pack_web.sh --test-status-persist <root> <first> <second>\n"
+       "  pack_web.sh --test-answer-clarification <root> <id> <text>\n"
+       "  pack_web.sh --test-task <root> <name>\n"
+       "  pack_web.sh --test-teardown <root> [TEARDOWN]"))
+
+(def example-task-name "htw-console-app")
+(def example-task-text
+  "Integrate the stories in ~/junk/htw-stories into one console application.")
+
+(def ^:dynamic *tmux-stub* nil)
+(def ^:dynamic *pane-text* nil)
+(def ^:dynamic *sync-teardown?* false)
+(def teardown-delay-ms 250)
+(def pane-capture-lines 2000)
+(def pane-heat (atom {}))
+(def pane-status (atom {}))
+
+(declare session-name pane-target live-pane-text role-row pane-sample backend-name)
+
+(defn usage []
+  (binding [*out* *err*]
+    (println usage-text)))
+
+(defn exit! [status message]
+  (binding [*out* *err*]
+    (when message
+      (println message)))
+  (System/exit status))
+
+(defn display-name-for-role [role]
+  (->> (str/split (str/replace role #"[-_]" " ") #"\s+")
+       (remove str/blank?)
+       (map str/capitalize)
+       (str/join " ")))
+
+(defn task-payload
+  ([] (task-payload example-task-name example-task-text))
+  ([name text] (str "Task: " name "\n\n" (or text ""))))
+
+(defn reject-message [task]
+  (str "Rejected: " task))
+
+(defn tmux-stub []
+  (or *tmux-stub* (System/getenv "SWARMFORGE_TMUX_STUB")))
+
+(defn record-argv! [file argv]
+  (when-let [dir (fs/parent file)]
+    (fs/create-dirs dir))
+  (spit (str file) (str (pr-str (vec argv)) "\n") :append true))
+
+(defn send-keys! [socket session & keys]
+  (let [argv (into ["tmux" "-S" socket "send-keys" "-t" session] keys)]
+    (if-let [stub (tmux-stub)]
+      (record-argv! stub argv)
+      (let [result (apply sh argv)]
+        (when-not (zero? (:exit result))
+          (throw (ex-info "tmux send-keys failed" result)))))))
+
+(defn role-rows [root]
+  (let [file (fs/path root ".swarmforge" "roles.tsv")]
+    (if (fs/exists? file)
+      (->> (str/split-lines (slurp (str file)))
+           (remove str/blank?)
+           (mapv #(str/split % #"\t" -1)))
+      [])))
+
+(defn master-row [root]
+  (some #(when (= "master" (nth % 1 nil)) %) (role-rows root)))
+
+(defn master-session [root]
+  (when-let [row (master-row root)]
+    (session-name row)))
+
+(defn tmux-socket [root]
+  (let [file (fs/path root ".swarmforge" "tmux-socket")]
+    (when (fs/exists? file)
+      (not-empty (str/trim (slurp (str file)))))))
+
+(defn inject-target! [socket target text]
+  (when (and socket target (not (str/blank? text)))
+    (send-keys! socket target "-l" text)
+    (when-not (tmux-stub)
+      (Thread/sleep 150))
+    (send-keys! socket target "C-m")
+    (when-not (tmux-stub)
+      (Thread/sleep 50))
+    (send-keys! socket target "C-j")))
+
+(defn target-exists? [socket target]
+  (or (some? (tmux-stub))
+      (try
+        (zero? (:exit (sh "tmux" "-S" socket "list-panes" "-t" target)))
+        (catch Exception _ false))))
+
+(defn inject-role! [root role text]
+  (try
+    (let [socket (tmux-socket root)
+          row (role-row root role)
+          target (when row
+                   (let [pane (pane-target row socket)]
+                     ;; Fall back to session scope if the pane target does not
+                     ;; resolve, so a renamed window cannot silently swallow
+                     ;; New Task, chat, and clarification answers.
+                     (if (or (str/blank? (str socket)) (target-exists? socket pane))
+                       pane
+                       (session-name row))))]
+      (inject-target! socket target text))
+    (catch Exception e
+      ;; Never silent: this failure mode is invisible from the UI, which still
+      ;; reports success. dashboard.log is the only place it can surface.
+      (binding [*out* *err*]
+        (println "pack_web: inject failed for role" role "-" (ex-message e))))))
+
+(defn inject-master! [root text]
+  (when-let [row (master-row root)]
+    (inject-role! root (first row) text)))
+
+(defn pack-board [root & args]
+  (let [script (str (fs/path script-dir "pack_board.sh"))
+        result (apply sh (concat [script] args ["--root" (str root)]))]
+    (when-not (zero? (:exit result))
+      (exit! 1 (str/trim (str (:err result) "\n" (:out result)))))
+    (:out result)))
+
+(defn lines [text]
+  (->> (str/split-lines (or text ""))
+       (remove str/blank?)
+       vec))
+
+(defn lanes [root]
+  (lines (pack-board root "lanes")))
+
+(defn master-role [root]
+  (str/trim (pack-board root "master-lane")))
+
+(defn task-entry [line]
+  (let [[name lane _created updated] (str/split line #"\t")]
+    {:name name :lane lane :updated_at updated}))
+
+(defn last-n-lines [text n]
+  (vec (take-last n (str/split-lines (or text "")))))
+
+(defn pane-sentences [text]
+  (->> (str/split-lines (or text ""))
+       (mapcat #(str/split % #"(?<=[.!?…])\s+"))
+       (map str/trim)
+       (remove str/blank?)
+       vec))
+
+(defn fold-apostrophe [s]
+  (str/replace (or s "") "\u2019" "'"))
+
+(defn i-status? [sentence]
+  (boolean (re-find #"\bI(?:'(?:ll|m|ve))?\b" (fold-apostrophe sentence))))
+
+(defn other-status? [sentence]
+  (let [n (str/lower-case (fold-apostrophe sentence))]
+    (boolean (or (re-find #"\blet me\b" n)
+                 (re-find #"\brun\b" n)
+                 (re-find #"hand off" n)
+                 (re-find #"handing off" n)
+                 (re-find #"handoff" n)
+                 (re-find #"continue" n)))))
+
+(defn status-sentence? [sentence]
+  (or (i-status? sentence) (other-status? sentence)))
+
+(defn im-status [role text backend]
+  (let [tail (last-n-lines (pane-sample text backend) 20)
+        found (last (filter status-sentence? (pane-sentences (str/join "\n" tail))))]
+    (if (seq found)
+      (do (swap! pane-status assoc role found) found)
+      (get @pane-status role ""))))
+
+(defn task-with-status [root task]
+  (let [role (:lane task)
+        row (role-row root role)
+        text (when row (live-pane-text root role))
+        backend (when row (backend-name row))]
+    (assoc task :status (im-status role text backend))))
+
+(defn tasks [root]
+  (mapv #(task-with-status root (task-entry %))
+        (lines (pack-board root "list"))))
+
+(defn parse-message [path]
+  (let [content (slurp (str path))
+        [header body] (str/split content #"\n\n" 2)
+        headers (into {}
+                      (for [line (str/split-lines header)
+                            :let [[k v] (str/split line #": " 2)]
+                            :when (and k v)]
+                        [k v]))]
+    {:headers headers :body (or body "")}))
+
+(defn comma-list [text]
+  (->> (str/split (or text "") #",")
+       (map str/trim)
+       (remove str/blank?)
+       vec))
+
+(defn pending-dir [root]
+  (fs/path root ".swarmforge" "handoffs" "pending_approval"))
+
+(defn pending-files [root]
+  (let [dir (pending-dir root)]
+    (if (fs/directory? dir)
+      (->> (fs/list-dir dir)
+           (filter #(and (fs/regular-file? %)
+                         (str/ends-with? (fs/file-name %) ".handoff")))
+           (sort-by #(fs/file-name %)))
+      [])))
+
+(defn approval-id [path]
+  (str/replace (fs/file-name path) #"\.handoff$" ""))
+
+(defn approval-entry [path]
+  (let [headers (:headers (parse-message path))
+        to (first (comma-list (get headers "to")))]
+    {:id (approval-id path)
+     :gate (str "spec → " to)
+     :task (get headers "task")
+     :artifacts (comma-list (get headers "artifacts"))}))
+
+(defn approvals [root]
+  (mapv approval-entry (pending-files root)))
+
+(defn listed [dir pred]
+  (if (fs/directory? dir)
+    (->> (fs/list-dir dir)
+         (filter pred)
+         (sort-by #(fs/file-name %))
+         vec)
+    []))
+
+(defn handoff-files [dir]
+  (listed dir #(and (fs/regular-file? %)
+                    (str/ends-with? (fs/file-name %) ".handoff"))))
+
+(defn batch-dirs [dir]
+  (listed dir #(and (fs/directory? %)
+                    (str/starts-with? (fs/file-name %) "batch_"))))
+
+(defn in-process-files [dir]
+  (into (handoff-files dir)
+        (mapcat handoff-files (batch-dirs dir))))
+
+(defn iso-mtime [path]
+  (.format java.time.format.DateTimeFormatter/ISO_INSTANT
+           (.toInstant (fs/last-modified-time path))))
+
+(defn work-entry [role path]
+  (let [headers (:headers (parse-message path))]
+    {:task (get headers "task")
+     :role role
+     :updated_at (or (not-empty (get headers "dequeued_at"))
+                     (iso-mtime path))}))
+
+(defn in-process-dir [worktree]
+  (fs/path worktree ".swarmforge" "handoffs" "inbox" "in_process"))
+
+(defn session-alive? [socket session]
+  (boolean
+   (when (and socket session)
+     (zero? (:exit (sh "tmux" "-S" socket "has-session" "-t" session))))))
+
+(defn role-queue-state [alive? busy?]
+  (cond
+    (not alive?) "no_session"
+    busy? "live"
+    :else "idle"))
+
+(defn in-process-for-row [row]
+  (let [worktree (nth row 2 nil)]
+    (if (str/blank? worktree)
+      []
+      (in-process-files (in-process-dir worktree)))))
+
+(defn session-name [row]
+  (let [role (first row)
+        session (nth row 3 nil)]
+    (if (str/blank? session)
+      (str "swarmforge-" role)
+      session)))
+
+(def ^:private pane-base-cache (atom {}))
+
+(defn pane-base-index
+  "tmux pane-base-index for this server, cached. The launcher honors this
+  setting when it targets agent panes; the dashboard must agree or every
+  injection lands on a pane that does not exist. Defaults to 0, which is both
+  the tmux default and what the argv stub reports under test."
+  [socket]
+  (if (or (str/blank? (str socket)) (tmux-stub))
+    0
+    (or (get @pane-base-cache socket)
+        (let [index (try
+                      (let [result (sh "tmux" "-S" socket "show-options"
+                                       "-gwqv" "pane-base-index")]
+                        (or (when (zero? (:exit result))
+                              (some-> (:out result) str/trim not-empty parse-long))
+                            0))
+                      (catch Exception _ 0))]
+          (swap! pane-base-cache assoc socket index)
+          index))))
+
+(defn pane-target
+  ([row] (pane-target row nil))
+  ([row socket]
+   (let [session (session-name row)
+         window (nth row 4 nil)]
+     (if (str/blank? window)
+       session
+       (str session ":" window "." (pane-base-index socket))))))
+
+(defn backend-name [row]
+  (str/lower-case (or (nth row 5 nil) "")))
+
+(defn live-prompt-line? [line]
+  (boolean (re-matches #"›\s*" (str/trim line))))
+
+(defn codex-working-line? [line]
+  (let [t (str/trim line)]
+    (or (str/blank? t)
+        (live-prompt-line? t)
+        (re-find #"(?i)esc to interrupt" t)
+        (re-find #"(?i)^working\b" t)
+        (re-find #"(?i)•\s*working\b" t)
+        (re-find #"(?i)worked for\s" t)
+        (re-find #"(?i)tab to queue" t)
+        (re-find #"(?i)context left" t)
+        (re-find #"·\s*\d+s\b" t))))
+
+(defn strip-trailing-chrome [text pred]
+  (let [lines (vec (str/split-lines (str/trimr (or text ""))))
+        cut (loop [i (dec (count lines))]
+              (cond
+                (neg? i) 0
+                (pred (nth lines i)) (recur (dec i))
+                :else (inc i)))]
+    (str/join "\n" (subvec lines 0 (max cut 0)))))
+
+(defn pane-sample [text backend]
+  (let [backend (str/lower-case (or backend ""))]
+    (cond
+      (#{"codex" "chatgpt"} backend)
+      (strip-trailing-chrome text codex-working-line?)
+
+      :else
+      (let [lines (vec (str/split-lines (str/trimr (or text ""))))]
+        (if (<= (count lines) 1)
+          ""
+          (str/join "\n" (pop lines)))))))
+
+(defn bag-diff [a b]
+  (let [ks (set (concat (keys a) (keys b)))]
+    (reduce (fn [n k]
+              (+ n (Math/abs (- (long (get a k 0)) (long (get b k 0))))))
+            0
+            ks)))
+
+(defn heat-from-count [n]
+  (min 6 (long n)))
+
+(defn record-heat! [role text backend]
+  (let [tail (last-n-lines (pane-sample text backend) 20)
+        bag (frequencies tail)
+        prev (get @pane-heat role)
+        n (if (:bag prev) (bag-diff (:bag prev) bag) 0)
+        heat (heat-from-count n)]
+    (swap! pane-heat assoc role {:bag bag :heat heat})
+    heat))
+
+(defn role-heat [role alive? text backend]
+  (if alive?
+    (record-heat! role text backend)
+    0))
+
+(defn cards-in-lane [all-tasks lane]
+  (filterv #(= lane (:lane %)) all-tasks))
+
+(defn queue-row [role names busy? alive? activity updated]
+  {:task (or (first names) "")
+   :tasks (vec names)
+   :role role
+   :state (role-queue-state alive? busy?)
+   :updated_at (or updated "")
+   :activity activity})
+
+(defn in-process-task-names [files]
+  (->> files
+       (map #(get-in (parse-message %) [:headers "task"]))
+       (remove str/blank?)
+       distinct
+       vec))
+
+(defn work-task-names [files cards]
+  (let [from-files (in-process-task-names files)
+        from-cards (mapv :name cards)]
+    (vec (if (seq from-files) from-files from-cards))))
+
+(defn work-row-for-role [root socket row all-tasks]
+  (let [role (first row)
+        files (in-process-for-row row)
+        path (first files)
+        from-file (when path (work-entry role path))
+        cards (cards-in-lane all-tasks role)
+        card (first cards)
+        busy? (boolean (or path card))
+        alive? (session-alive? socket (session-name row))
+        text (live-pane-text root role)
+        names (work-task-names files cards)]
+    (queue-row role names busy? alive?
+               (role-heat role (or alive? (some? *pane-text*)) text (backend-name row))
+               (or (:updated_at from-file) (:updated_at card) ""))))
+
+(defn work-in-flight [root]
+  (let [socket (tmux-socket root)
+        all-tasks (tasks root)]
+    (mapv #(work-row-for-role root socket % all-tasks) (role-rows root))))
+
+(defn chat-pending-dir [root]
+  (fs/path root ".swarmforge" "dashboard" "requests" "pending"))
+
+(defn chat-done-dir [root]
+  (fs/path root ".swarmforge" "dashboard" "requests" "done"))
+
+(defn chat-files [dir]
+  (if (fs/directory? dir)
+    (->> (fs/list-dir dir)
+         (filter #(str/ends-with? (fs/file-name %) ".request"))
+         (sort-by str)
+         vec)
+    []))
+
+(defn parse-chat [path]
+  (let [raw (slurp (str path))
+        [header body] (str/split raw #"\n\n" 2)
+        headers (into {}
+                      (for [line (str/split-lines header)
+                            :let [[k v] (str/split line #": " 2)]
+                            :when (and k v)]
+                        [k v]))]
+    {:id (get headers "id")
+     :status (get headers "status")
+     :body (or body "")
+     :response (str/replace (get headers "response" "") #"\\n" "\n")
+     :created_at (get headers "created_at")}))
+
+(defn list-chat [root]
+  (vec (concat (map parse-chat (chat-files (chat-pending-dir root)))
+               (map parse-chat (chat-files (chat-done-dir root))))))
+
+(defn clar-pending-dir [root]
+  (fs/path root ".swarmforge" "dashboard" "clarifications" "pending"))
+
+(defn clar-done-dir [root]
+  (fs/path root ".swarmforge" "dashboard" "clarifications" "done"))
+
+(defn parse-clarification [path]
+  (let [raw (slurp (str path))
+        [header body] (str/split raw #"\n\n" 2)
+        headers (into {}
+                      (for [line (str/split-lines header)
+                            :let [[k v] (str/split line #": " 2)]
+                            :when (and k v)]
+                        [k v]))]
+    {:id (get headers "id")
+     :status (get headers "status")
+     :role (get headers "role")
+     :body (or body "")
+     :response (str/replace (get headers "response" "") #"\\n" "\n")
+     :created_at (get headers "created_at")}))
+
+(defn list-clarifications [root]
+  (vec (concat (map parse-clarification (chat-files (clar-pending-dir root)))
+               (map parse-clarification (chat-files (clar-done-dir root))))))
+
+(defn chat-id []
+  (str "req-" (str/replace (str (java.time.Instant/now)) #"[^0-9A-Za-z]" "")))
+
+(defn chat-wake [id text]
+  (if (str/includes? (or text "") "\n")
+    (str "[" id "]\n" text)
+    (str "[" id "] " text)))
+
+(defn clar-wake [id role question answer]
+  (str "[" id "]\n"
+       "Clarification requested from: " role "\n"
+       "Question:\n" (str/trimr (or question "")) "\n"
+       "Answer:\n" (str/trimr (or answer ""))))
+
+(defn write-chat-request! [root text]
+  (let [id (chat-id)
+        file (fs/path (chat-pending-dir root) (str id ".request"))]
+    (fs/create-dirs (fs/parent file))
+    (spit (str file)
+          (str "id: " id "\n"
+               "status: pending\n"
+               "created_at: " (.format java.time.format.DateTimeFormatter/ISO_INSTANT
+                                       (java.time.Instant/now)) "\n"
+               "\n"
+               text
+               (when-not (str/ends-with? text "\n") "\n")))
+    id))
+
+(defn dashboard-state [root]
+  (let [master (master-role root)]
+    {:master_role master
+     :master_display (display-name-for-role master)
+     :lanes (lanes root)
+     :tasks (tasks root)
+     :approvals (approvals root)
+     :work_in_flight (work-in-flight root)
+     :chat (list-chat root)
+     :clarifications (list-clarifications root)}))
+
+(defn require-root! [root]
+  (when (str/blank? root)
+    (exit! 1 "Missing project root"))
+  root)
+
+(defn dashboard-page []
+  (slurp (str (fs/path script-dir "pack" "dashboard.html"))))
+
+(defn create-task! [root name text]
+  (when (str/blank? name)
+    (exit! 1 "Missing task name"))
+  (pack-board root "create"
+              "--name" name
+              "--lane" (master-role root)
+              "--text" (or text ""))
+  (inject-master! root (task-payload name (or text ""))))
+
+(defn json-ok []
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/generate-string {:ok true})})
+
+(defn post-tasks [root body]
+  (let [{:keys [name text]} (json/parse-string (or body "{}") true)]
+    (create-task! root name text)
+    (json-ok)))
+
+(defn post-chat [root body]
+  (let [{:keys [text]} (json/parse-string (or body "{}") true)
+        text (or text "")]
+    (when-not (str/blank? text)
+      (let [id (write-chat-request! root text)]
+        (inject-master! root (chat-wake id text))))
+    (json-ok)))
+
+(defn clar-pending-file [root id]
+  (fs/path (clar-pending-dir root) (str id ".request")))
+
+(defn render-clarification [{:keys [id status role body response created_at]}]
+  (str "id: " id "\n"
+       "status: " status "\n"
+       (when-not (str/blank? role) (str "role: " role "\n"))
+       "created_at: " created_at "\n"
+       (when-not (str/blank? response)
+         (str "response: " (str/replace response #"\n" "\\n") "\n"))
+       "\n"
+       (or body "")
+       (when-not (str/ends-with? (or body "") "\n") "\n")))
+
+(defn answer-clarification! [root id text]
+  (let [src (clar-pending-file root id)]
+    (when-not (fs/regular-file? src)
+      (exit! 1 (str "Unknown clarification: " id)))
+    (let [entry (parse-clarification src)
+          dest (fs/path (clar-done-dir root) (str id ".request"))
+          role (:role entry)]
+      (fs/create-dirs (fs/parent dest))
+      (spit (str dest) (render-clarification (assoc entry
+                                                   :status "done"
+                                                   :response text)))
+      (fs/delete-if-exists src)
+      (inject-role! root role (clar-wake id role (:body entry) text)))))
+
+(defn clarification-route [uri]
+  (let [path (first (str/split (or uri "") #"\?"))]
+    (when-let [[_ id] (re-matches #"/api/clarifications/([^/]+)/answer" path)]
+      (java.net.URLDecoder/decode id "UTF-8"))))
+
+(defn post-clarification [root uri body]
+  (if-let [id (clarification-route uri)]
+    (let [text (or (:text (json/parse-string (or body "{}") true)) "")]
+      (answer-clarification! root id text)
+      (json-ok))
+    {:status 404 :body "Not found"}))
+
+(defn pending-file [root id]
+  (fs/path (pending-dir root) (str id ".handoff")))
+
+(defn require-pending! [root id]
+  (let [path (pending-file root id)]
+    (when-not (fs/regular-file? path)
+      (exit! 1 (str "Unknown approval: " id)))
+    path))
+
+(defn with-approved [content]
+  (if (re-find #"(?m)^approved: " content)
+    content
+    (str/replace-first content #"\n\n" "\napproved: true\n\n")))
+
+(defn approve! [root id]
+  (let [src (require-pending! root id)
+        dest (fs/path root ".swarmforge" "handoffs" "outbox" (fs/file-name src))]
+    (fs/create-dirs (fs/parent dest))
+    (spit (str dest) (with-approved (slurp (str src))))
+    (fs/delete-if-exists src)))
+
+(defn write-reject-notify! [root task]
+  (when-not (str/blank? task)
+    (let [path (fs/path root ".swarmforge" "notify" (str "reject-" task))]
+      (fs/create-dirs (fs/parent path))
+      (spit (str path) "rejected\n"))))
+
+(defn reject! [root id]
+  (let [src (require-pending! root id)
+        task (get-in (parse-message src) [:headers "task"])]
+    (fs/delete-if-exists src)
+    (write-reject-notify! root task)
+    (when-not (str/blank? task)
+      (inject-master! root (reject-message task)))))
+
+(defn approval-route [uri]
+  (let [path (first (str/split (or uri "") #"\?"))]
+    (when-let [[_ id action] (re-matches #"/api/approvals/([^/]+)/(approve|reject)" path)]
+      {:id (java.net.URLDecoder/decode id "UTF-8")
+       :action action})))
+
+(defn post-approval [root uri]
+  (if-let [{:keys [id action]} (approval-route uri)]
+    (do (if (= "approve" action)
+          (approve! root id)
+          (reject! root id))
+        (json-ok))
+    {:status 404 :body "Not found"}))
+
+(defn query-value [uri key]
+  (when-let [q (second (str/split (or uri "") #"\?" 2))]
+    (some (fn [pair]
+            (let [[k v] (str/split pair #"=" 2)]
+              (when (= k key)
+                (java.net.URLDecoder/decode (or v "") "UTF-8"))))
+          (str/split q #"&"))))
+
+(defn existing-path [root rel]
+  (let [path (fs/path root rel)]
+    (when (fs/exists? path)
+      (fs/canonicalize path))))
+
+(defn under-dir? [file dir]
+  (and file dir (fs/starts-with? file dir)))
+
+(defn allowed-doc? [root rel]
+  (when-not (str/blank? rel)
+    (let [file (existing-path root rel)]
+      (and (some? file)
+           (fs/regular-file? file)
+           (or (under-dir? file (existing-path root "features"))
+               (under-dir? file (existing-path root "qa")))))))
+
+(defn get-doc [root uri]
+  (let [rel (query-value uri "path")]
+    (if (allowed-doc? root rel)
+      {:status 200
+       :headers {"Content-Type" "text/plain; charset=utf-8"}
+       :body (slurp (str (existing-path root rel)))}
+      {:status 404 :body "Not found"})))
+
+(defn task-query-name [uri]
+  (when (str/starts-with? (or uri "") "/task")
+    (query-value uri "name")))
+
+(defn get-task [root uri]
+  (let [name (task-query-name uri)
+        file (when (and (not (str/blank? name))
+                        (not (str/includes? name "/"))
+                        (not (str/includes? name "..")))
+               (fs/path root ".swarmforge" "board" (str name ".txt")))]
+    (if (and file (fs/regular-file? file))
+      {:status 200
+       :headers {"Content-Type" "text/plain; charset=utf-8"}
+       :body (str name "\n\n" (slurp (str file)))}
+      {:status 404 :body "Not found"})))
+
+(defn html-escape [value]
+  (-> (str value)
+      (str/replace "&" "&amp;")
+      (str/replace "<" "&lt;")
+      (str/replace ">" "&gt;")
+      (str/replace "\"" "&quot;")))
+
+(defn role-row [root role]
+  (some #(when (= role (first %)) %) (role-rows root)))
+
+(defn session-for-role [root role]
+  (when-let [row (role-row root role)]
+    (session-name row)))
+
+(defn worktree-for-role [root role]
+  (when-let [row (role-row root role)]
+    (nth row 2 nil)))
+
+(defn tmux-capture [socket target]
+  (try
+    (let [result (sh "tmux" "-S" socket "capture-pane" "-p" "-t" target
+                     "-S" (str "-" pane-capture-lines))]
+      (when (zero? (:exit result))
+        (:out result)))
+    (catch Exception _)))
+
+(defn capture-pane [root role]
+  (when-let [row (role-row root role)]
+    (let [socket (tmux-socket root)]
+      (when socket
+        (or (tmux-capture socket (pane-target row socket))
+            (tmux-capture socket (session-name row)))))))
+
+(defn live-pane-text [root role]
+  (or *pane-text*
+      (capture-pane root role)))
+
+(defn pane-files [root role]
+  (let [dir (fs/path root ".swarmforge" "sessions" role)]
+    (if (fs/directory? dir)
+      (->> (fs/list-dir dir)
+           (map #(fs/path % "pane.txt"))
+           (filter fs/regular-file?)
+           vec)
+      [])))
+
+(defn in-process-task [root role]
+  (when-let [worktree (worktree-for-role root role)]
+    (some #(get-in (parse-message %) [:headers "task"])
+          (in-process-files (in-process-dir worktree)))))
+
+(defn pane-for-task [files task]
+  (when task
+    (some #(when (= task (fs/file-name (fs/parent %))) %) files)))
+
+(defn recorded-pane [root role]
+  (let [files (pane-files root role)
+        chosen (or (pane-for-task files (in-process-task root role))
+                   (last (sort-by str files)))]
+    (when chosen
+      (slurp (str chosen)))))
+
+(defn pane-content [root role]
+  (or (not-empty (capture-pane root role))
+      (not-empty (recorded-pane root role))
+      (str "(no pane capture for " role ")\n")))
+
+(defn pane-page [role snapshot]
+  (let [role-html (html-escape role)
+        pane-url (str "/api/agents/" role-html "/pane")]
+    (str "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+         "<title>Agent " role-html "</title>"
+         "<style>html,body{height:100%;margin:0;overflow:hidden;background:#111;color:#f4f4f4;"
+         "font-family:ui-monospace,Menlo,monospace}"
+         "body{display:flex;flex-direction:column}"
+         "header{height:42px;box-sizing:border-box;padding:10px 12px;border-bottom:1px solid #333;flex:0 0 auto}"
+         "h1{font:inherit;margin:0;font-size:14px}"
+         "#pane{flex:1 1 auto;margin:0;padding:12px;white-space:pre-wrap;overflow:auto;"
+         "min-height:0;height:calc(100vh - 42px);max-height:calc(100vh - 42px)}</style></head>"
+         "<body><header><h1>" role-html "</h1></header>"
+         "<pre id=\"pane\">" (html-escape snapshot) "</pre>"
+         "<script>(function(){"
+         "const pane=document.getElementById('pane');"
+         "let stickBottom=true;"
+         "let firstPaint=true;"
+         "function nearBottom(){"
+         "return (pane.scrollHeight-pane.scrollTop-pane.clientHeight)<=64;}"
+         "function toEnd(){pane.scrollTop=pane.scrollHeight;stickBottom=true;}"
+         "function toEndSoon(){"
+         "toEnd();requestAnimationFrame(toEnd);"
+         "setTimeout(toEnd,0);setTimeout(toEnd,50);setTimeout(toEnd,200);}"
+         "pane.addEventListener('scroll',function(){stickBottom=nearBottom();},{passive:true});"
+         "async function refresh(){"
+         "const r=await fetch('" pane-url "',{cache:'no-store'});"
+         "const text=await r.text();"
+         "const changed=text!==pane.textContent;"
+         "if(changed){pane.textContent=text;}"
+         "if(firstPaint||stickBottom){toEndSoon();firstPaint=false;}"
+         "}"
+         "refresh();setInterval(refresh,1000);"
+         "window.addEventListener('load',toEndSoon);"
+         "window.addEventListener('pageshow',toEndSoon);"
+         "})();</script></body></html>")))
+
+(defn agent-role [uri]
+  (when-let [[_ role] (re-matches #"/agent/([^/]+)"
+                                 (first (str/split (or uri "") #"\?")))]
+    (java.net.URLDecoder/decode role "UTF-8")))
+
+(defn agent-pane-role [uri]
+  (when-let [[_ role] (re-matches #"/api/agents/([^/]+)/pane"
+                                 (first (str/split (or uri "") #"\?")))]
+    (java.net.URLDecoder/decode role "UTF-8")))
+
+(defn get-agent [root uri]
+  (if-let [role (agent-role uri)]
+    {:status 200
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body (pane-page role (pane-content root role))}
+    {:status 404 :body "Not found"}))
+
+(defn get-agent-pane [root uri]
+  (if-let [role (agent-pane-role uri)]
+    {:status 200
+     :headers {"Content-Type" "text/plain; charset=utf-8"}
+     :body (pane-content root role)}
+    {:status 404 :body "Not found"}))
+
+(defn handle-get [root uri]
+  (cond
+    (= "/" uri)
+    {:status 200
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body (dashboard-page)}
+
+    (= "/api/state" uri)
+    {:status 200
+     :headers {"Content-Type" "application/json"}
+     :body (json/generate-string (dashboard-state root))}
+
+    (agent-pane-role uri)
+    (get-agent-pane root uri)
+
+    (agent-role uri)
+    (get-agent root uri)
+
+    (task-query-name uri)
+    (get-task root uri)
+
+    (str/starts-with? (or uri "") "/doc")
+    (get-doc root uri)
+
+    :else {:status 404 :body "Not found"}))
+
+(defn confirm-teardown? [body]
+  (let [text (str/trim (or body ""))]
+    (or (= "TEARDOWN" text)
+        (try
+          (= "TEARDOWN" (:confirm (json/parse-string text true)))
+          (catch Exception _ false)))))
+
+(defn current-pid []
+  (str (.pid (java.lang.ProcessHandle/current))))
+
+(defn pack-web-pid-file [root]
+  (fs/path root ".swarmforge" "pack_web.pid"))
+
+(defn write-pack-web-pid! [root]
+  (let [file (pack-web-pid-file root)]
+    (fs/create-dirs (fs/parent file))
+    (spit (str file) (str (current-pid) "\n"))))
+
+(defn stop-pack-web! [root]
+  (let [file (pack-web-pid-file root)
+        pid (when (fs/exists? file)
+              (not-empty (str/trim (slurp (str file)))))]
+    (when (and pid (not= pid (current-pid)))
+      (sh "kill" "-TERM" pid))
+    (fs/delete-if-exists file)))
+
+(defn list-tmux-sessions [socket]
+  (if (str/blank? socket)
+    []
+    (let [result (sh "tmux" "-S" socket "list-sessions" "-F" "#{session_name}")]
+      (if (zero? (:exit result))
+        (->> (str/split-lines (:out result))
+             (remove str/blank?)
+             vec)
+        []))))
+
+(defn kill-session! [socket session]
+  (sh "tmux" "-S" socket "kill-session" "-t" (str "=" session))
+  (sh "tmux" "-S" socket "kill-session" "-t" session))
+
+(defn kill-all-sessions-on-socket! [socket]
+  (when-not (str/blank? socket)
+    (doseq [session (list-tmux-sessions socket)]
+      (kill-session! socket session))
+    (sh "tmux" "-S" socket "kill-server")))
+
+(defn stop-handoffd! [root]
+  (sh "bb" (str (fs/path script-dir "stop_handoff_daemon.bb")) (str root)))
+
+(defn swarm-cleanup! [root socket]
+  (let [script (str (fs/path script-dir "swarm-cleanup.sh"))
+        ids (str (fs/path root ".swarmforge" "window-ids"))]
+    (apply sh (into [script (or socket "none") ids]
+                    (list-tmux-sessions socket)))))
+
+(defn close-swarm-bin []
+  (let [path (fs/path (fs/parent (fs/parent script-dir)) "close-swarm")]
+    (when (fs/exists? path)
+      (str path))))
+
+(defn close-swarm! [root]
+  (if-let [bin (close-swarm-bin)]
+    (sh bin (str root))
+    (swarm-cleanup! root (tmux-socket root))))
+
+(defn teardown-step! [label f]
+  (try
+    (f)
+    (catch Exception e
+      ;; Report and continue. A failure in one step must never leave agents,
+      ;; the handoff daemon, or tmux running -- teardown has to tear down.
+      (binding [*out* *err*]
+        (println "pack_web: teardown step failed:" label "-" (ex-message e)))
+      nil)))
+
+(defn run-teardown! [root]
+  (teardown-step! "close-swarm" #(close-swarm! root))
+  (teardown-step! "stop-handoffd" #(stop-handoffd! root))
+  (teardown-step! "kill-sessions" #(kill-all-sessions-on-socket! (tmux-socket root)))
+  (teardown-step! "stop-pack-web" #(stop-pack-web! root))
+  true)
+
+(defn schedule-teardown! [root]
+  (if *sync-teardown?*
+    (run-teardown! root)
+    (future
+      (Thread/sleep teardown-delay-ms)
+      (try
+        (run-teardown! root)
+        (catch Exception e
+          (binding [*out* *err*]
+            (println "pack_web: teardown failed -" (ex-message e)))))
+      (System/exit 0)))
+  true)
+
+(defn teardown-response [root body]
+  (if (confirm-teardown? body)
+    (do
+      (schedule-teardown! root)
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/generate-string {:ok true :status "teardown_started"})})
+    {:status 400
+     :headers {"Content-Type" "text/plain; charset=utf-8"}
+     :body "Teardown requires confirm=TEARDOWN (JSON {\"confirm\":\"TEARDOWN\"}).\n"}))
+
+(defn handle-post [root uri body]
+  (cond
+    (= "/api/tasks" uri) (post-tasks root body)
+    (= "/api/chat" uri) (post-chat root body)
+    (= "/api/teardown" uri) (teardown-response root body)
+    (str/starts-with? (or uri "") "/api/approvals/") (post-approval root uri)
+    (str/starts-with? (or uri "") "/api/clarifications/") (post-clarification root uri body)
+    :else {:status 404 :body "Not found"}))
+
+(defn handle-request [root {:keys [method uri body]}]
+  (case method
+    "GET" (handle-get root uri)
+    "POST" (handle-post root uri body)
+    {:status 404 :body "Not found"}))
+
+(defn test-state! [root]
+  (println (:body (handle-request (require-root! root) {:method "GET" :uri "/api/state"}))))
+
+(defn test-html! []
+  (print (:body (handle-request nil {:method "GET" :uri "/"})))
+  (flush))
+
+(defn test-post-task! [root name text]
+  (handle-request (require-root! root)
+                  {:method "POST"
+                   :uri "/api/tasks"
+                   :body (json/generate-string {:name name :text (or text "")})}))
+
+(defn test-post-chat! [root text]
+  (handle-request (require-root! root)
+                  {:method "POST"
+                   :uri "/api/chat"
+                   :body (json/generate-string {:text (or text "")})}))
+
+(defn test-inject-payload! [name text]
+  (println (if (and name text)
+             (task-payload name text)
+             (task-payload))))
+
+(defn test-inject-argv! [root file text]
+  (when (str/blank? file)
+    (exit! 1 "Missing argv file"))
+  (binding [*tmux-stub* file]
+    (inject-master! (require-root! root) text)))
+
+(defn test-approval! [root id action]
+  (when (str/blank? id)
+    (exit! 1 "Missing approval id"))
+  (handle-request (require-root! root)
+                  {:method "POST"
+                   :uri (str "/api/approvals/" id "/" action)}))
+
+(defn test-pane! [root role]
+  (when (str/blank? role)
+    (exit! 1 "Missing role"))
+  (print (:body (handle-request (require-root! root)
+                                {:method "GET"
+                                 :uri (str "/api/agents/" role "/pane")})))
+  (flush))
+
+(defn test-agent-page! [role]
+  (print (pane-page (or role "specifier") ""))
+  (flush))
+
+(defn print-heat-pair! [root before-text after-text]
+  (require-root! root)
+  (reset! pane-heat {})
+  (binding [*pane-text* before-text]
+    (let [before (:activity (first (work-in-flight root)))]
+      (binding [*pane-text* after-text]
+        (let [after (:activity (first (work-in-flight root)))]
+          (println (json/generate-string {:before before :after after})))))))
+
+(defn test-heat! [root]
+  (print-heat-pair! root "alpha\nline two\n" "beta\nline two\nchanged output\n"))
+
+(defn test-heat-codex! [root]
+  (print-heat-pair! root
+                    "I'll load the SwarmForge instructions.\n\nesc to interrupt · 3s\n"
+                    "I'll load the SwarmForge instructions.\n\nesc to interrupt · 4s\n"))
+
+(defn test-heat-reorder! [root]
+  (let [lines (mapv #(str "line-" %) (range 20))]
+    (print-heat-pair! root
+                      (str (str/join "\n" lines) "\n")
+                      (str (str/join "\n" (reverse lines)) "\n"))))
+
+(defn test-heat-head! [root]
+  (let [tail (mapv #(str "tail-" %) (range 20))
+        before (str (str/join "\n" (concat ["a" "b" "c" "d" "e"] tail)) "\n")
+        after (str (str/join "\n" (concat ["v" "w" "x" "y" "z"] tail)) "\n")]
+    (print-heat-pair! root before after)))
+
+(defn test-heat-mail! [root]
+  (print-heat-pair! root
+                    (str "stable\n"
+                         "› You have new handoff mail. If idle, run ready_for_next.sh.\n"
+                         "work line A\n"
+                         "• Working (1s • esc to interrupt)\n"
+                         "›\n")
+                    (str "stable\n"
+                         "› You have new handoff mail. If idle, run ready_for_next.sh.\n"
+                         "work line B\n"
+                         "• Working (2s • esc to interrupt)\n"
+                         "›\n")))
+
+(defn test-heat-collapse! [root]
+  (print-heat-pair! root
+                    (str "… +28 lines (ctrl + t to view transcript)\n"
+                         "• Working (1s • esc to interrupt)\n")
+                    (str "… +29 lines (ctrl + t to view transcript)\n"
+                         "• Working (2s • esc to interrupt)\n")))
+
+(defn test-status-pane! [root text]
+  (require-root! root)
+  (binding [*pane-text* (or text "")]
+    (println (:body (handle-request root {:method "GET" :uri "/api/state"})))))
+
+(defn test-status-persist! [root first-text second-text]
+  (require-root! root)
+  (reset! pane-status {})
+  (binding [*pane-text* (or first-text "")]
+    (let [first-status (:status (first (:tasks (json/parse-string
+                                                (:body (handle-request root {:method "GET" :uri "/api/state"}))
+                                                true))))]
+      (binding [*pane-text* (or second-text "")]
+        (let [second-status (:status (first (:tasks (json/parse-string
+                                                     (:body (handle-request root {:method "GET" :uri "/api/state"}))
+                                                     true))))]
+          (println (json/generate-string {:first first-status :second second-status})))))))
+
+(defn test-answer-clarification! [root id text]
+  (when (str/blank? id)
+    (exit! 1 "Missing clarification id"))
+  (handle-request (require-root! root)
+                  {:method "POST"
+                   :uri (str "/api/clarifications/" id "/answer")
+                   :body (json/generate-string {:text (or text "")})}))
+
+(defn test-task! [root name]
+  (when (str/blank? name)
+    (exit! 1 "Missing task name"))
+  (print (:body (handle-request (require-root! root)
+                                {:method "GET"
+                                 :uri (str "/task?name=" name)})))
+  (flush))
+
+(defn test-teardown! [root confirm]
+  (binding [*sync-teardown?* true]
+    (let [resp (handle-request (require-root! root)
+                               {:method "POST"
+                                :uri "/api/teardown"
+                                :body (when confirm
+                                        (json/generate-string {:confirm confirm}))})]
+      (when-not (= 200 (:status resp))
+        (exit! 2 (:body resp)))
+      (print (:body resp))
+      (flush))))
+
+(defn request-body [req]
+  (when-let [body (:body req)]
+    (if (string? body) body (slurp body))))
+
+(defn request-uri [req]
+  (let [uri (:uri req)
+        qs (:query-string req)]
+    (if (str/blank? qs) uri (str uri "?" qs))))
+
+(defn http-handler [root]
+  (fn [req]
+    (handle-request root {:method (str/upper-case (name (:request-method req)))
+                          :uri (request-uri req)
+                          :body (request-body req)})))
+
+(defn write-dashboard-url! [root url]
+  (let [file (fs/path root ".swarmforge" "dashboard-url")]
+    (fs/create-dirs (fs/parent file))
+    (spit (str file) (str url "\n"))))
+
+(defn parse-port [port-str]
+  (if (str/blank? port-str) 0 (Long/parseLong port-str)))
+
+(defn serve! [root port-str]
+  (let [root (require-root! root)
+        server (http/run-server (http-handler root)
+                                {:ip "127.0.0.1"
+                                 :port (parse-port port-str)
+                                 :legacy-return-value? false})
+        url (str "http://127.0.0.1:" (http/server-port server))]
+    (write-dashboard-url! root url)
+    (write-pack-web-pid! root)
+    (println url)
+    (flush)
+    @(promise)))
+
+(defn -main [& args]
+  (case (first args)
+    "--serve" (serve! (second args) (nth args 2 nil))
+    "--test-state" (test-state! (second args))
+    "--test-html" (test-html!)
+    "--test-post-task" (test-post-task! (second args) (nth args 2 nil) (nth args 3 nil))
+    "--test-post-chat" (test-post-chat! (second args) (nth args 2 nil))
+    "--test-inject-payload" (test-inject-payload! (second args) (nth args 2 nil))
+    "--test-inject-argv" (test-inject-argv! (second args) (nth args 2 nil) (nth args 3 nil))
+    "--test-approve" (test-approval! (second args) (nth args 2 nil) "approve")
+    "--test-reject" (test-approval! (second args) (nth args 2 nil) "reject")
+    "--test-pane" (test-pane! (second args) (nth args 2 nil))
+    "--test-agent-page" (test-agent-page! (second args))
+    "--test-heat" (test-heat! (second args))
+    "--test-heat-codex" (test-heat-codex! (second args))
+    "--test-heat-reorder" (test-heat-reorder! (second args))
+    "--test-heat-head" (test-heat-head! (second args))
+    "--test-heat-mail" (test-heat-mail! (second args))
+    "--test-heat-collapse" (test-heat-collapse! (second args))
+    "--test-status-pane" (test-status-pane! (second args) (nth args 2 nil))
+    "--test-status-persist" (test-status-persist! (second args) (nth args 2 nil) (nth args 3 nil))
+    "--test-answer-clarification" (test-answer-clarification! (second args) (nth args 2 nil) (nth args 3 nil))
+    "--test-task" (test-task! (second args) (nth args 2 nil))
+    "--test-teardown" (test-teardown! (second args) (nth args 2 nil))
+    (do (usage)
+        (exit! 1 nil)))
+  (System/exit 0))
+
+(apply -main *command-line-args*)

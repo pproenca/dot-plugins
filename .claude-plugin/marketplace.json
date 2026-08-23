@@ -46,6 +46,46 @@
         "subagents",
         "unslop"
       ]
+    },
+    {
+      "name": "swarm-forge",
+      "source": "./plugins/swarm-forge",
+      "description": "Disciplined tmux-based agent orchestration: pick a pack of specialist agents, give each its own git worktree, and drive them from a local web cockpit.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Robert C. Martin"
+      },
+      "homepage": "https://github.com/unclebob/swarm-forge",
+      "category": "developer-tools",
+      "keywords": [
+        "swarmforge",
+        "orchestration",
+        "tmux",
+        "multi-agent",
+        "worktrees",
+        "handoff",
+        "tdd"
+      ]
+    },
+    {
+      "name": "swarm-forge-squad",
+      "source": "./plugins/swarm-forge-squad",
+      "description": "The SwarmForge squad workflow: a persistent squad leader that spawns short-lived specialist workers on demand, each bound by a capability contract.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Robert C. Martin"
+      },
+      "homepage": "https://github.com/unclebob/swarm-forge/tree/squad",
+      "category": "developer-tools",
+      "keywords": [
+        "swarmforge",
+        "squad",
+        "orchestration",
+        "tmux",
+        "multi-agent",
+        "worktrees",
+        "contracts"
+      ]
     }
   ]
 }

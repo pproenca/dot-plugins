@@ -1,0 +1,59 @@
+# Engineering Rules
+
+## Startup Tools
+- Required tool identities are defined by `swarmforge/tool-table.edn`.
+- GitHub repositories named in that table are the **sole source of truth** for APS and quality tools. Do not install them from a local working copy.
+- Version `latest` means the current default branch on GitHub. `squad_tool.sh ensure` for `latest` refreshes from GitHub before use.
+- At startup, agents must load required tools from the generated assignment tool section by running `squad_tool.sh require <tool-name> <source> <version>`.
+- If a required tool is missing and the assignment includes an exact authorized install command, use `squad_tool.sh ensure <tool-name> <source> <version> -- <install-command...>`.
+- If a required tool is missing and no install command is authorized, record `blocked` and hand the blocker back to `squad-leader`.
+- Do not fetch, clone, install, or update external tools except through an explicitly authorized `squad_tool.sh ensure` command.
+
+## Language Defaults
+- For Clojure projects, prefer Babashka where possible.
+- For Clojure projects, prefer Speclj for unit and behavior tests.
+- For Clojure or Babashka projects using Speclj, use `github.com/unclebob/speclj-structure-check` to validate test syntax. If a Speclj spec file changed, run the structure check before executing the relevant test command.
+- For Java projects, avoid using Maven to run tests; build dedicated test runners and run those instead.
+
+## Project Tooling Layout (Clojure / Babashka)
+- Keep root `bb.edn` thin and stable so parallel stories do not thrash on it.
+- Put library and project dependencies in root `deps.edn`, not in `bb.edn`.
+- Prefer `bb.edn` that reuses the project via `{:deps {app/root {:local/root "."}}}` (or equivalent) plus `:tasks` only.
+- Prefer task *bodies* under `bb/tasks/*.clj` (or similar) and only a one-line task entry in `bb.edn` when a new top-level command is required.
+- Root tooling files (`bb.edn`, `deps.edn`, and equivalent lock/build manifests) are shared project infrastructure. Implementer/hardener work must not edit them unless the assignment explicitly is a tooling/setup story. Cleaner may make **additive-only** edits (new dep, new task such as `property-test`) and must not change existing targets.
+- When a library dependency is required for a story, add it in `deps.edn` only if the assignment allows tooling edits; otherwise hand back a blocker asking for a tooling story or SL-approved tooling change.
+
+## Design And Testability
+- Work in small, reviewable increments.
+- Prefer the simplest design that supports the current behavior and leaves clear options for the next step.
+- Keep tests close to the behavior being changed.
+- Separate testable modules from environmentally unsuitable modules that open GUIs, depend on external devices, throw environment errors, emit system errors, or hang under automated tests. Maximize testable code and minimize the unsuitable boundary.
+- Only testable modules should participate in tools that run tests, including unit tests, acceptance tests, coverage, mutation testing, CRAP analysis, DRY analysis that invokes tests, and property tests.
+- Keep property tests separate from normal verification. Do not include property-test tags in normal unit coverage, Gherkin acceptance mutation, language mutation tools, CRAP, or coverage commands unless the role owns property-test verification or the user explicitly asks for property tests.
+
+## Acceptance Pipeline
+- Use github.com/unclebob/Acceptance-Pipeline-Specification for Gherkin acceptance tests. That GitHub repository is the only APS tree SwarmForge may install.
+- The Acceptance Pipeline Specification supplies `gherkin-parser` and `gherkin-mutator`; install those commands from GitHub via `squad_tool.sh ensure` instead of reimplementing them or wrapping a local checkout.
+- Prefer the Babashka APS tools for `gherkin-parser`, `gherkin-mutator`, and related APS support commands.
+- Use Go-based APS tools only if the Babashka APS tools do not work in the current project environment.
+- Project-specific acceptance pipeline components are the acceptance entrypoint generator, acceptance runtime, project step handlers, thin runner adapter, and convenience scripts (six-pack coder model). Prefer additive step modules over one mega runner file.
+- Product scaffolds expose `bb acceptance` as the full human suite and `bb acceptance-worker` as `gherkin-mutator --runner-worker` (NDJSON). Implementers own wiring those project components when features exist; hardeners/QA must not silently skip mutation or the suite when the runner is missing — hand back a blocker instead.
+- Do not document bare `bb acceptance` as the mutator worker command.
+- Gherkin acceptance mutation means running `gherkin-mutator` to mutate Gherkin example values.
+- Gherkin acceptance mutation runs must report periodic progress/status so agents can distinguish normal long-running work from a hang.
+
+## Coverage for CRAP and mutation
+- Roles that run crap4clj or clj-mutate must produce fresh line coverage (`bb coverage` / `clj -M:cov` → `target/coverage/lcov.info`) first.
+- Treat “all mutation sites covered” without LCOV as invalid; hand back a blocker rather than faking a pass.
+
+## Verification
+- Before running language, build, or test commands, prefer project-local cache/configuration paths inside the assigned worktree. Avoid default cache locations that write outside the project and may trigger sandbox or permission restrictions.
+- Run acceptance generation and acceptance tests sequentially.
+- Avoid running whole-suite language test commands concurrently with acceptance generation.
+- Run the relevant local verification command before handoff whenever the project has one.
+- Late roles (hardener, qa, architect, senior-implementer) run the full acceptance suite when features exist, not only unit tests or ad-hoc transcript harnesses.
+
+## Guardrails
+- Do not edit mutation testing or Gherkin acceptance mutation manifests by hand; allow approved mutation tools to update those manifests as part of their normal runs.
+- Do not commit unrelated local changes or generated artifacts unless required for the task.
+- Before relying on an unfamiliar command, inspect local help or project documentation.

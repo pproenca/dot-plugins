@@ -10,6 +10,8 @@ A plugin marketplace. Every plugin here is packaged to the
 /plugin marketplace add <owner>/dot-plugins
 /plugin install pstack@dot-plugins
 /plugin install agent-plugin-builder@dot-plugins
+/plugin install swarm-forge@dot-plugins
+/plugin install swarm-forge-squad@dot-plugins
 ```
 
 Or point at a local clone: `/plugin marketplace add ./dot-plugins`.
@@ -20,6 +22,8 @@ Or point at a local clone: `/plugin marketplace add ./dot-plugins`.
 | ------ | ------------ |
 | [`agent-plugin-builder`](plugins/agent-plugin-builder) | Scaffolds and validates plugins against Agent Plugins v1.1.0. Ships the conformance validator this repo runs in CI. |
 | [`pstack`](plugins/pstack) | Rigorous agent workflows — playbooks, engineering principles, and subagent orchestration. By [Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack), MIT, vendored here. |
+| [`swarm-forge`](plugins/swarm-forge) | Runs a pack of specialist agents on one repo — a git worktree and tmux session each, file-based handoffs, and a local web cockpit. By [Robert C. Martin](https://github.com/unclebob/swarm-forge), vendored here; no license stated upstream. |
+| [`swarm-forge-squad`](plugins/swarm-forge-squad) | The SwarmForge squad workflow: a persistent squad leader that spawns short-lived workers on demand, each bound by a capability contract. Same upstream, same license caveat. |
 
 ## Layout
 
@@ -29,6 +33,8 @@ plugins/<name>/                   # one self-contained plugin per directory
 ├── plugin.json                   # Agent Plugins v1.1.0 manifest (required, at the root)
 ├── skills/<name>/SKILL.md        # portable component
 └── mcp.json                      # portable component
+                                  # anything else a plugin ships (docs, engines,
+                                  # test suites) stays at its own root
 spec.md                           # the specification (v1.1.0, working draft)
 tests/                            # validator suite + marketplace/catalog checks
 ```
@@ -65,13 +71,44 @@ violations; warnings are things a client tolerates but that usually indicate a
 mistake — a skill directory with no `SKILL.md`, a bundled executable that isn't
 there yet, a credential-shaped value in `env`.
 
-Both plugins validate clean. `pstack` was migrated to get there: its Cursor
-subagents, automation pack, and Cursor manifest moved into the `com.cursor/`
-extension directory (§8), and its Cursor-specific frontmatter keys
+All four plugins validate clean. Two needed work to get there.
+
+`pstack`: its Cursor subagents, automation pack, and Cursor manifest moved into
+the `com.cursor/` extension directory (§8), and its Cursor-specific frontmatter keys
 (`disable-model-invocation`, `icon`, `color`, `mode`, `reminder`) moved under
 `metadata` as strings, since §7.1 closes the Agent Skills field set. Both are
 preserved rather than portable: a client that does not implement `com.cursor`
 ignores that directory, and clients read `metadata` but do not act on it.
+
+`swarm-forge`: upstream splits the product across git branches — `main` carries
+the engine and the dashboard, while `two-pack`, `four-pack`, `six-pack`, and
+`adversaries` each carry only a roster of role prompts, and `squad` is a forked
+engine entirely. Choosing a workflow upstream means extracting a different
+branch tarball, and the launcher then downloads the engine from GitHub on first
+run. A package cannot be five branches, so the rosters were vendored as data
+under `packs/`; `squad` became its own plugin because it shares no code with the
+others. The upstream tree is otherwise kept verbatim at the plugin root, which is
+what keeps its web dashboard and its Babashka test suite working unmodified.
+
+`swarm-forge` also carries two small patches to the vendored engine, recorded
+as diffs in `plugins/swarm-forge/patches/` and guarded by tests: upstream's
+dashboard hardcoded tmux pane index `.0`, so on any host with
+`pane-base-index 1` every cockpit action that types into an agent silently did
+nothing, and its teardown could stop halfway without reporting why. Everything
+else under `swarmforge/` is byte-identical to upstream.
+
+Both swarm-forge plugins also vendor the Acceptance Pipeline Specification, the
+one thing the engine itself git-clones at runtime, and their install scripts
+seed it into the project. So installing and running a swarm needs no network,
+and — because the engine is copied into the project exactly as upstream's
+bootstrap does — the installed project holds no path back into the plugin and
+survives the plugin being upgraded or removed. The per-language quality tools
+the constitution names are still installed on demand by the agents, as upstream.
+
+Neither swarm-forge plugin declares a `license`: neither upstream repository —
+swarm-forge nor the Acceptance Pipeline Specification — ships a LICENSE file or
+a license header, and the field is optional. That is a gap worth raising with
+the author rather than guessing at terms.
 
 ## Tests
 

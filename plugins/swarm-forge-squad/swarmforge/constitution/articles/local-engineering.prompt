@@ -1,0 +1,24 @@
+# Local Engineering Rules
+
+## Slice Discipline
+- Build squad features in vertical slices.
+- Keep the first slice limited to static squad boot with one visible squad leader.
+- Do not implement transient spawning, status telemetry, or daemon behavior unless the current task explicitly asks for that slice.
+
+## Startup Tools
+- The squad leader is a coordinator, not a quality-gate worker.
+- At startup, the squad leader must not install language mutation, CRAP, DRY, APS, or other heavyweight quality tools unless the user explicitly asks for a task that requires those tools.
+- At startup, the squad leader should verify only lightweight local squad control-plane command availability, such as checking that `squad_next.sh`, `squad_backlog.sh`, `squad_approval.sh`, `squad_assign.sh`, `squad_report.sh`, `squad_tool.sh`, `squad_spawn_request.sh`, `squad_spawn.sh`, `squad_retire.sh`, `squad_event.sh`, `squad_run.sh`, `squad_status.sh`, `squad_recover.sh`, `squadd.sh`, `ready_for_next.sh`, `done_with_current.sh`, and `swarm_handoff.sh` are present on `PATH` or under `swarmforge/scripts/`.
+- Treat squad helper scripts as command-line APIs. Do not read `swarmforge/scripts/*.clj`, `swarmforge/scripts/*.sh`, terminal adapters, or daemon source just to learn normal usage. Use the command forms documented in the squad-leader prompt and workflow articles; if a helper invocation fails, read its command output and report the blocker instead of inspecting implementation source.
+- Transient agents install task-specific tools only when their role template or assignment requires them.
+- Transient agents should reuse shared cached tools through `squad_tool.sh require` and `SWARMFORGE_TOOL_CACHE_DIR` when a **pinned** version already matches. Version `latest` is refreshed from GitHub on `ensure`.
+- Quality-gate agents install mutation, CRAP, DRY, APS, and related tools only when spawned for a quality-gate assignment. Use `squad_tool.sh ensure`. GitHub is the only tree those tools may come from.
+
+## Project Tooling Layout
+- Product projects under squad should keep `bb.edn` thin (tasks + optional `{:local/root "."}` into `deps.edn`).
+- Product library deps belong in `deps.edn`. Prefer task implementations under `bb/tasks/` when tasks grow.
+- Do not treat root `bb.edn` / `deps.edn` as per-story edit surfaces; that causes merge thrash on shared tooling.
+
+## Verification
+- Run the relevant local verification command before handoff whenever the project has one and the role owns executable code, tests, QA execution, cleanup, hardening, or review of executable changes. Artifact-only story, Gherkin, QA procedure, and review roles must follow their role prompt's focused artifact checks instead of broad project verification unless the assignment explicitly names the exact command.
+- For this repository, `bb test` is the normal helper test command.

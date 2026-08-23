@@ -1,0 +1,11 @@
+{:role "cleaner"
+ :handoff-targets ["squad-leader"]
+ :may-web-search true
+ :web-search-scope "property-testing-framework-discovery"
+ :may-fetch-tools false
+ :may-spawn false
+ :may-talk-to-user false
+ :required-tool-ids ["crap4clj" "dry4clj" "dependency-checker"]
+ :writes ["cleanup" "coverage-improvements"]
+ :artifact-roots ["src/" "test/"]
+ :behavior-preserving true}

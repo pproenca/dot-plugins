@@ -1,0 +1,25 @@
+# Local Workflow Rules
+
+## Squad Workflow
+- Persistent roles: **squad-leader** (pipeline residual, owns main git) and **troubleshooter** (operator repair/Q&A, idle until called).
+- The operator holds a **backlog**. Add many stories (title + body). Nothing runs until the operator **Starts** one.
+- Start writes `stories/<id>.md` and a packet. Residual then assigns `analyst` for one **implementation plan**. The analyst reads other backlog items only to name them as non-goals or mocked ports; the plan implements this story alone. User approves the plan.
+- After the plan is approved, `gherkin-writer` and `qa-procedure-writer` produce files the operator approves. The QA-procedure writer commits the procedure **and** implementer notes in one commit. There is no reviewer for those files.
+- `implementer` starts when the plan, Gherkin, **and** QA procedure (with implementer notes) are approved. Units first, Gherkin passing. Reads the implementer notes, not the QA procedure body.
+- After implementer: `cleaner` (property tests and clean) → `code-reviewer` (recommendations only) → `hardener` (apply those recs, then harden) → `qa` → `architect` (recs; whole backlog) → `senior-implementer` if there are recs.
+- Hardener, QA, architect, and senior implementer may batch every story that is ready when that hardener starts.
+- Story is done after senior implementer, or after architect if there are no recs. No final user bless.
+- The squad leader merges each worker SHA (`squad_assign.sh accept-merge`). Conflicts are the squad leader's. The daemon does not merge.
+- The squad leader never writes product artifacts. Route work to the right role.
+- Each story has a durable packet under `.squad/stories/<story-id>/packet`.
+- Transient results hand off only to `squad-leader`.
+- Available templates: `analyst`, `gherkin-writer`, `qa-procedure-writer`, `implementer`, `cleaner`, `code-reviewer`, `hardener`, `qa`, `architect`, `senior-implementer`.
+
+## Approval Gates
+- User gates: implementation plan, Gherkin, QA procedure. Record them with `squad_approval.sh`.
+- Rejected gates create durable blockers under `.squad/blockers/`. Clear with `squad_approval.sh resolve-rejection` after recovery.
+
+## Assignments
+- Create with `squad_assign.sh create` (or `create-batch` for later-role batches) then `squad_spawn_request.sh`.
+- Caps live only in `swarmforge/squad.conf`.
+- Architect and senior implementer keep structure and dependencies current. That is not a startup ceremony.

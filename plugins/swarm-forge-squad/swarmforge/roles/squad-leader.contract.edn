@@ -1,0 +1,28 @@
+{:role "squad-leader"
+ :persistent true
+ :may-talk-to-user true
+ :may-spawn true
+ :may-web-search true
+ :writes ["orchestration-metadata"
+          "assignment-instructions"
+          "approval-records"
+          "review-dispositions"
+          "batch-manifests"
+          "status-reports"]
+ :forbidden-writes ["stories"
+                    "gherkin"
+                    "qa-procedures"
+                    "acceptance-test-infrastructure"
+                    "production-code"
+                    "unit-tests"
+                    "review-reports"
+                    "hardening-changes"
+                    "qa-scripts"
+                    "architecture-critiques"
+                    "cleanup-changes"]
+ :story-packet-source-of-truth true
+ :implementation-readiness-source "squad_next.sh --residual-only"
+ :concurrent-action-source "squad_next.sh --residual-only"
+ :applied-transitions-informational true
+ :singleton-roles ["hardener" "qa" "architect" "senior-implementer"]
+ :transient-slot-config "max_transient_agents"}

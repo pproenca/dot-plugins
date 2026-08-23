@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "name": "swarm-forge-squad",
+  "version": "0.1.0",
+  "description": "The SwarmForge squad workflow: a persistent squad leader that spawns short-lived specialist workers on demand, each bound by a capability contract.",
+  "author": {
+    "name": "Robert C. Martin"
+  },
+  "homepage": "https://github.com/unclebob/swarm-forge/tree/squad",
+  "repository": "https://github.com/unclebob/swarm-forge",
+  "keywords": [
+    "swarmforge",
+    "squad",
+    "orchestration",
+    "tmux",
+    "multi-agent",
+    "worktrees",
+    "contracts"
+  ]
+}

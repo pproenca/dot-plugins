@@ -1,0 +1,13 @@
+{:role "analyst"
+ :handoff-targets ["squad-leader"]
+ :may-web-search true
+ :may-fetch-tools false
+ :may-spawn false
+ :may-talk-to-user false
+ :writes ["plan"]
+ :artifact-roots [".squad/stories/" "stories/"]
+ :allowed-root-files []
+ :forbidden-artifact-roots ["features/" "qa/" "src/" "test/" "reviews/"]
+ :self-contained-output true
+ :requires-dependency-checker false
+ :requires-implementation-order false}
