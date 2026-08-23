@@ -29,6 +29,18 @@
       "category": "Developer Tools"
     },
     {
+      "name": "ontology-forge",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ontology-forge"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
       "name": "swarm-forge",
       "source": {
         "source": "local",

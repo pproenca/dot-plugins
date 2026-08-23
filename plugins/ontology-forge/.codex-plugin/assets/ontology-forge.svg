@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Ontology Forge icon</title>
+  <desc id="desc">Connected ontology nodes inside a forge mark.</desc>
+  <rect width="256" height="256" rx="48" fill="#172033"/>
+  <path d="M72 177l56-98 56 98H72z" fill="#E7EEF8"/>
+  <path d="M91 164h74l-37-65-37 65z" fill="#172033"/>
+  <path d="M91 164l37-65 37 65M128 99v65M91 164h74" fill="none" stroke="#4CC9A6" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="128" cy="79" r="18" fill="#4CC9A6"/>
+  <circle cx="72" cy="177" r="18" fill="#F9C74F"/>
+  <circle cx="184" cy="177" r="18" fill="#F9C74F"/>
+  <path d="M69 205h118" stroke="#E7EEF8" stroke-width="14" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "name": "ontology-forge",
+  "version": "0.1.0",
+  "description": "Design and extend a Palantir Foundry ontology the domain-driven way: interview the domain, shape object types, links, interfaces and actions, then map source data and logic onto them.",
+  "author": {
+    "name": "pproenca"
+  },
+  "repository": "https://github.com/pproenca/dot-plugins",
+  "license": "MIT",
+  "keywords": [
+    "ontology",
+    "foundry",
+    "palantir",
+    "domain-driven-design",
+    "data-modeling",
+    "semantic-layer",
+    "anti-patterns"
+  ],
+  "extensions": {
+    "com.openai.codex": {
+      "interface": {
+        "displayName": "Ontology Forge",
+        "shortDescription": "Design a Foundry ontology, domain first",
+        "longDescription": "Work through the three stages of ontology design — understand the domain, design the object model, map source data and logic — with Palantir's best practices, structural guidance, and anti-pattern catalog applied at every step.",
+        "developerName": "pproenca",
+        "category": "Developer Tools",
+        "websiteURL": "https://github.com/pproenca/dot-plugins",
+        "capabilities": [
+          "Interactive",
+          "Write"
+        ],
+        "defaultPrompt": [
+          "Design an ontology for this domain",
+          "Extend the ontology with a new requirement",
+          "Audit this ontology for anti-patterns"
+        ]
+      }
+    }
+  }
+}

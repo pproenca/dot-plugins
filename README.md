@@ -33,6 +33,7 @@ issue and it will be actioned.
 codex plugin marketplace add pproenca/dot-plugins
 codex plugin add pstack@dot-plugins
 codex plugin add agent-plugin-builder@dot-plugins
+codex plugin add ontology-forge@dot-plugins
 codex plugin add swarm-forge@dot-plugins
 codex plugin add swarm-forge-squad@dot-plugins
 ```
@@ -49,6 +50,7 @@ codex plugin marketplace add ./dot-plugins
 /plugin marketplace add <owner>/dot-plugins
 /plugin install pstack@dot-plugins
 /plugin install agent-plugin-builder@dot-plugins
+/plugin install ontology-forge@dot-plugins
 /plugin install swarm-forge@dot-plugins
 /plugin install swarm-forge-squad@dot-plugins
 ```
@@ -60,6 +62,7 @@ Or point at a local clone: `/plugin marketplace add ./dot-plugins`.
 | Plugin | What it does |
 | ------ | ------------ |
 | [`agent-plugin-builder`](plugins/agent-plugin-builder) | Scaffolds and validates plugins against Agent Plugins v1.1.0. Ships the conformance validator this repo runs in CI. |
+| [`ontology-forge`](plugins/ontology-forge) | Designs and extends a Palantir Foundry ontology domain-first — interview the domain, shape object types and links, map source data, and audit the result against the published anti-patterns. |
 | [`pstack`](plugins/pstack) | Rigorous agent workflows — playbooks, engineering principles, and subagent orchestration. By [Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack), MIT, vendored here. |
 | [`swarm-forge`](plugins/swarm-forge) | Runs a pack of specialist agents on one repo — a git worktree and tmux session each, file-based handoffs, and a local web cockpit. By [Robert C. Martin](https://github.com/unclebob/swarm-forge), vendored here; no license stated upstream. |
 | [`swarm-forge-squad`](plugins/swarm-forge-squad) | The SwarmForge squad workflow: a persistent squad leader that spawns short-lived workers on demand, each bound by a capability contract. Same upstream, same license caveat. |
