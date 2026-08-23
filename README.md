@@ -4,6 +4,27 @@ A plugin marketplace. Every plugin here is packaged to the
 [Agent Plugins Specification](spec.md) v1.1.0 — a root `plugin.json` plus
 `skills/` and `mcp.json` — so it loads in any conformant client.
 
+## Attribution and licensing
+
+Most of this repository is third-party work, vendored so each plugin is a
+self-contained directory a client can copy on install. Sources and terms:
+
+| Vendored from | Author | License | Notes |
+| ------------- | ------ | ------- | ----- |
+| [cursor/plugins — pstack](https://github.com/cursor/plugins/tree/main/pstack) | Lauren Tan | MIT | `LICENSE` shipped in the plugin. |
+| [unclebob/swarm-forge](https://github.com/unclebob/swarm-forge) (`main`, `two-pack`, `four-pack`, `six-pack`, `adversaries`, `squad`) | Robert C. Martin | **None stated** | See below. |
+| [unclebob/Acceptance-Pipeline-Specification](https://github.com/unclebob/Acceptance-Pipeline-Specification) | Robert C. Martin | **None stated** | Bundled under each swarm-forge plugin's `vendor/`. |
+
+**The swarm-forge and Acceptance Pipeline sources carry no LICENSE file and no
+license headers.** They are reproduced here unmodified except for the documented
+patches in `plugins/swarm-forge/patches/`, with the upstream commit recorded in
+each plugin's README so any copy can be traced back. No ownership is claimed over
+them and no license is asserted on their behalf — the `license` field is
+deliberately absent from both manifests.
+
+If you are the author and would like any of this changed or removed, open an
+issue and it will be actioned.
+
 ## Install
 
 ```bash
