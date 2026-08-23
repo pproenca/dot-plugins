@@ -1,6 +1,6 @@
 ---
 name: bro
-description: Restate the last message in plain human language, with no jargon.
+description: "Restate the last message in plain human language, with no jargon. Use when the user wants the last message restated in plain human language."
 metadata:
   disable-model-invocation: "true"
 ---
