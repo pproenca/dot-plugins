@@ -1,0 +1,51 @@
+{
+  "name": "dot-plugins",
+  "description": "Agent plugins packaged to the Agent Plugins Specification v1.1.0.",
+  "owner": {
+    "name": "pproenca"
+  },
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "agent-plugin-builder",
+      "source": "./plugins/agent-plugin-builder",
+      "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.1.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
+      "version": "0.1.0",
+      "author": {
+        "name": "pproenca"
+      },
+      "license": "MIT",
+      "category": "developer-tools",
+      "keywords": [
+        "agent-plugins",
+        "specification",
+        "conformance",
+        "validator",
+        "scaffolding"
+      ]
+    },
+    {
+      "name": "pstack",
+      "source": "./plugins/pstack",
+      "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
+      "version": "0.14.2",
+      "author": {
+        "name": "Lauren Tan"
+      },
+      "homepage": "https://github.com/cursor/plugins/tree/main/pstack",
+      "license": "MIT",
+      "category": "developer-tools",
+      "keywords": [
+        "pstack",
+        "poteto-mode",
+        "workflow",
+        "principles",
+        "agent-style",
+        "subagents",
+        "unslop"
+      ]
+    }
+  ]
+}

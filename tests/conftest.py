@@ -13,7 +13,10 @@ import stat
 import pytest
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-SKILL_DIR = REPO_ROOT / "skills" / "agent-plugin-builder"
+MARKETPLACE = REPO_ROOT / ".claude-plugin" / "marketplace.json"
+PLUGINS_DIR = REPO_ROOT / "plugins"
+BUILDER_PLUGIN = PLUGINS_DIR / "agent-plugin-builder"
+SKILL_DIR = BUILDER_PLUGIN / "skills" / "agent-plugin-builder"
 VALIDATOR = SKILL_DIR / "scripts" / "validate_plugin.py"
 
 
