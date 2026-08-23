@@ -1,8 +1,10 @@
 # dot-plugins
 
-A plugin marketplace. Every plugin here is packaged to the
+A plugin marketplace for Codex, Claude Code, and conformant Agent Plugins
+clients. Every plugin here is packaged to the
 [Agent Plugins Specification](spec.md) v1.1.0 — a root `plugin.json` plus
-`skills/` and `mcp.json` — so it loads in any conformant client.
+`skills/` and `mcp.json`. Thin client-native manifests make the same packages
+installable without giving up the portable format.
 
 ## Attribution and licensing
 
@@ -25,7 +27,23 @@ deliberately absent from both manifests.
 If you are the author and would like any of this changed or removed, open an
 issue and it will be actioned.
 
-## Install
+## Install in Codex
+
+```bash
+codex plugin marketplace add pproenca/dot-plugins
+codex plugin add pstack@dot-plugins
+codex plugin add agent-plugin-builder@dot-plugins
+codex plugin add swarm-forge@dot-plugins
+codex plugin add swarm-forge-squad@dot-plugins
+```
+
+Or point Codex at a local clone:
+
+```bash
+codex plugin marketplace add ./dot-plugins
+```
+
+## Install in Claude Code
 
 ```bash
 /plugin marketplace add <owner>/dot-plugins
@@ -49,21 +67,24 @@ Or point at a local clone: `/plugin marketplace add ./dot-plugins`.
 ## Layout
 
 ```text
-.claude-plugin/marketplace.json   # the catalog: one entry per plugin
+.agents/plugins/marketplace.json # Codex catalog
+.claude-plugin/marketplace.json  # Claude Code catalog
 plugins/<name>/                   # one self-contained plugin per directory
-├── plugin.json                   # Agent Plugins v1.1.0 manifest (required, at the root)
-├── skills/<name>/SKILL.md        # portable component
-└── mcp.json                      # portable component
-                                  # anything else a plugin ships (docs, engines,
-                                  # test suites) stays at its own root
+├── .codex-plugin/plugin.json     # Codex presentation and discovery manifest
+├── plugin.json                   # portable Agent Plugins v1.1.0 manifest
+├── skills/<name>/SKILL.md        # shared portable component
+└── mcp.json                      # optional portable component
 spec.md                           # the specification (v1.1.0, working draft)
 tests/                            # validator suite + marketplace/catalog checks
 ```
 
 Agent Plugins v1.1.0 specifies the *package* and deliberately leaves
 distribution to each client, so it defines no marketplace format. The catalog
-is therefore a client artifact — `.claude-plugin/marketplace.json`, read by
-Claude Code — while the plugin directories underneath it stay portable.
+is therefore a client artifact. Claude Code reads
+`.claude-plugin/marketplace.json`; Codex reads
+`.agents/plugins/marketplace.json` and each plugin's
+`.codex-plugin/plugin.json`. The plugin directories underneath stay portable,
+and both clients discover the same `skills/` trees.
 
 Each plugin is self-contained: a client copies the directory on install, so
 nothing inside may reference a path outside its own root (§4.1). Shared tooling
@@ -71,11 +92,13 @@ lives *inside* the plugin that owns it, not at the repo root.
 
 ## Adding a plugin
 
-1. Create `plugins/<name>/` with a root `plugin.json`.
+1. Create `plugins/<name>/` with a root `plugin.json` and a Codex manifest at
+   `.codex-plugin/plugin.json`.
 2. Validate it (see below) until it passes.
-3. Add an entry to `.claude-plugin/marketplace.json` with `"source": "./plugins/<name>"`.
-4. Run `uv run pytest` — the suite fails on an unlisted directory or a catalog
-   entry whose `name`, `version`, or `description` drifts from the manifest.
+3. Add matching entries to `.claude-plugin/marketplace.json` and
+   `.agents/plugins/marketplace.json`.
+4. Run `uv run pytest` — the suite fails on an unlisted directory, mismatched
+   catalogs, or metadata drift between manifests.
 
 ## Validating
 

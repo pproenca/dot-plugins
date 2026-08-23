@@ -1,0 +1,36 @@
+{
+  "name": "swarm-forge",
+  "version": "0.1.0",
+  "description": "Disciplined tmux-based agent orchestration: pick a pack of specialist agents, give each its own git worktree, and drive them from a local web cockpit.",
+  "author": {
+    "name": "Robert C. Martin"
+  },
+  "homepage": "https://github.com/unclebob/swarm-forge",
+  "repository": "https://github.com/unclebob/swarm-forge",
+  "keywords": [
+    "swarmforge",
+    "orchestration",
+    "tmux",
+    "multi-agent",
+    "worktrees",
+    "handoff",
+    "tdd"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SwarmForge",
+    "shortDescription": "Orchestrate specialist agents in worktrees",
+    "longDescription": "Run a coordinated pack of specialist coding agents in isolated git worktrees, with file-based handoffs and a local web cockpit for control.",
+    "developerName": "Robert C. Martin",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Start a specialist swarm for this repository",
+      "Show me the current swarm status",
+      "Hand this task to the next specialist"
+    ]
+  }
+}

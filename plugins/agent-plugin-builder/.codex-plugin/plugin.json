@@ -1,0 +1,34 @@
+{
+  "name": "agent-plugin-builder",
+  "version": "0.1.0",
+  "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.1.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
+  "author": {
+    "name": "pproenca"
+  },
+  "repository": "https://github.com/pproenca/dot-plugins",
+  "license": "MIT",
+  "keywords": [
+    "agent-plugins",
+    "specification",
+    "conformance",
+    "validator",
+    "scaffolding"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Plugin Builder",
+    "shortDescription": "Build and validate portable agent plugins",
+    "longDescription": "Scaffold portable agent plugin packages and validate their manifests, skills, MCP configuration, and path containment against Agent Plugins v1.1.0.",
+    "developerName": "pproenca",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Scaffold a portable agent plugin",
+      "Validate this plugin package",
+      "Package these skills as a plugin"
+    ]
+  }
+}

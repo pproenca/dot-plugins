@@ -1,0 +1,36 @@
+{
+  "name": "swarm-forge-squad",
+  "version": "0.1.0",
+  "description": "The SwarmForge squad workflow: a persistent squad leader that spawns short-lived specialist workers on demand, each bound by a capability contract.",
+  "author": {
+    "name": "Robert C. Martin"
+  },
+  "homepage": "https://github.com/unclebob/swarm-forge/tree/squad",
+  "repository": "https://github.com/unclebob/swarm-forge",
+  "keywords": [
+    "swarmforge",
+    "squad",
+    "orchestration",
+    "tmux",
+    "multi-agent",
+    "worktrees",
+    "contracts"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SwarmForge Squad",
+    "shortDescription": "Coordinate contract-bound specialist workers",
+    "longDescription": "Run a persistent squad leader that assigns work to short-lived specialist agents, each constrained by an explicit capability contract.",
+    "developerName": "Robert C. Martin",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Start a squad for this repository",
+      "Assign the next mission to the squad",
+      "Show me the squad's current status"
+    ]
+  }
+}
