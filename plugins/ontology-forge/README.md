@@ -38,6 +38,21 @@ ontology/
 
 **These files are a design specification, not deployable configuration.** Ontology Manager is the system of record, and Foundry addresses types by RID — there is no official on-disk format that round-trips into the platform. What the files give you is a model that gets code review, decisions that get version history, and an ontology an agent can read without platform access. You implement the result in Ontology Manager.
 
+## The reference corpus
+
+The skills draw on seven reference files, distilled from Palantir's published guidance and kept out of the skill bodies so only what a task needs gets loaded:
+
+| Reference | Covers |
+| --------- | ------ |
+| `principles.md` | The four principles, each with its warning signs, a worked avoid/prefer example, an impact table, and practice notes. Plus the working guidelines and the pragmatism rules. |
+| `anti-patterns.md` | All eight anti-patterns with causes, indicators, worked examples, impact tables, and step-by-step fixes. |
+| `structural-guidance.md` | Normalization and derived properties, structs, interfaces, object-backed links, and security design — each with its decision table and example. |
+| `naming.md` | The naming rules table, worked corrections, and the generic-name blocklist. |
+| `vocabulary.md` | Foundry's own element terms, the schema/instance distinction, and the value type constraint vocabulary. |
+| `spec-format.md` | The on-disk YAML shape for every element. |
+| `detection-rules.md` | 47 mechanical checks mapping anti-pattern indicators and platform limits to computable rules over the YAML. |
+| `platform-constraints.md` | What the platform can and cannot express today — derived-property and reducer limits, interface support levels, link mechanics. Date-stamped, because it ages fastest. |
+
 ## The principles it applies
 
 In priority order — when two conflict, the higher wins:

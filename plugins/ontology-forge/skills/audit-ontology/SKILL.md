@@ -9,7 +9,7 @@ metadata:
 
 Review an existing model against the anti-pattern catalog and the structural guidance. The output is a ranked findings report, every finding backed by evidence from the files.
 
-Read [anti-patterns.md](../ontology-forge/references/anti-patterns.md), [structural-guidance.md](../ontology-forge/references/structural-guidance.md), and [naming.md](../ontology-forge/references/naming.md) before dispatching.
+Read [detection-rules.md](../ontology-forge/references/detection-rules.md) first — it turns every indicator below into a computable check. Then [anti-patterns.md](../ontology-forge/references/anti-patterns.md), [structural-guidance.md](../ontology-forge/references/structural-guidance.md), and [naming.md](../ontology-forge/references/naming.md) for what each hit means and how to fix it.
 
 ## Start
 
@@ -33,15 +33,18 @@ If there is no model on disk, ask the user to point at one. Do not audit an onto
 
 Dispatch one subagent per lane, in parallel, in a single message. Each gets the index, the paths, and the relevant reference file. Each returns structured findings: anti-pattern name, location, evidence quoted from the file, severity, and proposed fix.
 
-| Lane | Hunts for | Method |
-| ---- | --------- | ------ |
-| **Duplication** | System Silos, Department Silos, rule-of-three violations | Compare property sets across all object types. Flag heavy overlap, source-system or department words in type names, and types sharing a primary-key semantic. |
-| **Type shape** | Kitchen Sink, God Object, Time Machine | Per type: technical columns with no business meaning, sparse or conditional properties, a `type` property that switches other properties' meaning, version or year tokens in names, property count far above sibling types. |
-| **Behaviour** | Golden Hammer, Action Sprawl | Per action type: does a human decide anything? Does the name read `Set X`? How many actions target one type? Is logic placed in the layer the placement table prescribes? |
-| **Naming** | Misnomer, missing descriptions | Every element name against the naming table and the generic-name blocklist. Every element for a description that states meaning and valid values. Both directions of every link for readability. |
-| **Structure** | Normalization, link modelling, interfaces, security | The same fact stored twice; manually maintained counts; links that are foreign keys in disguise; relationship metadata that wants an object-backed link; shared shape that should be an interface; types duplicated for security. |
+| Lane | Hunts for | Rules |
+| ---- | --------- | ----- |
+| **Duplication** | System Silos, Department Silos, rule-of-three violations | `DUP-1` … `DUP-5` |
+| **Type shape** | Kitchen Sink, God Object, Time Machine, undocumented elements | `SHAPE-1` … `SHAPE-9` |
+| **Behaviour** | Golden Hammer, Action Sprawl, logic in the wrong layer | `ACT-1` … `ACT-7` |
+| **Naming** | Misnomer, missing descriptions, inconsistent conventions | `NAME-1` … `NAME-7` |
+| **Structure** | Normalization, link modelling, structs, interfaces, security | `STRUCT-1` … `STRUCT-10` |
+| **Platform** | Specifications the platform cannot express — derived-property and reducer misuse, cross-ontology links | `PLAT-1` … `PLAT-9` |
 
-Tell each subagent to quote the file and line it is reading from, and to report nothing it cannot evidence. A plausible-sounding finding with no file behind it is worse than a missed one.
+Each lane runs its rules from [detection-rules.md](../ontology-forge/references/detection-rules.md) against the files, then reads every hit in context before reporting it. A rule firing is a reason to open the file, never a finding on its own — the thresholds are heuristics, and a model may violate one deliberately.
+
+Tell each subagent to report, per finding: the rule ID that fired, the file and line, the computed value against the threshold, and the anti-pattern it suggests. Nothing gets reported that cannot be evidenced from a file. A plausible-sounding finding with no file behind it is worse than a missed one.
 
 ## Phase 3: Verify
 
@@ -78,6 +81,7 @@ Two or three sentences on the model's overall health.
 
 ## Critical
 ### [Anti-pattern] — [element]
+**Rule:** SHAPE-1 (42 properties vs median 11)
 **Where:** path/to/file.yaml
 **Evidence:** what is in the file.
 **Why it matters:** the consequence, in this model, not in general.

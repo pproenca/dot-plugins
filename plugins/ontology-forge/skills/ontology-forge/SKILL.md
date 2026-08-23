@@ -41,6 +41,9 @@ Read the reference that covers the question rather than answering from memory. T
 - [references/structural-guidance.md](references/structural-guidance.md) — normalization and derived properties, structs, interfaces, object-backed links, logic placement, security.
 - [references/naming.md](references/naming.md) — the naming table, the generic-name blocklist.
 - [references/spec-format.md](references/spec-format.md) — the on-disk YAML shape for every element.
+- [references/vocabulary.md](references/vocabulary.md) — Foundry's own element terms, the schema/instance split, and the value type constraint vocabulary.
+- [references/detection-rules.md](references/detection-rules.md) — the anti-pattern indicators as mechanical checks, for auditing.
+- [references/platform-constraints.md](references/platform-constraints.md) — what the platform can and cannot express today: derived-property and reducer limits, interface support levels, link mechanics. Check before committing a design to a capability.
 
 ## Non-negotiables
 

@@ -9,7 +9,7 @@ metadata:
 
 Stage 02 of three. Turn the domain picture into a specified object model. The output is YAML under `ontology/` plus the decisions behind it.
 
-Read [../ontology-forge/references/principles.md](../ontology-forge/references/principles.md), [naming.md](../ontology-forge/references/naming.md), and [spec-format.md](../ontology-forge/references/spec-format.md) before starting.
+Read [../ontology-forge/references/principles.md](../ontology-forge/references/principles.md), [naming.md](../ontology-forge/references/naming.md), [vocabulary.md](../ontology-forge/references/vocabulary.md), and [spec-format.md](../ontology-forge/references/spec-format.md) before starting.
 
 ## Start
 
@@ -52,6 +52,7 @@ Three shaping rules while you work:
 - **Separate identity from observation.** Entities hold what they are; measurements and events go in their own types.
 - **Never embed another entity.** `order.customerName` is a link waiting to be modelled. Use the link.
 - **Group related fields into a struct** rather than flattening — address components, coordinates, a model output with its confidence. See [structural-guidance.md](../ontology-forge/references/structural-guidance.md).
+- **Check what the platform can express** before committing a property to `derived`, a reducer, or an interface-targeting workflow. A derived property cannot be required, constrained, or a primary key. [platform-constraints.md](../ontology-forge/references/platform-constraints.md) has the limits.
 
 ## Phase 3: Links
 
