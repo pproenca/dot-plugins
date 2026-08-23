@@ -76,7 +76,31 @@ The install merges this plugin's shared constitution articles (`engineering`, `h
 `workflow`) into the pack's own articles, skipping any the pack already defines so a pack
 keeps its overrides. It reports which it added and which it kept.
 
-## 3. Launch
+## 3. Check the host (automatic)
+
+Install runs `scripts/doctor.sh` at the end. It exercises the real machinery against this
+host's real configuration rather than assuming it matches:
+
+- prerequisites and available agent backends;
+- all 36 engine helpers and 5 terminal adapters present and executable;
+- **whether the cockpit can actually type into an agent pane** — it stands up a tmux server
+  with the host's own config and asserts delivery. This is the failure that reports success:
+  if the dashboard cannot reach a pane, New Task and chat silently do nothing while the API
+  returns `{"ok":true}`;
+- whether teardown actually stops sessions;
+- that the APS tooling runs offline and the project holds no path back into the plugin.
+
+Run it any time:
+
+```bash
+scripts/doctor.sh <project-dir>
+```
+
+It exits non-zero on failure. Pass `--no-verify` to `install_pack.sh` to skip it during
+install. **Run the doctor first whenever something behaves strangely** — it distinguishes a
+broken host from a misbehaving agent.
+
+## 4. Launch
 
 ```bash
 cd <project-dir> && ./swarm
@@ -97,7 +121,7 @@ Environment overrides, all set before `./swarm`:
 | `SWARMFORGE_PREVENT_SLEEP=0` | Do not hold the machine awake while the swarm runs. |
 | `SWARMFORGE_TERMINAL=<backend>` | `ghostty`, `terminal-app`, `iterm2`, `windows-terminal`, `none`. |
 
-## 4. Tear down
+## 5. Tear down
 
 Teardown from the cockpit header is the normal path. From a shell:
 
@@ -126,7 +150,8 @@ stay on disk; `.worktrees/` and `.swarmforge/` remain until removed by hand.
   directory?" the first time it runs somewhere new. Open the agent's pane from the Work
   Queue and answer it; SwarmForge cannot answer it for you.
 - **New Task or chat appears to do nothing** — the cockpit reports success even when it
-  cannot reach an agent. Check `.swarmforge/dashboard.log` for `inject failed`.
+  cannot reach an agent. Run `scripts/doctor.sh <project-dir>`; it reproduces this exact
+  path. Also check `.swarmforge/dashboard.log` for `inject failed`.
 - **`swarm_tool.sh` reports a missing APS tool** — the pre-seeded tooling under
   `.swarmforge/` was removed. `swarm_tool.sh ensure <tool>` rebuilds it from the vendored
   copy without network; if that copy is gone too, run `install_pack.sh --update`.

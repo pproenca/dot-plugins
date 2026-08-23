@@ -23,6 +23,13 @@
 > into this plugin**, so it keeps working if the plugin is upgraded or removed.
 > `install_pack.sh --update` refreshes an existing project's engine and tooling.
 >
+> Install then runs `skills/swarm-forge/scripts/doctor.sh`, which checks this host against
+> the engine's assumptions instead of assuming they hold: prerequisites, engine integrity,
+> whether teardown really stops sessions, and — the one that matters — whether the cockpit
+> can actually type into an agent pane, by standing up a tmux server with the host's own
+> configuration and asserting delivery. That check exists because the failure it catches
+> reports success. `--no-verify` skips it; run `doctor.sh <project-dir>` any time.
+>
 > Everything downstream of that — the conf format, roles, constitution, handoffs, the pack
 > cockpit, terminal backends — behaves exactly as documented below. The engine tree
 > (`swarmforge/`, `close-swarm`, `bb.edn`, `test/`) is byte-identical to upstream `main`, so

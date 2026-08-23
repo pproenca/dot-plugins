@@ -20,6 +20,7 @@ SWARM_FORGE = PLUGINS_DIR / "swarm-forge"
 SCRIPTS = SWARM_FORGE / "swarmforge" / "scripts"
 PACK_WEB = SCRIPTS / "pack_web.bb"
 PATCHES = SWARM_FORGE / "patches"
+DOCTOR = SWARM_FORGE / "skills" / "swarm-forge" / "scripts" / "doctor.sh"
 
 missing = [c for c in ("bb", "tmux") if shutil.which(c) is None]
 needs_tools = pytest.mark.skipif(bool(missing), reason="needs %s on PATH" % ", ".join(missing))
@@ -108,3 +109,50 @@ def test_upstream_suite_still_passes_with_the_patch(tmp_path):
                             cwd=str(SWARM_FORGE))
     assert result.returncode == 0, result.stdout + result.stderr
     assert "0 failures, 0 errors" in (result.stdout + result.stderr)
+
+
+@needs_tools
+def test_doctor_passes_on_this_host(tmp_path):
+    """The doctor must agree that this host satisfies the engine's assumptions."""
+    project = tmp_path / "project"
+    project.mkdir()
+    install = SWARM_FORGE / "skills" / "swarm-forge" / "scripts" / "install_pack.sh"
+    setup = subprocess.run([str(install), "two-pack", str(project), "--no-verify"],
+                           capture_output=True, text=True)
+    assert setup.returncode == 0, setup.stderr
+
+    result = subprocess.run([str(DOCTOR), str(project)], capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "cockpit text reaches the agent pane" in result.stdout
+
+
+@needs_tools
+def test_doctor_fails_when_the_engine_regresses(tmp_path):
+    """A doctor that cannot fail is worthless.
+
+    Reverse-apply the recorded patch inside an installed project to restore the
+    genuine upstream engine, then confirm the doctor refuses it. This also
+    proves the patch in `patches/` is a faithful, reversible description of the
+    divergence.
+
+    Note both halves of the patch have to go: the fix restores the correct pane
+    index *and* adds a session-scoped fallback, and either one alone still
+    delivers. That redundancy is deliberate.
+    """
+    project = tmp_path / "project"
+    project.mkdir()
+    install = SWARM_FORGE / "skills" / "swarm-forge" / "scripts" / "install_pack.sh"
+    subprocess.run([str(install), "two-pack", str(project), "--no-verify"],
+                   capture_output=True, text=True, check=True)
+
+    patch_file = next(PATCHES.glob("*.patch"))
+    reverted = subprocess.run(["patch", "-R", "-p1", "-i", str(patch_file)],
+                              cwd=str(project), capture_output=True, text=True)
+    assert reverted.returncode == 0, reverted.stdout + reverted.stderr
+
+    engine = (project / "swarmforge" / "scripts" / "pack_web.bb").read_text()
+    assert '":" window ".0"' in engine, "reverse-apply did not restore the upstream bug"
+
+    result = subprocess.run([str(DOCTOR), str(project)], capture_output=True, text=True)
+    assert result.returncode != 0, "doctor passed an engine that cannot reach its agents"
+    assert "never reached the agent pane" in result.stdout
