@@ -295,6 +295,20 @@
                "exec bb " (sq bb) " \"$@\"\n"))
     (fs/set-posix-file-permissions hook "rwxr-xr-x")))
 
+(defn write-env-file! [ctx]
+  "Persist the host facts the launcher resolved.
+
+  The launcher is the only component that probes the host for these. Writing
+  them into .swarmforge/ makes it the single source of truth, so pack_web and
+  swarm-cleanup can read what was resolved instead of re-deriving it and
+  disagreeing -- which is exactly how the cockpit ended up typing into a pane
+  that did not exist."
+  (spit (str (:env-file ctx))
+        (str "tmux-pane-base-index\t" (:tmux-pane-base-index ctx) "\n"
+             "tmux-window-base-index\t" (:tmux-window-base-index ctx) "\n"
+             "terminal-backend\t" (or (:terminal-backend ctx) "") "\n"
+             "script-dir\t" (:script-dir ctx) "\n")))
+
 (defn prepare-workspace! [ctx]
   (doseq [dir [(:state-dir ctx) (:notify-dir ctx) (:prompts-dir ctx)
                (:worktrees-dir ctx) (:tmux-socket-dir ctx) (:daemon-dir ctx)]]
@@ -302,7 +316,8 @@
   (spit (str (:tmux-socket-file ctx)) (str (:tmux-socket ctx) "\n"))
   (check-helper-scripts! ctx)
   (write-sessions-file! ctx)
-  (write-roles-file! ctx))
+  (write-roles-file! ctx)
+  (write-env-file! ctx))
 
 (defn prepare-worktrees! [ctx]
   (doseq [row (:roles ctx)
@@ -355,7 +370,9 @@
       (fs/copy (:sessions-file ctx) (fs/path role-state-dir "sessions.tsv") {:replace-existing true})
       (fs/copy (:roles-file ctx) (fs/path role-state-dir "roles.tsv") {:replace-existing true})
       (fs/copy (:tmux-socket-file ctx) (fs/path role-state-dir "tmux-socket") {:replace-existing true})
-      (fs/copy (:tmux-env-file ctx) (fs/path role-state-dir "tmux-env") {:replace-existing true}))))
+      (fs/copy (:tmux-env-file ctx) (fs/path role-state-dir "tmux-env") {:replace-existing true})
+      (when (fs/exists? (:env-file ctx))
+        (fs/copy (:env-file ctx) (fs/path role-state-dir "env.tsv") {:replace-existing true})))))
 
 (defn check-dependency! [command]
   (when-not (command-exists? command)
@@ -690,6 +707,7 @@
      :tmux-socket tmux-socket
      :tmux-socket-file (fs/path state-dir "tmux-socket")
      :tmux-env-file (fs/path state-dir "tmux-env")
+     :env-file (fs/path state-dir "env.tsv")
      :tmux-window-base-index 0
      :tmux-pane-base-index 0}))
 
@@ -753,6 +771,8 @@
         (doseq [row (:roles ctx)]
           (create-role-session! ctx (:session row) (:display-name row)))
         (write-tmux-env-file! ctx)
+        ;; Rewrite now that :terminal-backend is settled for this run.
+        (write-env-file! ctx)
         (sync-worktree-scripts! ctx)
         (start-handoff-daemon! ctx)
         (start-pack-web! ctx)

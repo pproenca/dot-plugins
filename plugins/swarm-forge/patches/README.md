@@ -51,3 +51,45 @@ running while the dashboard disappeared.
 
 The patch runs each step independently through `teardown-step!` and reports failures, so a
 misbehaving step can no longer leave agents running.
+
+## 0002 — persist the resolved host facts as a contract
+
+`0001` fixed the two symptoms. This fixes what produced them.
+
+The launcher is the only component that probes the host: `detect-tmux-base-indexes`
+resolves `base-index` and `pane-base-index`, and `detect-terminal-backend` resolves which
+terminal adapter to drive. It then keeps all three to itself. `.swarmforge/` already carries
+the rest of the runtime state — `tmux-socket`, `roles.tsv`, `sessions.tsv`, `tmux-env` — but
+not these, and `start-pack-web!` spawns the dashboard with no `:extra-env` at all.
+
+So every other program re-derives them, and each re-derivation is an independent chance to
+disagree with the process that actually created the panes:
+
+- `pack_web.bb` needed the pane index, was not told, and assumed `0`.
+- `swarm-cleanup.sh` needs the terminal backend, is not told, and assumes `terminal-app` —
+  which can contradict what the launcher chose, and drives an adapter the swarm never used.
+
+Both bugs in `0001` are instances of that one defect. Patching them individually leaves the
+next one free to appear somewhere else.
+
+This patch makes the resolution part of the state contract. The launcher writes
+`.swarmforge/env.tsv`:
+
+```text
+tmux-pane-base-index	1
+tmux-window-base-index	1
+terminal-backend	terminal-app
+script-dir	/path/to/swarmforge/scripts
+```
+
+written in `prepare-workspace!` beside `roles.tsv` and `sessions.tsv`, rewritten once
+`:terminal-backend` is final, and synced into every worktree by `sync-worktree-scripts!`
+alongside the state files already copied there. `pack_web.bb` and `swarm-cleanup.sh` read it
+instead of guessing.
+
+Both readers keep their old derivation as a fallback, so a project created before this
+existed still works — the contract is an improvement in precision, not a new requirement.
+
+Upstream would be the right home for this. It is a small change to a file the project
+already owns, and it removes a whole class of "the dashboard and the launcher disagree about
+the host" bugs rather than the two that happened to be found.

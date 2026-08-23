@@ -10,6 +10,7 @@ configured the way a typical `.tmux.conf` configures one, drives the dashboard's
 own task-post entry point, and asserts the text actually reached the pane.
 """
 
+import os
 import shutil
 import subprocess
 
@@ -111,6 +112,62 @@ def test_upstream_suite_still_passes_with_the_patch(tmp_path):
     assert "0 failures, 0 errors" in (result.stdout + result.stderr)
 
 
+def test_launcher_is_the_only_producer_of_host_facts():
+    """One producer per fact. That is the whole point of the contract.
+
+    The bugs in patches/0001 both came from a second component re-deriving
+    something the launcher had already resolved, so a reader growing its own
+    `detect-tmux-base-indexes` is the regression to catch.
+    """
+    launcher = (SCRIPTS / "swarmforge.bb").read_text()
+    assert "defn write-env-file!" in launcher, "launcher no longer records the contract"
+    assert "detect-tmux-base-indexes" in launcher
+
+    for reader in ("pack_web.bb", "handoffd.bb", "pack_board.bb"):
+        source = (SCRIPTS / reader).read_text()
+        assert "detect-tmux-base-indexes" not in source, (
+            "%s re-derives a fact the launcher already recorded" % reader
+        )
+
+
+def test_readers_consume_the_contract():
+    pack_web = (SCRIPTS / "pack_web.bb").read_text()
+    assert "env.tsv" in pack_web, "the dashboard no longer reads the host contract"
+    cleanup = (SCRIPTS / "swarm-cleanup.sh").read_text()
+    assert "env.tsv" in cleanup, "cleanup no longer reads the recorded terminal backend"
+    assert 'SWARMFORGE_TERMINAL_BACKEND:-terminal-app' not in cleanup, (
+        "cleanup guesses the terminal backend again instead of reading it"
+    )
+
+
+@needs_tools
+def test_contract_round_trips_from_launcher_to_dashboard(tmp_path):
+    """Plant a non-default index in the contract; the dashboard must follow it.
+
+    Uses the argv stub so this asserts the chosen target exactly, with no tmux
+    server involved.
+    """
+    project = tmp_path / "project"
+    (project / ".swarmforge" / "board").mkdir(parents=True)
+    (project / ".swarmforge" / "roles.tsv").write_text(
+        "coder\tmaster\t%s\tswarmforge-coder\tCoder\tcodex\ttask\n" % project
+    )
+    (project / ".swarmforge" / "tmux-socket").write_text("/tmp/sf-unused.sock\n")
+    (project / ".swarmforge" / "env.tsv").write_text(
+        "tmux-pane-base-index\t7\ntmux-window-base-index\t3\nterminal-backend\tnone\n"
+    )
+    argv = tmp_path / "argv.edn"
+    result = subprocess.run(
+        ["bb", str(SCRIPTS / "pack_web.bb"), "--test-post-task", str(project), "t", "hello"],
+        capture_output=True, text=True, cwd=str(SCRIPTS),
+        env={**os.environ, "SWARMFORGE_TMUX_STUB": str(argv)},
+    )
+    assert result.returncode == 0, result.stderr
+    assert "swarmforge-coder:Coder.7" in argv.read_text(), (
+        "the dashboard ignored the recorded pane-base-index"
+    )
+
+
 @needs_tools
 def test_doctor_passes_on_this_host(tmp_path):
     """The doctor must agree that this host satisfies the engine's assumptions."""
@@ -145,10 +202,14 @@ def test_doctor_fails_when_the_engine_regresses(tmp_path):
     subprocess.run([str(install), "two-pack", str(project), "--no-verify"],
                    capture_output=True, text=True, check=True)
 
-    patch_file = next(PATCHES.glob("*.patch"))
-    reverted = subprocess.run(["patch", "-R", "-p1", "-i", str(patch_file)],
-                              cwd=str(project), capture_output=True, text=True)
-    assert reverted.returncode == 0, reverted.stdout + reverted.stderr
+    # Revert the whole series, newest first, the way a patch series unwinds.
+    patch_files = sorted(PATCHES.glob("*.patch"), reverse=True)
+    assert patch_files, "no patches recorded"
+    for patch_file in patch_files:
+        reverted = subprocess.run(["patch", "-R", "-p1", "-i", str(patch_file)],
+                                  cwd=str(project), capture_output=True, text=True)
+        assert reverted.returncode == 0, "%s: %s%s" % (
+            patch_file.name, reverted.stdout, reverted.stderr)
 
     engine = (project / "swarmforge" / "scripts" / "pack_web.bb").read_text()
     assert '":" window ".0"' in engine, "reverse-apply did not restore the upstream bug"

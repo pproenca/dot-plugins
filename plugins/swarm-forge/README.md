@@ -88,6 +88,14 @@
 >    vanished. Each step now runs independently and reports failures to
 >    `.swarmforge/dashboard.log`.
 >
+> A third patch removes what produced both. The launcher is the only component that probes
+> the host, but it kept the results to itself, so the dashboard and the cleanup script each
+> re-derived them and could disagree with the process that actually created the panes. It now
+> records what it resolved in `.swarmforge/env.tsv` — pane and window base indexes, terminal
+> backend, script dir — written beside `roles.tsv`, synced into every worktree, and read by
+> `pack_web.bb` and `swarm-cleanup.sh` instead of guessed. Both readers keep their old
+> derivation as a fallback, so projects created before it still work.
+>
 > Everything else under `swarmforge/` is byte-identical to upstream. `patches/README.md`
 > explains how to re-apply after re-vendoring, and `tests/test_swarm_forge_patches.py` in the
 > marketplace repo fails if the patches go missing — including a behavioral test that stands

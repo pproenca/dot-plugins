@@ -17,7 +17,7 @@
 -                   (pane-target row))]
 +          row (role-row root role)
 +          target (when row
-+                   (let [pane (pane-target row socket)]
++                   (let [pane (pane-target row root socket)]
 +                     ;; Fall back to session scope if the pane target does not
 +                     ;; resolve, so a renamed window cannot silently swallow
 +                     ;; New Task, chat, and clarification answers.
@@ -34,7 +34,7 @@
  
  (defn inject-master! [root text]
    (when-let [row (master-row root)]
-@@ -297,12 +314,35 @@
+@@ -297,13 +314,54 @@
        (str "swarmforge-" role)
        session)))
  
@@ -46,46 +46,65 @@
 -      (str session ":" window ".0"))))
 +(def ^:private pane-base-cache (atom {}))
 +
-+(defn pane-base-index
-+  "tmux pane-base-index for this server, cached. The launcher honors this
-+  setting when it targets agent panes; the dashboard must agree or every
-+  injection lands on a pane that does not exist. Defaults to 0, which is both
-+  the tmux default and what the argv stub reports under test."
-+  [socket]
-+  (if (or (str/blank? (str socket)) (tmux-stub))
-+    0
-+    (or (get @pane-base-cache socket)
-+        (let [index (try
-+                      (let [result (sh "tmux" "-S" socket "show-options"
-+                                       "-gwqv" "pane-base-index")]
-+                        (or (when (zero? (:exit result))
-+                              (some-> (:out result) str/trim not-empty parse-long))
-+                            0))
-+                      (catch Exception _ 0))]
-+          (swap! pane-base-cache assoc socket index)
-+          index))))
++(defn env-fact
++  "Read a host fact the launcher resolved into .swarmforge/env.tsv.
 +
++  The launcher is the only component that probes the host. Reading what it
++  recorded keeps the dashboard from re-deriving the same facts and disagreeing
++  with the process that actually created the panes."
++  [root key]
++  (try
++    (let [file (fs/path root ".swarmforge" "env.tsv")]
++      (when (fs/exists? file)
++        (some (fn [line]
++                (let [[k v] (str/split line #"\t" 2)]
++                  (when (= k key) (not-empty (str/trim (str v))))))
++              (str/split-lines (slurp (str file))))))
++    (catch Exception _ nil)))
++
++(defn pane-base-index
++  "tmux pane-base-index for this swarm.
++
++  Prefers what the launcher recorded. Falls back to asking the server directly
++  for a project installed before env.tsv existed, then to 0 -- the tmux default,
++  and what the argv stub reports under test."
++  [root socket]
++  (or (when root
++        (some-> (env-fact root "tmux-pane-base-index") str/trim parse-long))
++      (when (or (str/blank? (str socket)) (tmux-stub)) 0)
++      (get @pane-base-cache socket)
++      (let [index (try
++                    (let [result (sh "tmux" "-S" socket "show-options"
++                                     "-gwqv" "pane-base-index")]
++                      (or (when (zero? (:exit result))
++                            (some-> (:out result) str/trim not-empty parse-long))
++                          0))
++                    (catch Exception _ 0))]
++        (swap! pane-base-cache assoc socket index)
++        index)))
+ 
 +(defn pane-target
-+  ([row] (pane-target row nil))
-+  ([row socket]
++  ([row] (pane-target row nil nil))
++  ([row root socket]
 +   (let [session (session-name row)
 +         window (nth row 4 nil)]
 +     (if (str/blank? window)
 +       session
-+       (str session ":" window "." (pane-base-index socket))))))
- 
++       (str session ":" window "." (pane-base-index root socket))))))
++
  (defn backend-name [row]
    (str/lower-case (or (nth row 5 nil) "")))
-@@ -708,7 +748,7 @@
+ 
+@@ -708,7 +766,7 @@
    (when-let [row (role-row root role)]
      (let [socket (tmux-socket root)]
        (when socket
 -        (or (tmux-capture socket (pane-target row))
-+        (or (tmux-capture socket (pane-target row socket))
++        (or (tmux-capture socket (pane-target row root socket))
              (tmux-capture socket (session-name row)))))))
  
  (defn live-pane-text [root role]
-@@ -896,12 +936,22 @@
+@@ -896,12 +954,22 @@
    (if-let [bin (close-swarm-bin)]
      (sh bin (str root))
      (swarm-cleanup! root (tmux-socket root))))
@@ -112,7 +131,7 @@
    true)
  
  (defn schedule-teardown! [root]
-@@ -911,7 +961,9 @@
+@@ -911,7 +979,9 @@
        (Thread/sleep teardown-delay-ms)
        (try
          (run-teardown! root)

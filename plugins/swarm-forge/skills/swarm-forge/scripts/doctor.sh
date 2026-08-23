@@ -116,6 +116,11 @@ else
     actual_pane="$(tmux -S "$DOC_SOCK" list-panes -t swarmforge-doctor -F '#{pane_index}' 2>/dev/null | head -1)"
     printf 'doctor\tmaster\t%s\tswarmforge-doctor\tDoctor\tcodex\ttask\n' "$root" > "$root/.swarmforge/roles.tsv"
     echo "$DOC_SOCK" > "$root/.swarmforge/tmux-socket"
+    # Mirror a real project: the launcher records what it resolved, and the
+    # dashboard reads it. Probing without this would exercise the legacy
+    # fallback instead of the path a real swarm takes.
+    printf 'tmux-pane-base-index\t%s\ntmux-window-base-index\t%s\nterminal-backend\tnone\n' \
+      "$pane_base" "$pane_base" > "$root/.swarmforge/env.tsv"
 
     probe="swarmforge-doctor-probe-$$"
     bb "$ENGINE/pack_web.bb" --test-post-task "$root" doctor-check "$probe" >/dev/null 2>&1
@@ -170,6 +175,24 @@ if [[ -n "$PROJECT_ROOT" ]]; then
   echo "Project"
   if [[ -f "$PROJECT_ROOT/swarmforge/swarmforge.conf" ]]; then ok "pack installed"
   else bad "no pack at $PROJECT_ROOT" "Run install_pack.sh <pack> $PROJECT_ROOT"; fi
+
+  env_file="$PROJECT_ROOT/.swarmforge/env.tsv"
+  if [[ -f "$env_file" ]]; then
+    recorded="$(awk -F'\t' '$1=="tmux-pane-base-index" {print $2; exit}' "$env_file" 2>/dev/null)"
+    sock_file="$PROJECT_ROOT/.swarmforge/tmux-socket"
+    live=""
+    if [[ -f "$sock_file" ]]; then
+      live="$(tmux -S "$(cat "$sock_file")" list-panes -a -F '#{pane_index}' 2>/dev/null | head -1)"
+    fi
+    if [[ -n "$live" && -n "$recorded" && "$live" != "$recorded" ]]; then
+      bad "env.tsv disagrees with the running swarm (recorded=$recorded, live=$live)" \
+          "The dashboard will target the wrong pane. Tear down and relaunch."
+    else
+      ok "host contract recorded (pane-base-index=${recorded:-unset})"
+    fi
+  else
+    skip "no .swarmforge/env.tsv yet (written at first launch)"
+  fi
 
   aps_ok=1
   for tool in gherkin-parser ir-dry-checker gherkin-mutator; do

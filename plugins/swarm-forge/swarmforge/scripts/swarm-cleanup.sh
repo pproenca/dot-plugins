@@ -8,9 +8,17 @@ fi
 
 TMUX_SOCKET="$1"
 WINDOW_IDS_FILE="$2"
-TERMINAL_BACKEND="${SWARMFORGE_TERMINAL_BACKEND:-terminal-app}"
 WORKING_DIR="$(cd "$(dirname "$WINDOW_IDS_FILE")/.." && pwd)"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Prefer the backend the launcher actually resolved for this swarm. Guessing
+# here is how teardown ends up driving a terminal the swarm never used.
+TERMINAL_BACKEND="${SWARMFORGE_TERMINAL_BACKEND:-}"
+if [[ -z "$TERMINAL_BACKEND" && -f "$WORKING_DIR/.swarmforge/env.tsv" ]]; then
+  TERMINAL_BACKEND="$(awk -F'\t' '$1=="terminal-backend" {print $2; exit}' \
+    "$WORKING_DIR/.swarmforge/env.tsv" 2>/dev/null || true)"
+fi
+TERMINAL_BACKEND="${TERMINAL_BACKEND:-terminal-app}"
 shift
 shift
 

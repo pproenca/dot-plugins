@@ -95,12 +95,15 @@ real machinery — including whether the cockpit can type into a tmux pane under
 this host's own config — so a host-specific breakage fails at install rather
 than silently mid-swarm.
 
-`swarm-forge` also carries two small patches to the vendored engine, recorded
+`swarm-forge` also carries patches to the vendored engine, recorded
 as diffs in `plugins/swarm-forge/patches/` and guarded by tests: upstream's
 dashboard hardcoded tmux pane index `.0`, so on any host with
 `pane-base-index 1` every cockpit action that types into an agent silently did
-nothing, and its teardown could stop halfway without reporting why. Everything
-else under `swarmforge/` is byte-identical to upstream.
+nothing, and its teardown could stop halfway without reporting why. A third
+addresses their shared cause: the launcher resolves facts about the host and now
+records them in `.swarmforge/env.tsv` rather than leaving every other program to
+re-derive and disagree. Everything else under `swarmforge/` is byte-identical to
+upstream.
 
 Both swarm-forge plugins also vendor the Acceptance Pipeline Specification, the
 one thing the engine itself git-clones at runtime, and their install scripts
