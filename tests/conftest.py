@@ -9,8 +9,16 @@ import json
 import os
 import pathlib
 import stat
+import sys
 
 import pytest
+
+# The suite loads and subprocesses the validator from inside its plugin, and
+# CPython would drop a __pycache__ there. A plugin directory is the unit a
+# client copies on install, so it stays free of build artifacts: sys handles
+# this process, the environment variable handles the subprocesses.
+sys.dont_write_bytecode = True
+os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 MARKETPLACE = REPO_ROOT / ".claude-plugin" / "marketplace.json"
