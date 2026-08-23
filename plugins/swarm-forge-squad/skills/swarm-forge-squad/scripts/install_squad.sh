@@ -21,8 +21,11 @@ APS_SOURCE="vendored:$APS_NAME"
 APS_TOOLS="gherkin-parser:gherkin-parser ir-dry-checker:gherkin-ir-dry-checker gherkin-mutator:gherkin-mutator"
 
 usage() {
-  echo "Usage: install_squad.sh [project-dir]" >&2
-  echo "       install_squad.sh --update [project-dir]" >&2
+  echo "Usage: install_squad.sh [project-dir] [--no-verify]" >&2
+  echo "       install_squad.sh --update [project-dir] [--no-verify]" >&2
+  echo >&2
+  echo "Runs doctor.sh afterwards to check this host against the squad engine's" >&2
+  echo "assumptions; --no-verify skips it." >&2
   echo >&2
   echo "Installs the squad workflow, or refreshes the engine and tooling of an" >&2
   echo "existing project without touching its confs, roles, or role-templates." >&2
@@ -30,6 +33,14 @@ usage() {
 }
 
 case "${1:-}" in -h|--help) usage ;; esac
+
+# --no-verify may appear anywhere; strip it before positional parsing.
+VERIFY=1
+args=()
+for arg in "$@"; do
+  if [[ "$arg" == "--no-verify" ]]; then VERIFY=0; else args+=("$arg"); fi
+done
+set -- "${args[@]+${args[@]}}"
 
 UPDATE_ONLY=0
 if [[ "${1:-}" == "--update" ]]; then
@@ -147,5 +158,17 @@ else
 fi
 echo "  engine:   swarmforge/scripts/ ($(find "$TARGET/scripts" -type f | wc -l | tr -d ' ') files, project-local)"
 echo "  tooling:  .swarmforge/tools/bin/ (gherkin-parser, ir-dry-checker, gherkin-mutator)"
+
+if [[ $VERIFY -eq 1 && -x "$SELF_DIR/doctor.sh" ]]; then
+  echo
+  # Catch a host whose configuration breaks an engine assumption now, rather
+  # than silently in the middle of a swarm.
+  if ! "$SELF_DIR/doctor.sh" "$PROJECT_ROOT"; then
+    echo >&2
+    echo "Install completed, but this host failed the checks above." >&2
+    exit 1
+  fi
+fi
+
 echo
 echo "Review swarmforge/squad.conf before starting, then:  cd $PROJECT_ROOT && ./swarm"

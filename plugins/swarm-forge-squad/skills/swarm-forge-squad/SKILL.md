@@ -91,6 +91,26 @@ confs, roles, or role-templates:
 scripts/install_squad.sh --update <project-dir>
 ```
 
+Install then runs `scripts/doctor.sh`, which checks this host against the squad engine's
+assumptions rather than assuming they hold: prerequisites, all required helpers usable,
+whether `close-swarm` really stops sessions, whether every worker template still has its
+capability contract, whether the tool table points at the vendored APS copy instead of
+GitHub, and whether the tool cache is seeded so `squad_tool require` — which fails closed —
+can succeed offline.
+
+It also probes agent delivery. Squad addresses agents by tmux **session** name everywhere,
+so it is immune to the pane-index defect that affects the pack cockpit; the probe confirms
+session-scoped delivery works on this host. It checks that targeting primitive, not a full
+`squadd` round-trip.
+
+Run it any time, and first whenever something behaves strangely:
+
+```bash
+scripts/doctor.sh <project-dir>
+```
+
+It exits non-zero on failure. `--no-verify` skips it during install.
+
 Squad's remaining tools — `clj-mutate`, `crap4clj`, `dry4clj`, `dependency-checker` — are
 Clojure-specific and are still fetched on demand by `squad_tool.sh ensure`, as upstream.
 `squad_tool.sh require` fails closed (`SQUAD_TOOL_MISSING`, exit 3) rather than installing,

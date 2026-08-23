@@ -90,10 +90,11 @@ under `packs/`; `squad` became its own plugin because it shares no code with the
 others. The upstream tree is otherwise kept verbatim at the plugin root, which is
 what keeps its web dashboard and its Babashka test suite working unmodified.
 
-Installing `swarm-forge` runs a host check (`doctor.sh`) that exercises the
-real machinery — including whether the cockpit can type into a tmux pane under
-this host's own config — so a host-specific breakage fails at install rather
-than silently mid-swarm.
+Installing either swarm-forge plugin runs a host check (`doctor.sh`) that
+exercises the real machinery — for the packs, whether the cockpit can type into
+a tmux pane under this host's own config; for squad, whether session-scoped
+delivery works and its fail-closed tool cache is seeded — so a host-specific
+breakage fails at install rather than silently mid-swarm.
 
 `swarm-forge` also carries patches to the vendored engine, recorded
 as diffs in `plugins/swarm-forge/patches/` and guarded by tests: upstream's

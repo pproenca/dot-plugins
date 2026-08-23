@@ -18,6 +18,12 @@
 > working if the plugin is upgraded or removed, and no step needs network.
 > `install_squad.sh --update` refreshes an existing project's engine and tooling.
 >
+> Install then runs `skills/swarm-forge-squad/scripts/doctor.sh`, which exercises the real
+> machinery against this host: prerequisites, engine integrity, whether `close-swarm` stops
+> sessions, whether each worker template still has its contract, whether the tool table
+> points at the vendored APS copy, and whether the tool cache is seeded so `squad_tool
+> require` — which fails closed — succeeds offline. `--no-verify` skips it.
+>
 > Squad's Clojure tool chain (`clj-mutate`, `crap4clj`, `dry4clj`, `dependency-checker`) is
 > not bundled and is still fetched on demand, as upstream. Everything downstream behaves as
 > documented below.
