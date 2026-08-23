@@ -1,0 +1,31 @@
+apiName: asset
+displayName: Asset
+pluralDisplayName: Assets
+description: A serviceable piece of plant the maintenance team is responsible for.
+status: active
+groups: [maintenance]
+implements: [inspectable]
+primaryKey: assetId
+titleProperty: assetName
+properties:
+  assetId:
+    type: string
+    description: Stable asset identifier from the asset register.
+    required: true
+  assetName:
+    type: string
+    description: Name the maintenance team uses for this asset.
+    required: true
+  serialNumber:
+    type: string
+    description: Manufacturer serial number.
+  commissionedDate:
+    type: date
+    description: Date the asset entered service.
+  openWorkOrderCount:
+    type: integer
+    description: How many work orders are currently open against this asset.
+    derived: true
+    via: [workOrderAsset]
+    aggregation: count
+    derivation: Counts linked work orders; storing it would go stale on every raise.

@@ -1,0 +1,11 @@
+apiName: setEmail
+displayName: Set Employee Email
+description: Updates the employee's email.
+appliesTo: hrSystemEmployee
+parameters:
+  email:
+    type: string
+    required: true
+modifies:
+  - property: email
+    to: parameter

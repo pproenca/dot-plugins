@@ -1,0 +1,10 @@
+apiName: supportCustomer
+displayName: Support Customer
+description: Customer as tracked by the support team.
+primaryKey: customerId
+titleProperty: customerName
+properties:
+  customerId:   {type: string, description: Customer identifier., required: true}
+  customerName: {type: string, description: Customer legal name., required: true}
+  email:        {type: string, description: Primary contact email.}
+  supportTier:  {type: string, description: Support entitlement tier.}

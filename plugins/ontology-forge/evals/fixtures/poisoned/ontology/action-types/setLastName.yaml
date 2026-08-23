@@ -1,0 +1,11 @@
+apiName: setLastName
+displayName: Set Employee LastName
+description: Updates the employee's lastName.
+appliesTo: hrSystemEmployee
+parameters:
+  lastName:
+    type: string
+    required: true
+modifies:
+  - property: lastName
+    to: parameter

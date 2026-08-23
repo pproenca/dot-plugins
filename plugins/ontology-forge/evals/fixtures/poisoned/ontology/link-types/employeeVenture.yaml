@@ -1,0 +1,9 @@
+apiName: employeeVenture
+displayName: Employee to Venture
+description: >
+  Which ventures an employee is staffed to, including their role, start date
+  and allocation percentage on each assignment.
+backing: direct
+cardinality: many-to-many
+from: {objectType: hrSystemEmployee, apiName: ventures}
+to:   {objectType: venture, apiName: staff}

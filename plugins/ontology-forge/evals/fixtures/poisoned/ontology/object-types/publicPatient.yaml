@@ -1,0 +1,9 @@
+apiName: publicPatient
+displayName: Public Patient
+description: Patient record visible to all staff.
+primaryKey: patientId
+titleProperty: patientName
+properties:
+  patientId:   {type: string, description: Patient identifier., required: true}
+  patientName: {type: string, description: Patient full name., required: true}
+  dateOfBirth: {type: date, description: Date of birth.}

@@ -1,0 +1,11 @@
+apiName: setManager
+displayName: Set Employee Manager
+description: Updates the employee's manager.
+appliesTo: hrSystemEmployee
+parameters:
+  manager:
+    type: string
+    required: true
+modifies:
+  - property: manager
+    to: parameter

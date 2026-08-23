@@ -33,6 +33,8 @@ If there is no model on disk, ask the user to point at one. Do not audit an onto
 
 Dispatch one subagent per lane, in parallel, in a single message. Each gets the index, the paths, and the relevant reference file. Each returns structured findings: anti-pattern name, location, evidence quoted from the file, severity, and proposed fix.
 
+**Below roughly 30 files, run the lanes inline instead.** Fan-out exists to keep a large model out of the main context; on a small one the subagent overhead buys nothing and reading every file directly is more accurate. Say which way you ran it and why, so the reader knows whether any file went unread.
+
 | Lane | Hunts for | Rules |
 | ---- | --------- | ----- |
 | **Duplication** | System Silos, Department Silos, rule-of-three violations | `DUP-1` … `DUP-5` |
@@ -41,6 +43,7 @@ Dispatch one subagent per lane, in parallel, in a single message. Each gets the 
 | **Naming** | Misnomer, missing descriptions, inconsistent conventions | `NAME-1` … `NAME-7` |
 | **Structure** | Normalization, link modelling, structs, interfaces, security | `STRUCT-1` … `STRUCT-10` |
 | **Platform** | Specifications the platform cannot express — derived-property and reducer misuse, cross-ontology links | `PLAT-1` … `PLAT-9` |
+| **Referential integrity** | Elements naming elements that do not exist | `REF-1` … `REF-7` |
 
 Each lane runs its rules from [detection-rules.md](../ontology-forge/references/detection-rules.md) against the files, then reads every hit in context before reporting it. A rule firing is a reason to open the file, never a finding on its own — the thresholds are heuristics, and a model may violate one deliberately.
 

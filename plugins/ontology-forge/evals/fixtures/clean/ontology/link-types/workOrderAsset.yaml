@@ -1,0 +1,7 @@
+apiName: workOrderAsset
+displayName: Work Order to Asset
+description: The asset this work order is carried out on.
+backing: direct
+cardinality: many-to-one
+from: {objectType: workOrder, apiName: asset}
+to:   {objectType: asset, apiName: workOrders}

@@ -1,0 +1,10 @@
+apiName: contractV2
+displayName: Contract V2
+description: Second version of a contract.
+primaryKey: contractId
+titleProperty: contractId
+properties:
+  contractId: {type: string, description: Contract identifier., required: true}
+  version:    {type: integer, description: Which version of the contract this is.}
+  isCurrent:  {type: boolean, description: Whether this is the current version.}
+  monetaryValue: {type: double, description: Contract value in GBP.}

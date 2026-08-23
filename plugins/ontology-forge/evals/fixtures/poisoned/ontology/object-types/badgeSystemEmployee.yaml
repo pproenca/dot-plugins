@@ -1,0 +1,11 @@
+apiName: badgeSystemEmployee
+displayName: Badge System Employee
+description: Employee record as held in the badge access system.
+primaryKey: employeeId
+titleProperty: fullName
+properties:
+  employeeId: {type: string, description: Badge system identifier., required: true}
+  fullName:   {type: string, description: Employee full name., required: true}
+  email:      {type: string, description: Work email address.}
+  jobTitle:   {type: string, description: Current job title.}
+  badgeIssuedDate: {type: timestamp, description: When the badge was issued.}

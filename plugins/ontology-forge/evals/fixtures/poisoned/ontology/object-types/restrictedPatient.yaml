@@ -1,0 +1,10 @@
+apiName: restrictedPatient
+displayName: Restricted Patient
+description: Patient record visible only to the care team.
+primaryKey: patientId
+titleProperty: patientName
+properties:
+  patientId:   {type: string, description: Patient identifier., required: true}
+  patientName: {type: string, description: Patient full name., required: true}
+  dateOfBirth: {type: date, description: Date of birth.}
+  clinicalNotes: {type: string, description: Clinical notes for this patient.}

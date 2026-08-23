@@ -1,0 +1,11 @@
+apiName: setDepartment
+displayName: Set Employee Department
+description: Updates the employee's department.
+appliesTo: hrSystemEmployee
+parameters:
+  department:
+    type: string
+    required: true
+modifies:
+  - property: department
+    to: parameter

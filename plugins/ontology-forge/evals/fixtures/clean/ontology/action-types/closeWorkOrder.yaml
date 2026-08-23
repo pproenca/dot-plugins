@@ -1,0 +1,29 @@
+apiName: closeWorkOrder
+displayName: Close Work Order
+description: >
+  Records a technician completing the work: captures outcome and actual hours,
+  and moves the work order to complete.
+appliesTo: workOrder
+businessOperation: >
+  A technician finishing a job at the asset and signing it off.
+parameters:
+  outcome:
+    type: string
+    required: true
+    constraints:
+      enum: [resolved, partiallyResolved, referredOnward]
+  actualHours:
+    type: double
+    required: true
+  notes:
+    type: string
+    required: false
+modifies:
+  - property: workOrderStatus
+    to: complete
+  - property: completedDate
+    to: now()
+sideEffects:
+  - Notifies the requesting supervisor.
+validation:
+  - The work order must be inProgress before it can be closed.

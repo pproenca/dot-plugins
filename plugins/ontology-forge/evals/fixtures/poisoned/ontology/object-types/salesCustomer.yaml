@@ -1,0 +1,14 @@
+apiName: salesCustomer
+displayName: Sales Customer
+description: Customer as tracked by the sales team.
+primaryKey: customerId
+titleProperty: customerName
+properties:
+  customerId:   {type: string, description: Customer identifier., required: true}
+  customerName: {type: string, description: Customer legal name., required: true}
+  email:        {type: string, description: Primary contact email.}
+  salesStatus:  {type: string, description: Where the customer sits in the sales pipeline.}
+  _crm_extracted_at: {type: timestamp, description: When the CRM row was extracted.}
+  row_hash:     {type: string, description: Pipeline row hash.}
+  last_etl_update_timestamp: {type: timestamp, description: Last ETL update.}
+  _crm_internal_record_id: {type: string, description: Internal CRM record id.}

@@ -1,0 +1,22 @@
+apiName: technician
+displayName: Technician
+pluralDisplayName: Technicians
+description: A person qualified to carry out maintenance work.
+status: active
+groups: [maintenance]
+primaryKey: technicianId
+titleProperty: technicianName
+properties:
+  technicianId:
+    type: string
+    description: Stable identifier from the workforce system.
+    required: true
+  technicianName:
+    type: string
+    description: Technician's full name.
+    required: true
+  qualificationLevel:
+    type: string
+    description: Highest maintenance qualification currently held.
+    constraints:
+      enum: [apprentice, qualified, senior, inspector]

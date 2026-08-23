@@ -1,0 +1,16 @@
+apiName: inspectable
+displayName: Inspectable
+description: >
+  Anything subject to periodic inspection, so inspection workflows target the
+  interface rather than each implementing type.
+extends: []
+properties:
+  lastInspectionDate:
+    type: timestamp
+    description: Most recent completed inspection.
+    required: true
+  inspectionIntervalDays:
+    type: integer
+    description: Required number of days between inspections.
+    required: true
+implementedBy: [asset]

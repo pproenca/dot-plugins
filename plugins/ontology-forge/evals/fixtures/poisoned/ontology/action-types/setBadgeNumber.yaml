@@ -1,0 +1,11 @@
+apiName: setBadgeNumber
+displayName: Set Employee BadgeNumber
+description: Updates the employee's badgeNumber.
+appliesTo: hrSystemEmployee
+parameters:
+  badgeNumber:
+    type: string
+    required: true
+modifies:
+  - property: badgeNumber
+    to: parameter

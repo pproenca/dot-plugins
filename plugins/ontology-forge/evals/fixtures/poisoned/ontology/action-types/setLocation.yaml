@@ -1,0 +1,11 @@
+apiName: setLocation
+displayName: Set Employee Location
+description: Updates the employee's location.
+appliesTo: hrSystemEmployee
+parameters:
+  location:
+    type: string
+    required: true
+modifies:
+  - property: location
+    to: parameter

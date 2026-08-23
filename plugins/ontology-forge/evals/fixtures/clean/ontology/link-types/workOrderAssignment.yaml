@@ -1,0 +1,10 @@
+apiName: workOrderAssignment
+displayName: Work Order to Technician
+description: >
+  Which technicians are assigned to a work order, in what capacity and from
+  when. Carries its own assignment metadata, so it is object-backed.
+backing: object-backed
+through: workOrderAssignmentRecord
+cardinality: many-to-many
+from: {objectType: workOrder, apiName: assignedTechnicians}
+to:   {objectType: technician, apiName: assignedWorkOrders}

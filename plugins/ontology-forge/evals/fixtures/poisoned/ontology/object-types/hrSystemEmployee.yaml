@@ -1,0 +1,12 @@
+apiName: hrSystemEmployee
+displayName: HR System Employee
+description: Employee record as held in the HR system.
+primaryKey: employeeId
+titleProperty: fullName
+properties:
+  employeeId: {type: string, description: HR system identifier., required: true}
+  fullName:   {type: string, description: Employee full name., required: true}
+  email:      {type: string, description: Work email address.}
+  jobTitle:   {type: string, description: Current job title.}
+  managerName: {type: string, description: Name of this employee's manager.}
+  directReportCount: {type: integer, description: How many people report to this employee.}

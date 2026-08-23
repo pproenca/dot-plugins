@@ -67,6 +67,27 @@ Mechanical checks the [audit-ontology](../../audit-ontology/SKILL.md) lanes run 
 | `STRUCT-9` | derived property | `derived: true` with no `derivation` text | any | Underspecified computation |
 | `STRUCT-10` | object type | No `primaryKey`, or `primaryKey` naming no declared property | any | Type cannot be instantiated |
 
+## Referential-integrity lane
+
+Every element that names another element must name one that exists. These are the
+cheapest checks in the file and they catch the damage a half-finished migration leaves
+behind — a real audit found ten of these in a 26-file model where every other rule was
+already firing.
+
+| ID | Target | Check | Threshold | Suggests |
+| -- | ------ | ----- | --------- | -------- |
+| `REF-1` | action type | A `modifies[].property` the `appliesTo` type does not declare | any | Action writes to a property that does not exist |
+| `REF-2` | action type | `appliesTo` names no object type on disk | any | Action targets a missing type |
+| `REF-3` | link type | `from.objectType` or `to.objectType` names no object type on disk | any | Link endpoint missing |
+| `REF-4` | derived property | A `via` entry names no link type on disk | any | Traversal path is broken |
+| `REF-5` | object type | An `implements` entry names no interface on disk | any | Dangling interface — same as `STRUCT-7` |
+| `REF-6` | link type | `backing: object-backed` with a `through` naming no object type on disk | any | Joining type missing |
+| `REF-7` | object type | `titleProperty` names no declared property | any | Title cannot render |
+
+A dangling reference is a fact about the files, not a judgement, so these do not need the
+usual "read it in context before reporting" caution — though they do still need the
+*count* reported honestly, since one missing type can produce dozens of hits.
+
 ## Platform-constraint lane
 
 These check the model against what the platform can actually express, per [platform-constraints.md](platform-constraints.md). A hit here is usually a specification error rather than a design smell.

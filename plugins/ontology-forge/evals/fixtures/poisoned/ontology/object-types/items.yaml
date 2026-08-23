@@ -1,0 +1,12 @@
+apiName: items
+displayName: Items
+primaryKey: id
+titleProperty: name
+properties:
+  id:    {type: string, required: true}
+  name:  {type: string}
+  value: {type: double}
+  type:  {type: string}
+  date:  {type: timestamp}
+  dtLastInspMod: {type: timestamp}
+  fieldX: {type: string}

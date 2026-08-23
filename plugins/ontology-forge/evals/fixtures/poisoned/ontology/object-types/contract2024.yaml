@@ -1,0 +1,8 @@
+apiName: contract2024
+displayName: Contract 2024
+description: Contracts effective during 2024.
+primaryKey: contractId
+titleProperty: contractId
+properties:
+  contractId: {type: string, description: Contract identifier., required: true}
+  revision:   {type: integer, description: Revision number.}

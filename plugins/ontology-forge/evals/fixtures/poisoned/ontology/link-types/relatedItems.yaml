@@ -1,0 +1,6 @@
+apiName: relatedItems
+displayName: Related Items
+backing: direct
+cardinality: many-to-many
+from: {objectType: items, apiName: relatedItems}
+to:   {objectType: items}

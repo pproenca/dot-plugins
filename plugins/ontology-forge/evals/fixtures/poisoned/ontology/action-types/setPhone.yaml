@@ -1,0 +1,11 @@
+apiName: setPhone
+displayName: Set Employee Phone
+description: Updates the employee's phone.
+appliesTo: hrSystemEmployee
+parameters:
+  phone:
+    type: string
+    required: true
+modifies:
+  - property: phone
+    to: parameter

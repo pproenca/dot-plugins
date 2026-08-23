@@ -1,0 +1,39 @@
+apiName: workOrder
+displayName: Work Order
+pluralDisplayName: Work Orders
+description: >
+  A unit of maintenance work raised against an asset, from request through
+  completion. One work order covers one asset and one intervention.
+status: active
+groups: [maintenance]
+primaryKey: workOrderId
+titleProperty: workOrderNumber
+properties:
+  workOrderId:
+    type: string
+    description: Stable identifier, sourced from the maintenance system.
+    required: true
+  workOrderNumber:
+    type: string
+    description: Human-facing reference shown to technicians, e.g. WO-10423.
+    required: true
+  raisedDate:
+    type: timestamp
+    description: When the work order was raised.
+    required: true
+  completedDate:
+    type: timestamp
+    description: When the technician signed the work off. Null while open.
+  workOrderStatus:
+    type: string
+    description: Lifecycle state of the work order.
+    constraints:
+      enum: [draft, approved, inProgress, blocked, complete, cancelled]
+  estimatedHours:
+    type: double
+    description: Planned technician hours. Null until the work order is approved.
+  openDurationDays:
+    type: integer
+    description: Days between raisedDate and completedDate, or today if still open.
+    derived: true
+    derivation: Depends on the current date, so it cannot be pre-computed in a batch.

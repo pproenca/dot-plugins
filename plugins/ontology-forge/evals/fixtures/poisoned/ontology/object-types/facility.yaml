@@ -1,0 +1,31 @@
+apiName: facility
+displayName: Facility
+description: A physical site the organization operates.
+implements: [inspectable, schedulable]
+primaryKey: derivedFacilityKey
+titleProperty: facilityName
+properties:
+  derivedFacilityKey:
+    type: string
+    description: Facility key derived from the owning region.
+    derived: true
+    via: [facilityRegion]
+    derivation: Pulled from the linked region.
+  facilityName: {type: string, description: Facility display name., required: true}
+  addressStreet: {type: string, description: Street part of the address.}
+  addressCity: {type: string, description: City part of the address.}
+  addressState: {type: string, description: State part of the address.}
+  addressPostalCode: {type: string, description: Postal code part of the address.}
+  addressCountry: {type: string, description: Country part of the address.}
+  openWorkOrderCount:
+    type: integer
+    description: How many work orders are open against this facility.
+  inspectionScore:
+    type: double
+    description: Latest inspection score, searchable and filterable by users.
+    derived: true
+    required: true
+    via: [facilityInspection, inspectionAssessor, assessorRegion, regionAuthority]
+    constraints:
+      range: {min: 0, max: 100}
+    derivation: Aggregated from linked inspections.

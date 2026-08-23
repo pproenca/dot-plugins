@@ -1,0 +1,11 @@
+apiName: setJobTitle
+displayName: Set Employee JobTitle
+description: Updates the employee's jobTitle.
+appliesTo: hrSystemEmployee
+parameters:
+  jobTitle:
+    type: string
+    required: true
+modifies:
+  - property: jobTitle
+    to: parameter

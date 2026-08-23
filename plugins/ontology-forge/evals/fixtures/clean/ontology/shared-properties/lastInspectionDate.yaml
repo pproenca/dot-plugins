@@ -1,0 +1,5 @@
+apiName: lastInspectionDate
+displayName: Last Inspection Date
+type: timestamp
+description: Most recent completed inspection, consistent across all inspectable types.
+usedBy: [asset]

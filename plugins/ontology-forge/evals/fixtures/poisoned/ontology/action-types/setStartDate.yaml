@@ -1,0 +1,11 @@
+apiName: setStartDate
+displayName: Set Employee StartDate
+description: Updates the employee's startDate.
+appliesTo: hrSystemEmployee
+parameters:
+  startDate:
+    type: string
+    required: true
+modifies:
+  - property: startDate
+    to: parameter

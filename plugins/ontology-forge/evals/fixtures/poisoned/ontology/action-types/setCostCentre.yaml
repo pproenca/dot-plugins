@@ -1,0 +1,11 @@
+apiName: setCostCentre
+displayName: Set Employee CostCentre
+description: Updates the employee's costCentre.
+appliesTo: hrSystemEmployee
+parameters:
+  costCentre:
+    type: string
+    required: true
+modifies:
+  - property: costCentre
+    to: parameter

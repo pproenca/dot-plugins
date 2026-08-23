@@ -1,0 +1,9 @@
+apiName: calculateRegionalSalesTotals
+displayName: Calculate Regional Sales Totals
+description: >
+  Recomputes aggregate sales totals for every region and writes the results
+  back onto the region objects. Run this each morning for all regions.
+appliesTo: salesCustomer
+modifies:
+  - property: salesStatus
+    to: recalculated

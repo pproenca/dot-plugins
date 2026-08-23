@@ -1,0 +1,11 @@
+apiName: setGrade
+displayName: Set Employee Grade
+description: Updates the employee's grade.
+appliesTo: hrSystemEmployee
+parameters:
+  grade:
+    type: string
+    required: true
+modifies:
+  - property: grade
+    to: parameter

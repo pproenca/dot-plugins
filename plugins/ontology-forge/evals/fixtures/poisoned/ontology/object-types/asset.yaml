@@ -1,0 +1,101 @@
+apiName: asset
+displayName: Asset
+description: >
+  Anything valuable to the organization: equipment, software licences,
+  real estate, financial instruments, and human assets.
+primaryKey: assetId
+titleProperty: assetId
+properties:
+  assetId:
+    type: string
+    description: Asset identifier.
+    required: true
+  assetType:
+    type: string
+    description: What kind of asset this is.
+    constraints:
+      enum: [equipment, softwareLicense, realEstate, financialInstrument, humanAsset]
+  value:
+    type: double
+    description: Value of the asset. Meaning depends on assetType.
+  location:
+    type: string
+    description: Location of the asset. Varies by assetType.
+  status:
+    type: string
+    description: Status of the asset. Meaning varies by assetType.
+  attribute1:
+    type: string
+    description: Additional asset attribute 1.
+  attribute2:
+    type: string
+    description: Additional asset attribute 2.
+  attribute3:
+    type: string
+    description: Additional asset attribute 3.
+  attribute4:
+    type: string
+    description: Additional asset attribute 4.
+  attribute5:
+    type: string
+    description: Additional asset attribute 5.
+  attribute6:
+    type: string
+    description: Additional asset attribute 6.
+  attribute7:
+    type: string
+    description: Additional asset attribute 7.
+  attribute8:
+    type: string
+    description: Additional asset attribute 8.
+  attribute9:
+    type: string
+    description: Additional asset attribute 9.
+  attribute10:
+    type: string
+    description: Additional asset attribute 10.
+  attribute11:
+    type: string
+    description: Additional asset attribute 11.
+  attribute12:
+    type: string
+    description: Additional asset attribute 12.
+  attribute13:
+    type: string
+    description: Additional asset attribute 13.
+  attribute14:
+    type: string
+    description: Additional asset attribute 14.
+  attribute15:
+    type: string
+    description: Additional asset attribute 15.
+  attribute16:
+    type: string
+    description: Additional asset attribute 16.
+  attribute17:
+    type: string
+    description: Additional asset attribute 17.
+  attribute18:
+    type: string
+    description: Additional asset attribute 18.
+  attribute19:
+    type: string
+    description: Additional asset attribute 19.
+  attribute20:
+    type: string
+    description: Additional asset attribute 20.
+  attribute21:
+    type: string
+    description: Additional asset attribute 21.
+  attribute22:
+    type: string
+    description: Additional asset attribute 22.
+  attribute23:
+    type: string
+    description: Additional asset attribute 23.
+  attribute24:
+    type: string
+    description: Additional asset attribute 24.
+  attribute25:
+    type: string
+    description: Additional asset attribute 25.
