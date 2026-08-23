@@ -65,10 +65,13 @@ violations; warnings are things a client tolerates but that usually indicate a
 mistake — a skill directory with no `SKILL.md`, a bundled executable that isn't
 there yet, a credential-shaped value in `env`.
 
-`pstack` currently passes with warnings: its `agents/` directory and its
-Cursor-specific frontmatter keys (`disable-model-invocation`, `icon`, `color`,
-`mode`, `reminder`) are not v1 component types or Agent Skills fields, so
-conformant clients ignore them. The skills themselves load everywhere.
+Both plugins validate clean. `pstack` was migrated to get there: its Cursor
+subagents, automation pack, and Cursor manifest moved into the `com.cursor/`
+extension directory (§8), and its Cursor-specific frontmatter keys
+(`disable-model-invocation`, `icon`, `color`, `mode`, `reminder`) moved under
+`metadata` as strings, since §7.1 closes the Agent Skills field set. Both are
+preserved rather than portable: a client that does not implement `com.cursor`
+ignores that directory, and clients read `metadata` but do not act on it.
 
 ## Tests
 

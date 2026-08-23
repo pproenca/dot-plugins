@@ -26,5 +26,5 @@
 		"planning"
 	],
 	"skills": "./skills/",
-	"agents": "./agents/"
+	"agents": "./com.cursor/agents/"
 }
