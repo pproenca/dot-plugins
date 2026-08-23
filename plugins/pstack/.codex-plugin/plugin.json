@@ -32,6 +32,9 @@
       "Make this implementation less sloppy",
       "Design a rigorous verification plan",
       "Teach me the principle behind this code"
-    ]
+    ],
+    "websiteURL": "https://github.com/cursor/plugins/tree/main/pstack",
+    "privacyPolicyURL": "https://github.com/cursor/plugins/tree/main/pstack",
+    "termsOfServiceURL": "https://github.com/cursor/plugins/blob/main/LICENSE"
   }
 }
