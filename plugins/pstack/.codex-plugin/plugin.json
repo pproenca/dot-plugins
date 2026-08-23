@@ -24,6 +24,9 @@
     "longDescription": "Use focused engineering playbooks, principles, and verification workflows to reason deeply, parallelize confidently, and produce less but better code.",
     "developerName": "Lauren Tan",
     "category": "Developer Tools",
+    "brandColor": "#7C3AED",
+    "composerIcon": "./.codex-plugin/assets/pstack.svg",
+    "logo": "./.codex-plugin/assets/pstack.svg",
     "capabilities": [
       "Interactive",
       "Write"

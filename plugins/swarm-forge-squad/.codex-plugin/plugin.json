@@ -23,6 +23,9 @@
     "longDescription": "Run a persistent squad leader that assigns work to short-lived specialist agents, each constrained by an explicit capability contract.",
     "developerName": "Robert C. Martin",
     "category": "Developer Tools",
+    "brandColor": "#059669",
+    "composerIcon": "./.codex-plugin/assets/swarm-forge-squad.svg",
+    "logo": "./.codex-plugin/assets/swarm-forge-squad.svg",
     "capabilities": [
       "Interactive",
       "Write"

@@ -21,6 +21,9 @@
     "longDescription": "Scaffold portable agent plugin packages and validate their manifests, skills, MCP configuration, and path containment against Agent Plugins v1.1.0.",
     "developerName": "pproenca",
     "category": "Developer Tools",
+    "brandColor": "#3B82F6",
+    "composerIcon": "./.codex-plugin/assets/agent-plugin-builder.svg",
+    "logo": "./.codex-plugin/assets/agent-plugin-builder.svg",
     "capabilities": [
       "Interactive",
       "Write"

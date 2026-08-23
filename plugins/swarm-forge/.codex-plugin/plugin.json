@@ -23,6 +23,9 @@
     "longDescription": "Run a coordinated pack of specialist coding agents in isolated git worktrees, with file-based handoffs and a local web cockpit for control.",
     "developerName": "Robert C. Martin",
     "category": "Developer Tools",
+    "brandColor": "#EA580C",
+    "composerIcon": "./.codex-plugin/assets/swarm-forge.svg",
+    "logo": "./.codex-plugin/assets/swarm-forge.svg",
     "capabilities": [
       "Interactive",
       "Write"
