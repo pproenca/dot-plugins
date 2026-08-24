@@ -3,7 +3,7 @@
 > ## Packaged as an Agent Plugin
 >
 > This is [unclebob/swarm-forge](https://github.com/unclebob/swarm-forge) repackaged to the
-> Agent Plugins Specification v1.1.0. **Install and startup differ from the upstream
+> Agent Plugins Specification v1.0.0. **Install and startup differ from the upstream
 > instructions below.**
 >
 > Upstream ships each workflow as a separate git branch and expects you to extract a branch

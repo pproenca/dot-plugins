@@ -1,10 +1,10 @@
 # Agent Plugins Specification
 
-**Spec Version: 1.1.0**
+**Spec Version: 1.0.0**
 
 **Status: Working Draft**
 
-This document defines the canonical Agent Plugins Specification v1.1.0 for packaging reusable components that extend AI agents into distributable plugins.
+This document defines the canonical Agent Plugins Specification v1.0.0 for packaging reusable components that extend AI agents into distributable plugins.
 
 ## Table of contents
 
@@ -27,7 +27,7 @@ This document defines the canonical Agent Plugins Specification v1.1.0 for packa
 
 ## 1. Status and version
 
-This specification defines version `1.1.0` of the Agent Plugins format.
+This specification defines version `1.0.0` of the Agent Plugins format.
 
 Clients and plugin packages claiming conformance MUST implement or follow the requirements in this document.
 
@@ -67,7 +67,7 @@ Example: valid and invalid relative paths
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/mcp.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "server": {
       "type": "stdio",
@@ -80,7 +80,7 @@ Example: valid and invalid relative paths
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/mcp.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "server": {
       "type": "stdio",
@@ -146,9 +146,9 @@ If `plugin.json` contains any other top-level field, it does not conform to the 
 
 A non-object `extensions` field is handled as defined in §8.1. Every permitted field otherwise MUST match the type and constraints defined below. Any schema violation other than an unknown top-level field or a non-object `extensions` field is fatal: the client MUST reject the plugin and MUST NOT discover or execute any of its components.
 
-The official machine-readable schema is [`schemas/1.1.0/plugin.schema.json`](../schemas/1.1.0/plugin.schema.json). The specification text is authoritative if it conflicts with the schema.
+The official machine-readable schema is [`schemas/1.0.0/plugin.schema.json`](../schemas/1.0.0/plugin.schema.json). The specification text is authoritative if it conflicts with the schema.
 
-The required `$schema` field identifies the Agent Plugins specification version targeted by the plugin and its corresponding manifest schema. For Agent Plugins 1.1.0, its value MUST be the canonical identifier `https://agent-plugins.org/schemas/1.1.0/plugin.schema.json`.
+The required `$schema` field identifies the Agent Plugins specification version targeted by the plugin and its corresponding manifest schema. For Agent Plugins 1.0.0, its value MUST be the canonical identifier `https://agent-plugins.org/schemas/1.0.0/plugin.schema.json`.
 
 Clients MUST use a recognized `$schema` value to select locally supported manifest validation and interpretation rules. A client MAY map multiple canonical identifiers to the same implementation only when it explicitly recognizes those Agent Plugins versions as compatible. Clients MUST NOT retrieve a schema while loading a plugin. If a client does not support the declared Agent Plugins version or an explicitly recognized compatible version, it MUST reject the plugin and SHOULD report the unsupported version.
 
@@ -156,7 +156,7 @@ Example: minimal manifest
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "minimal-plugin"
 }
 ```
@@ -165,7 +165,7 @@ Example: full manifest
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "plugin-name",
   "version": "1.2.0",
   "description": "Brief plugin description",
@@ -304,9 +304,9 @@ The MCP configuration path is `mcp.json` at the plugin root. MCP configuration M
 
 `mcp.json` MUST be a JSON object containing the required `$schema` and `mcpServers` fields, with no other top-level fields. `mcpServers` MUST be an object whose member names identify servers and whose member values are server configuration objects. An empty `mcpServers` object is valid.
 
-The official machine-readable schema is [`schemas/1.1.0/mcp.schema.json`](../schemas/1.1.0/mcp.schema.json). The specification text is authoritative if it conflicts with the schema. The schema exposes `#/$defs/server` so that clients can validate each server independently and preserve the failure boundaries in §7.2.2.
+The official machine-readable schema is [`schemas/1.0.0/mcp.schema.json`](../schemas/1.0.0/mcp.schema.json). The specification text is authoritative if it conflicts with the schema. The schema exposes `#/$defs/server` so that clients can validate each server independently and preserve the failure boundaries in §7.2.2.
 
-The required `$schema` field identifies the Agent Plugins specification version targeted by the MCP configuration and its corresponding MCP schema. For Agent Plugins 1.1.0, its value MUST be the canonical identifier `https://agent-plugins.org/schemas/1.1.0/mcp.schema.json`.
+The required `$schema` field identifies the Agent Plugins specification version targeted by the MCP configuration and its corresponding MCP schema. For Agent Plugins 1.0.0, its value MUST be the canonical identifier `https://agent-plugins.org/schemas/1.0.0/mcp.schema.json`.
 
 Clients MUST use a recognized `$schema` value to select locally supported MCP configuration validation and interpretation rules. A client MAY map multiple canonical identifiers to the same implementation only when it explicitly recognizes those Agent Plugins versions as compatible. Clients MUST NOT retrieve a schema while loading a plugin.
 
@@ -364,7 +364,7 @@ Example: `mcp.json`
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/mcp.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "local-validator": {
       "type": "stdio",
@@ -414,7 +414,7 @@ Example:
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "example-plugin",
   "extensions": {
     "com.example.client": {
@@ -484,7 +484,7 @@ Example: plugin variable expansion in MCP
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/mcp.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "database": {
       "type": "stdio",

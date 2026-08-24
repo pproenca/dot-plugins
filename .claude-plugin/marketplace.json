@@ -1,6 +1,6 @@
 {
   "name": "dot-plugins",
-  "description": "Agent plugins packaged to the Agent Plugins Specification v1.1.0.",
+  "description": "Agent plugins packaged to the Agent Plugins Specification v1.0.0.",
   "owner": {
     "name": "pproenca"
   },
@@ -11,7 +11,7 @@
     {
       "name": "agent-plugin-builder",
       "source": "./plugins/agent-plugin-builder",
-      "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.1.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
+      "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.0.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
       "version": "0.15.0",
       "author": {
         "name": "pproenca"

@@ -1,13 +1,13 @@
 ---
 name: agent-plugin-builder
-description: Build plugins that conform to the Agent Plugins Specification v1.1.0 — a plugin.json manifest plus skills/ and mcp.json components — and verify them with a bundled conformance validator. Use this skill whenever the user wants to create, scaffold, package, or fix an agent plugin; mentions plugin.json, mcp.json, PLUGIN_ROOT, PLUGIN_DATA, or the Agent Plugins spec; or asks to turn existing skills or MCP servers into something distributable, even if they never say "Agent Plugins" by name.
+description: Build plugins that conform to the Agent Plugins Specification v1.0.0 — a plugin.json manifest plus skills/ and mcp.json components — and verify them with a bundled conformance validator. Use this skill whenever the user wants to create, scaffold, package, or fix an agent plugin; mentions plugin.json, mcp.json, PLUGIN_ROOT, PLUGIN_DATA, or the Agent Plugins spec; or asks to turn existing skills or MCP servers into something distributable, even if they never say "Agent Plugins" by name.
 license: MIT
 compatibility: Requires Python 3.8+ to run the bundled validator.
 ---
 
 # Agent Plugin Builder
 
-Agent Plugins v1.1.0 packages reusable agent components — Agent Skills and MCP servers — into a directory that any conformant client can load. This skill builds those packages and proves they conform.
+Agent Plugins v1.0.0 packages reusable agent components — Agent Skills and MCP servers — into a directory that any conformant client can load. This skill builds those packages and proves they conform.
 
 The format is deliberately small and strict. Two things follow from that, and they shape everything below:
 
@@ -53,7 +53,7 @@ Minimal:
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "my-plugin"
 }
 ```
@@ -114,7 +114,7 @@ Anything client-specific — hooks, slash commands, subagents, settings — live
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "example-plugin",
   "extensions": {
     "com.example.client": { "setting": true }

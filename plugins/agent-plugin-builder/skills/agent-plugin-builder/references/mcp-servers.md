@@ -20,7 +20,7 @@ Exactly two top-level fields, both required, nothing else:
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/mcp.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {}
 }
 ```
@@ -138,7 +138,7 @@ Authorization failure is a *connection* failure, not invalid configuration. Don'
 
 ```json
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/mcp.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "local-validator": {
       "type": "stdio",

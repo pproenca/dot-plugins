@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a directory against the Agent Plugins Specification v1.1.0.
+"""Validate a directory against the Agent Plugins Specification v1.0.0.
 
 Checks the manifest schema and name constraints, skill discovery and Agent
 Skills frontmatter, the mcp.json closed union, package path containment, and
@@ -19,9 +19,9 @@ import re
 import sys
 from urllib.parse import urlsplit
 
-SPEC_VERSION = "1.1.0"
-PLUGIN_SCHEMA_ID = "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json"
-MCP_SCHEMA_ID = "https://agent-plugins.org/schemas/1.1.0/mcp.schema.json"
+SPEC_VERSION = "1.0.0"
+PLUGIN_SCHEMA_ID = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+MCP_SCHEMA_ID = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
 SCHEMA_ID_RE = re.compile(
     r"^https://agent-plugins\.org/schemas/(?P<version>[^/]+)/(?P<kind>plugin|mcp)\.schema\.json$"
 )

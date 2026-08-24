@@ -1,7 +1,7 @@
 {
   "name": "agent-plugin-builder",
   "version": "0.15.0",
-  "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.1.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
+  "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.0.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
   "author": {
     "name": "pproenca"
   },
@@ -18,7 +18,7 @@
   "interface": {
     "displayName": "Agent Plugin Builder",
     "shortDescription": "Build and validate portable agent plugins",
-    "longDescription": "Scaffold portable agent plugin packages and validate their manifests, skills, MCP configuration, and path containment against Agent Plugins v1.1.0.",
+    "longDescription": "Scaffold portable agent plugin packages and validate their manifests, skills, MCP configuration, and path containment against Agent Plugins v1.0.0.",
     "developerName": "pproenca",
     "category": "Developer Tools",
     "brandColor": "#3B82F6",

@@ -38,7 +38,7 @@ def test_json_output_shape(build):
     root = build(manifest=manifest(), skills={"demo": skill_md()})
     payload = json.loads(run_cli(str(root), "--json").stdout)
     assert payload["conformant"] is True
-    assert payload["spec_version"] == "1.1.0"
+    assert payload["spec_version"] == "1.0.0"
     assert payload["skills"] == 1
     assert payload["findings"] == []
 

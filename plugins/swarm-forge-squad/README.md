@@ -3,7 +3,7 @@
 > ## Packaged as an Agent Plugin
 >
 > This is the `squad` branch of [unclebob/swarm-forge](https://github.com/unclebob/swarm-forge)
-> repackaged to the Agent Plugins Specification v1.1.0. **Install differs from the upstream
+> repackaged to the Agent Plugins Specification v1.0.0. **Install differs from the upstream
 > instructions below.**
 >
 > ```bash

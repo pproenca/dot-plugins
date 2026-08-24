@@ -1,4 +1,4 @@
-# Agent Plugins v1.1.0 — author-facing rule index
+# Agent Plugins v1.0.0 — author-facing rule index
 
 Every rule a plugin author must satisfy, with spec section citations, plus the client-behavior rules that constrain authoring choices. The specification itself is authoritative; this is a navigation aid.
 
@@ -39,7 +39,7 @@ Closed schema. The **only** permitted top-level fields:
 
 | Field | Type | Requirement |
 | ----- | ---- | ----------- |
-| `$schema` | string | Exactly `https://agent-plugins.org/schemas/1.1.0/plugin.schema.json` for v1.1.0. |
+| `$schema` | string | Exactly `https://agent-plugins.org/schemas/1.0.0/plugin.schema.json` for v1.0.0. |
 | `name` | string | Satisfies §5.5 name constraints. |
 
 Missing, wrong-typed, empty, or otherwise invalid required field ⇒ the manifest is invalid, the client rejects the plugin, and **no** component is discovered or executed.
@@ -182,8 +182,8 @@ Minimum client conformance (§11.1) requires supporting at least one component t
 ## 10. Canonical identifiers
 
 ```text
-plugin.json  $schema  https://agent-plugins.org/schemas/1.1.0/plugin.schema.json
-mcp.json     $schema  https://agent-plugins.org/schemas/1.1.0/mcp.schema.json
+plugin.json  $schema  https://agent-plugins.org/schemas/1.0.0/plugin.schema.json
+mcp.json     $schema  https://agent-plugins.org/schemas/1.0.0/mcp.schema.json
 ```
 
 Both must carry the same version.

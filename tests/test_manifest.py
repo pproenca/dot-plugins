@@ -44,7 +44,7 @@ def test_unknown_top_level_field_is_rejected(build, validate):
     [
         (None, "5.3"),
         (42, "5.3"),
-        ("https://agent-plugins.org/schemas/1.0.0/plugin.schema.json", "5.2"),
+        ("https://agent-plugins.org/schemas/1.1.0/plugin.schema.json", "5.2"),
         ("https://example.com/other.schema.json", "5.2"),
     ],
 )

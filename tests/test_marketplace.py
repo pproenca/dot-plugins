@@ -1,6 +1,6 @@
 """The repository is a marketplace: client catalogs plus the plugins they list.
 
-Agent Plugins v1.1.0 defines the plugin package only — distribution is left to
+Agent Plugins v1.0.0 defines the plugin package only — distribution is left to
 each client (§4, and the spec's own framing of installation as client-owned).
 Catalogs are therefore client artifacts. Claude Code reads
 `.claude-plugin/marketplace.json`; Codex reads
@@ -21,6 +21,9 @@ IDS = [entry.get("name", "<unnamed>") for entry in ENTRIES]
 CODEX_CATALOG = json.loads(CODEX_MARKETPLACE.read_text())
 CODEX_ENTRIES = CODEX_CATALOG["plugins"]
 CODEX_IDS = [entry.get("name", "<unnamed>") for entry in CODEX_ENTRIES]
+CODEX_SUPPORTED_AGENT_PLUGIN_SCHEMA = (
+    "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+)
 
 
 def plugin_dir(entry):
@@ -107,6 +110,7 @@ def test_codex_entry_is_installable(entry):
     manifest = json.loads((plugin / ".codex-plugin" / "plugin.json").read_text())
     portable_manifest = json.loads((plugin / "plugin.json").read_text())
     assert entry["name"] == manifest["name"] == portable_manifest["name"]
+    assert portable_manifest["$schema"] == CODEX_SUPPORTED_AGENT_PLUGIN_SCHEMA
     for field in ("version", "description", "author", "homepage", "repository", "license", "keywords"):
         if field in manifest and field in portable_manifest:
             assert manifest[field] == portable_manifest[field], field

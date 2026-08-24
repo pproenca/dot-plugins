@@ -61,7 +61,7 @@ def test_schema_version_must_match_plugin_json(build, validate):
     """§10.1: a version mismatch invalidates the whole MCP configuration."""
     root = build(
         manifest=manifest(),
-        mcp=mcp_config({}, schema="https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"),
+        mcp=mcp_config({}, schema="https://agent-plugins.org/schemas/1.1.0/mcp.schema.json"),
     )
     assert validate(root).errors(section="10.1", where="mcp.json:$schema")
 

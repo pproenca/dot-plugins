@@ -2,7 +2,7 @@
 
 A plugin marketplace for Codex, Claude Code, and conformant Agent Plugins
 clients. Every plugin here is packaged to the
-[Agent Plugins Specification](spec.md) v1.1.0 — a root `plugin.json` plus
+[Agent Plugins Specification](spec.md) v1.0.0 — a root `plugin.json` plus
 `skills/` and `mcp.json`. Thin client-native manifests make the same packages
 installable without giving up the portable format.
 
@@ -62,7 +62,7 @@ Or point at a local clone: `/plugin marketplace add ./dot-plugins`.
 
 | Plugin | What it does |
 | ------ | ------------ |
-| [`agent-plugin-builder`](plugins/agent-plugin-builder) | Scaffolds and validates plugins against Agent Plugins v1.1.0. Ships the conformance validator this repo runs in CI. |
+| [`agent-plugin-builder`](plugins/agent-plugin-builder) | Scaffolds and validates plugins against Agent Plugins v1.0.0. Ships the conformance validator this repo runs in CI. |
 | [`ontology-forge`](plugins/ontology-forge) | Designs and extends a Palantir Foundry ontology domain-first — interview the domain, shape object types and links, map source data, and audit the result against the published anti-patterns. |
 | [`pstack`](plugins/pstack) | Rigorous agent workflows — playbooks, engineering principles, and subagent orchestration. By [Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack), MIT, vendored here. |
 | [`swarm-forge`](plugins/swarm-forge) | Runs a pack of specialist agents on one repo — a git worktree and tmux session each, file-based handoffs, and a local web cockpit. By [Robert C. Martin](https://github.com/unclebob/swarm-forge), vendored here; no license stated upstream. |
@@ -75,14 +75,14 @@ Or point at a local clone: `/plugin marketplace add ./dot-plugins`.
 .claude-plugin/marketplace.json  # Claude Code catalog
 plugins/<name>/                   # one self-contained plugin per directory
 ├── .codex-plugin/plugin.json     # Codex presentation and discovery manifest
-├── plugin.json                   # portable Agent Plugins v1.1.0 manifest
+├── plugin.json                   # portable Agent Plugins v1.0.0 manifest
 ├── skills/<name>/SKILL.md        # shared portable component
 └── mcp.json                      # optional portable component
-spec.md                           # the specification (v1.1.0, working draft)
+spec.md                           # the specification (v1.0.0, working draft)
 tests/                            # validator suite + marketplace/catalog checks
 ```
 
-Agent Plugins v1.1.0 specifies the *package* and deliberately leaves
+Agent Plugins v1.0.0 specifies the *package* and deliberately leaves
 distribution to each client, so it defines no marketplace format. The catalog
 is therefore a client artifact. Claude Code reads
 `.claude-plugin/marketplace.json`; Codex reads

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pstack",
   "version": "0.15.0",
   "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
@@ -19,7 +19,7 @@
     "unslop"
   ],
   "extensions": {
-    "com.openai.codex": {
+    "com.openai": {
       "interface": {
         "displayName": "pstack",
         "shortDescription": "Rigorous workflows for higher-quality code",
