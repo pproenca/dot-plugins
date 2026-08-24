@@ -11,6 +11,8 @@ Client catalogs live in `.agents/plugins/marketplace.json` (Codex) and `.claude-
 - `uv sync`: create or refresh the Python 3.12 development environment from `uv.lock`.
 - `uv run pytest`: run manifest, containment, marketplace, CLI, MCP, and plugin integration tests.
 - `uv run ruff check .`: check Python correctness, imports, and style.
+- `uv run python scripts/test_codex_plugins.py [plugin]`: load one plugin or the whole marketplace through the latest published Codex CLI.
+- `uv run python scripts/test_codex_plugins.py --codex-repo ../codex [plugin]`: build a Codex checkout and test its native marketplace loader.
 - `uv run python plugins/agent-plugin-builder/skills/agent-plugin-builder/scripts/validate_plugin.py plugins/<name>`: validate one plugin against Agent Plugins v1.1.0. Add `--json` for machine-readable output.
 - `cd plugins/swarm-forge && bb test`: run SwarmForge helper tests.
 - `cd plugins/swarm-forge-squad && bb test`: run squad tests; use `bb simulation-test` for the slower simulator suite.

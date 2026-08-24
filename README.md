@@ -122,6 +122,24 @@ violations; warnings are things a client tolerates but that usually indicate a
 mistake — a skill directory with no `SKILL.md`, a bundled executable that isn't
 there yet, a credential-shaped value in `env`.
 
+The portable validator does not prove that a released Codex version can load a
+plugin. Exercise Codex's real marketplace loader with the latest published CLI:
+
+```bash
+uv run python scripts/test_codex_plugins.py pstack
+```
+
+Omit the plugin name to test the whole marketplace. To test an unreleased Codex
+checkout, build and run that checkout instead:
+
+```bash
+uv run python scripts/test_codex_plugins.py --codex-repo ../codex pstack
+```
+
+The harness starts `codex app-server`, sends `plugin/read` for each selected
+catalog entry, and fails if Codex cannot resolve the marketplace, parse the
+plugin package, or discover its skills.
+
 All five plugins validate clean. Two needed work to get there.
 
 `pstack`: its Cursor subagents, automation pack, and Cursor manifest moved into
