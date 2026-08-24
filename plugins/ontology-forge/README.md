@@ -72,7 +72,7 @@ And it screens every model against the eight anti-patterns: System Silos, the Ki
 /plugin install ontology-forge@dot-plugins
 
 # Codex
-codex plugin marketplace add pproenca/dot-plugins
+codex plugin marketplace add https://github.com/pproenca/dot-plugins.git --ref master
 codex plugin add ontology-forge@dot-plugins
 ```
 

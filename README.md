@@ -30,7 +30,7 @@ issue and it will be actioned.
 ## Install in Codex
 
 ```bash
-codex plugin marketplace add pproenca/dot-plugins
+codex plugin marketplace add https://github.com/pproenca/dot-plugins.git --ref master
 codex plugin add pstack@dot-plugins
 codex plugin add agent-plugin-builder@dot-plugins
 codex plugin add ontology-forge@dot-plugins
@@ -38,7 +38,8 @@ codex plugin add swarm-forge@dot-plugins
 codex plugin add swarm-forge-squad@dot-plugins
 ```
 
-Or point Codex at a local clone:
+Using the full Git URL and explicit ref makes the same command deterministic
+across Codex CLI and desktop installations. Or point Codex at a local clone:
 
 ```bash
 codex plugin marketplace add ./dot-plugins
@@ -100,7 +101,10 @@ lives *inside* the plugin that owns it, not at the repo root.
 2. Validate it (see below) until it passes.
 3. Add matching entries to `.claude-plugin/marketplace.json` and
    `.agents/plugins/marketplace.json`.
-4. Run `uv run pytest` — the suite fails on an unlisted directory, mismatched
+4. When changing an existing plugin, bump its version in the portable manifest,
+   Codex manifest, and Claude catalog. Codex caches installed snapshots by
+   marketplace, plugin name, and version.
+5. Run `uv run pytest` — the suite fails on an unlisted directory, mismatched
    catalogs, or metadata drift between manifests.
 
 ## Validating
@@ -118,7 +122,7 @@ violations; warnings are things a client tolerates but that usually indicate a
 mistake — a skill directory with no `SKILL.md`, a bundled executable that isn't
 there yet, a credential-shaped value in `env`.
 
-All four plugins validate clean. Two needed work to get there.
+All five plugins validate clean. Two needed work to get there.
 
 `pstack`: its Cursor subagents, automation pack, and Cursor manifest moved into
 the `com.cursor/` extension directory (§8), and its Cursor-specific frontmatter keys
