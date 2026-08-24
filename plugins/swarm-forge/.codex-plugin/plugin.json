@@ -1,6 +1,6 @@
 {
   "name": "swarm-forge",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "description": "Disciplined tmux-based agent orchestration: pick a pack of specialist agents, give each its own git worktree, and drive them from a local web cockpit.",
   "author": {
     "name": "Robert C. Martin"
