@@ -54,14 +54,16 @@ jobs:
         if: steps.changes.outputs.release == 'true'
         shell: bash
         run: |
-          craft_path="${RUNNER_TEMP}/craft"
+          craft_bin_dir="${RUNNER_TEMP}/craft-bin"
+          mkdir -p "${craft_bin_dir}"
+          craft_path="${craft_bin_dir}/craft"
           curl --fail --silent --show-error --location \
             https://github.com/getsentry/craft/releases/download/2.30.1/craft \
             --output "${craft_path}"
           echo "b28b71897f6d32cf8614df9b434f75aea766d35923020430906d09ad4fb87c05  ${craft_path}" \
             | sha256sum --check --strict
           chmod +x "${craft_path}"
-          echo "${RUNNER_TEMP}" >> "$GITHUB_PATH"
+          echo "${craft_bin_dir}" >> "$GITHUB_PATH"
 
       - name: Configure release identity
         if: steps.changes.outputs.release == 'true'
