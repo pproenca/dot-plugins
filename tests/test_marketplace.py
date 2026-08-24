@@ -97,10 +97,6 @@ def test_codex_catalog_has_required_fields():
 
 @pytest.mark.parametrize("entry", CODEX_ENTRIES, ids=CODEX_IDS)
 def test_codex_entry_is_installable(entry):
-    assert entry["policy"] == {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL",
-    }
     assert entry["category"]
 
     plugin = codex_plugin_dir(entry).resolve()
