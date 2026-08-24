@@ -1,8 +1,9 @@
 name: Deploy marketplace to GitHub Pages
 
 on:
-  push:
-    branches: [master]
+  workflow_run:
+    workflows: [Release marketplace]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -16,10 +17,13 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: master
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Build marketplace

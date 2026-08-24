@@ -1,0 +1,25 @@
+minVersion: "2.30.1"
+
+github:
+  owner: pproenca
+  repo: dot-plugins
+
+versioning:
+  policy: auto
+
+changelog:
+  filePath: CHANGELOG.md
+  policy: auto
+  scopeGrouping: true
+
+releaseBranchPrefix: release
+preReleaseCommand: python scripts/sync_plugin_versions.py
+
+artifactProvider:
+  name: none
+
+targets:
+  - name: github
+    tagPrefix: v
+    tagOnly: false
+    previewReleases: true

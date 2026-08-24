@@ -115,3 +115,13 @@ def test_codex_entry_is_installable(entry):
 def test_client_catalogs_list_the_same_plugins():
     on_disk = {p.name for p in PLUGINS_DIR.iterdir() if p.is_dir() and not p.name.startswith(".")}
     assert set(CODEX_IDS) == set(IDS) == on_disk
+
+
+def test_all_plugins_use_one_lockstep_version():
+    versions = set()
+    for entry in ENTRIES:
+        plugin = plugin_dir(entry)
+        versions.add(entry["version"])
+        versions.add(json.loads((plugin / "plugin.json").read_text())["version"])
+        versions.add(json.loads((plugin / ".codex-plugin" / "plugin.json").read_text())["version"])
+    assert len(versions) == 1

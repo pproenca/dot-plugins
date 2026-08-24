@@ -23,6 +23,8 @@ Use four spaces for Python and keep lines within Ruff's 120-character limit. Ruf
 
 Pytest is the primary test framework; place repository tests in `tests/test_<area>.py`. Add focused regression tests for validator or catalog behavior and plugin-local tests for runtime changes. There is no numeric coverage threshold, but every new plugin must validate cleanly, appear in both catalogs, and pass the full pytest suite. Do not leave caches or generated artifacts inside plugin directories.
 
+Do not add implementation-detail configuration tests that parse repository config files or assert literal source, workflow, key, or value strings. These snapshot/string-presence tests duplicate the implementation and fail on harmless refactors without proving behavior. Validate configuration with its native linter or CLI, and test release or workflow behavior through dry runs and integration tests instead.
+
 ## Commit & Pull Request Guidelines
 
 Recent commits use short, imperative subjects such as `Add Codex marketplace support alongside Claude Code`. Keep each commit focused and explain licensing or vendored-code decisions in the body when relevant. Pull requests should summarize behavior, identify affected plugins, report the commands run, link related issues, and include screenshots when changing marketplace cards or icons.
