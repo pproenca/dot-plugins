@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#11120f" />
+    <meta
+      name="description"
+      content="dot-plugins is a curated marketplace of portable plugins for Codex, Claude Code, and conformant agent clients."
+    />
+    <title>dot-plugins — Agent plugin marketplace</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#marketplace">Skip to marketplace</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="dot-plugins home">
+        <span class="brand-mark" aria-hidden="true">•</span>
+        <span>dot/plugins</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#marketplace">Browse</a>
+        <a href="#how-it-works">How it works</a>
+        <a class="nav-github" href="https://github.com/pproenca/dot-plugins">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> Portable by design · Agent Plugins v1.1.0</p>
+          <h1 id="hero-title"><span>Give your</span><br /><span>agent</span><br /><em>better instincts.</em></h1>
+          <p class="hero-intro">
+            A small, opinionated marketplace of reusable skills and workflows for agents that build, reason, and ship.
+          </p>
+
+          <div class="quick-install" aria-label="Marketplace installation command">
+            <div class="terminal-bar">
+              <span class="terminal-dot"></span>
+              <span>terminal</span>
+              <button class="copy-button" data-copy-target="marketplace-command" type="button">Copy</button>
+            </div>
+            <code id="marketplace-command"><span class="prompt">$</span> codex plugin marketplace add https://github.com/pproenca/dot-plugins.git --ref master</code>
+          </div>
+
+          <div class="hero-meta" aria-label="Marketplace statistics">
+            <div><strong id="plugin-stat">—</strong><span>plugins</span></div>
+            <div><strong id="skill-stat">—</strong><span>agent skills</span></div>
+            <div><strong>2</strong><span>clients</span></div>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="core-card">
+            <span class="core-label">AGENT<br />LOADOUT</span>
+            <span class="core-symbol">✦</span>
+            <span class="core-version">v1.1</span>
+          </div>
+          <div class="floating-tag tag-one">reason</div>
+          <div class="floating-tag tag-two">verify</div>
+          <div class="floating-tag tag-three">orchestrate</div>
+          <span class="coordinate coordinate-x">x.051</span>
+          <span class="coordinate coordinate-y">y.198</span>
+        </div>
+      </section>
+
+      <section class="marketplace-section" id="marketplace" aria-labelledby="marketplace-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow"><span></span> The collection</p>
+            <h2 id="marketplace-title">Pick your edge.</h2>
+          </div>
+          <p>Every plugin is self-contained, inspectable, and portable across supported clients.</p>
+        </div>
+
+        <div class="catalog-controls">
+          <label class="search-field">
+            <span class="sr-only">Search plugins</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.15A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z" /></svg>
+            <input id="search" type="search" placeholder="Search plugins, skills, or authors…" autocomplete="off" />
+          </label>
+          <div class="client-switcher" role="group" aria-label="Installation client">
+            <button class="active" data-client="codex" type="button" aria-pressed="true">Codex</button>
+            <button data-client="claude" type="button" aria-pressed="false">Claude Code</button>
+          </div>
+        </div>
+
+        <div id="plugin-grid" class="plugin-grid" aria-live="polite" aria-busy="true">
+          <div class="loading-card">Loading the collection…</div>
+        </div>
+        <p id="empty-state" class="empty-state" hidden>No plugins match that search. Try another signal.</p>
+      </section>
+
+      <section class="how-section" id="how-it-works" aria-labelledby="how-title">
+        <div class="how-intro">
+          <p class="eyebrow light"><span></span> Built for inspection</p>
+          <h2 id="how-title">No black boxes.<br />Just useful parts.</h2>
+          <p>Install the marketplace once, then add only the tools your agent needs. Everything stays readable in the repository.</p>
+          <a href="https://github.com/pproenca/dot-plugins/blob/master/spec.md">Read the specification <span aria-hidden="true">↗</span></a>
+        </div>
+        <ol class="how-steps">
+          <li><span>01</span><div><h3>Add the marketplace</h3><p>Point your client at this Git repository.</p></div></li>
+          <li><span>02</span><div><h3>Choose a plugin</h3><p>Review its skills, prompts, source, and license.</p></div></li>
+          <li><span>03</span><div><h3>Extend your agent</h3><p>Install it with one command and start a task.</p></div></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true">•</span><span>dot/plugins</span></a>
+      <p>Independent tools for capable agents.</p>
+      <p class="footer-meta">Open source · Built in the open</p>
+    </footer>
+
+    <dialog id="plugin-dialog" aria-labelledby="dialog-title">
+      <button class="dialog-close" type="button" aria-label="Close plugin details">×</button>
+      <div id="dialog-content"></div>
+    </dialog>
+
+    <div class="toast" role="status" aria-live="polite">Copied to clipboard</div>
+  </body>
+</html>
