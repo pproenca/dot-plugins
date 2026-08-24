@@ -9,7 +9,9 @@ metadata:
 
 Stage 01 of three. Build a picture of the real world before any object type exists. The output is a domain brief and a glossary — no YAML, no object types, no source schemas.
 
-Read [../ontology-forge/references/principles.md](../ontology-forge/references/principles.md) first.
+Read [../ontology-forge/references/principles.md](../ontology-forge/references/principles.md) and [../ontology-forge/references/interviewing.md](../ontology-forge/references/interviewing.md) first.
+
+This stage is an interview. **One question per message, never a second question mark** — the whole of the rule and how to sequence questions is in [interviewing.md](../ontology-forge/references/interviewing.md). A batch of questions returns one answer and three silences, and the silences become assumptions.
 
 ## Start
 
@@ -25,29 +27,38 @@ Open a todolist with one entry per phase.
 
 Establish what is in and what is out before elicitation, or the interview never terminates.
 
-Ask the user:
-- What decisions or workflows should this ontology support? Name two or three concretely.
-- Who are the people doing that work, and what do they call themselves?
-- What is explicitly out of scope for now?
+Three things need settling. Ask them in this order, one message each, reading each answer before choosing the next question:
 
-If the user answers in terms of systems ("we need to model Salesforce"), redirect once: ask what the people using Salesforce are actually doing. Model the work, not the tool.
+1. **What decisions or workflows should this ontology support?** Ask for two or three concretely. Vague scope is the single most expensive thing to discover late.
+2. **Who does that work, and what do they call themselves?** Their words are the naming source for stage 02.
+3. **What is explicitly out of scope for now?** Ask this last — it is only answerable once the user has said what is in.
+
+Search the repository before asking any of them. A question whose answer is already in a README spends the user's attention for nothing.
+
+If the user answers in terms of systems ("we need to model Salesforce"), redirect once: ask what the people using Salesforce are actually doing. Model the work, not the tool. That redirect is itself one question — do not append it to another.
 
 ## Phase 2: Elicit
 
 Interview the user as the domain expert. Ask in their language, never in ontology vocabulary — do not say "object type" in this phase.
 
-Work through these, one theme at a time:
+Six themes need covering. This is a queue to work down, not a list to send:
 
-- **Things.** What are the nouns people in this domain talk about all day? What does a new joiner have to learn the meaning of in week one?
-- **Happenings.** What events occur? What has a timestamp attached to it in the way people describe it?
-- **Decisions.** Where does a human decide something and record the decision? Who is allowed to?
-- **Questions.** What does someone need to look up, and how do they navigate to it? "I have a work order, and I need to know…" — the rest of that sentence is a link.
-- **Rules.** What must always be true? What combinations are impossible?
-- **Pain.** Where does the current setup fail them? What is duplicated, out of date, or manually reconciled today?
+| Theme | What to draw out |
+| ----- | ---------------- |
+| **Things** | The nouns people talk about all day; what a new joiner must learn in week one |
+| **Happenings** | Events that occur; whatever has a timestamp in the way people describe it |
+| **Decisions** | Where a human decides something and records it, and who is allowed to |
+| **Navigation** | What someone looks up, and how they get to it. "I have a work order, and I need to know…" — the rest of that sentence is a link |
+| **Rules** | What must always be true; which combinations are impossible |
+| **Pain** | Where the current setup fails them; what is duplicated, stale, or reconciled by hand |
 
-Ask follow-ups on anything vague. When the user uses a word twice with different meanings, stop and pull it apart — that is a God Object being born.
+One theme per message, and within a theme, one question. A theme usually takes several turns — that is the expected cost, not a sign of going slowly.
 
-Use `AskUserQuestion` when the user faces a genuine either/or about their own domain. Use plain questions for open elicitation.
+Do not treat the order as fixed. When an answer opens a thread, follow it before returning to the queue; the user's own emphasis is better evidence than the sequence in this table.
+
+Follow up on anything vague, one question at a time. When the user uses a word twice with different meanings, stop and spend a turn pulling it apart — that is a God Object being born, and it is far cheaper to separate now than in stage 02.
+
+Use `AskUserQuestion` when the user faces a genuine either/or about their own domain, with one question in the call. Use plain prose for open elicitation, where offering options would put words in their mouth.
 
 ## Phase 3: Separate
 
@@ -68,12 +79,14 @@ Two separations matter most:
 
 ## Phase 4: Pressure-test
 
-Before writing the brief, check the picture holds:
+Before writing the brief, check the picture holds. Do this analysis yourself first — most of it needs no input from the user:
 
 - Walk each named workflow through the entities and relationships. Where you cannot get from A to B, a link is missing.
-- For each entity, ask what distinguishes one instance from another. No answer means it is an attribute, not an entity.
-- For each entity, ask whether two of them are the same real-world thing under different names.
+- For each entity, establish what distinguishes one instance from another. No answer means it is an attribute, not an entity.
+- For each entity, check whether two of them are the same real-world thing under different names.
 - Count the shortcuts. Every "we'll figure that out later" gets recorded, not dropped.
+
+Where a gap genuinely needs the user, take it back to them one question at a time. Resist the pull to close the phase by sending a list of everything still open — that is the batching failure at its most tempting, because the gaps are now known and enumerable. Ask the one that changes the model most; the rest often resolve in the answer.
 
 ## Phase 5: Write the brief
 

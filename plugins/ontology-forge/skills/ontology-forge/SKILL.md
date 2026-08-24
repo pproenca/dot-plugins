@@ -36,6 +36,7 @@ In priority order. When two conflict, the higher one wins. Full text in [referen
 
 Read the reference that covers the question rather than answering from memory. These are short and specific:
 
+- [references/interviewing.md](references/interviewing.md) — the one-question rule, how to sequence questions, and when to stop asking. Load before any stage that talks to the user.
 - [references/principles.md](references/principles.md) — the four principles, seven working guidelines, and how to take a shortcut honestly.
 - [references/anti-patterns.md](references/anti-patterns.md) — eight named failure modes with recognition signals and fixes.
 - [references/structural-guidance.md](references/structural-guidance.md) — normalization and derived properties, structs, interfaces, object-backed links, logic placement, security.
@@ -54,6 +55,8 @@ Read the reference that covers the question rather than answering from memory. T
 **Every tradeoff goes in `DECISIONS.md`.** An accepted compromise that is written down is engineering; the same compromise undocumented is indistinguishable from a mistake.
 
 **Name things in business language.** If reading a name requires knowing which team owns which upstream system, the name is wrong.
+
+**One question per message.** Any stage that interviews the user asks one thing at a time and never emits a second question mark. Batched questions return one answer and a set of silences that become assumptions. See [references/interviewing.md](references/interviewing.md).
 
 ## Quick judgments
 

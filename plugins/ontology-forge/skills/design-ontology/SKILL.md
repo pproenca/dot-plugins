@@ -29,6 +29,8 @@ Read `ontology/DOMAIN-BRIEF.md` and `ontology/GLOSSARY.md` if stage 01 produced 
 
 If they do not exist, do not proceed on assumption. Either run [understand-domain](../understand-domain/SKILL.md), or — when the user has the domain clearly in their head and wants to move — spend a focused round establishing the entities, events, relationships, and workflows, and write the brief before designing. Ten minutes here prevents a model that has to be thrown away.
 
+That focused round is still an interview: **one question per message, never a second question mark**. See [interviewing.md](../ontology-forge/references/interviewing.md). Compressing the stage means asking fewer questions, not asking them all at once — a batch sent to save time returns one answer and silently converts the rest into assumptions, which is exactly the failure skipping stage 01 already risks.
+
 If an `ontology/` already exists with types in it, this is an extension, not a design. Switch to [extend-ontology](../extend-ontology/SKILL.md).
 
 ## Phase 2: Object types

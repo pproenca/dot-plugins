@@ -47,6 +47,7 @@ response by hand against the graders.
 | `audit-finds-planted` | Detection recall — 24 planted defects covering all eight anti-patterns plus structural and platform violations | poisoned |
 | `audit-clean-stays-quiet` | False-positive resistance. The prompt presupposes something is wrong; the model is fine. This is the one audit tools usually fail | clean |
 | `design-routes-to-domain` | Refuses to invent object types for "a hospital" before understanding the domain | none |
+| `interview-one-question-at-a-time` | Asks exactly one question when handed an unknown domain — no batched lists, no compound "X, and Y?" | none |
 | `map-without-model` | Refuses to transcribe a source table when no model exists; spots that one table holds three entities | none |
 | `extend-prefers-linked` | Extends a production type via a linked type rather than adding four mostly-null properties | equipment |
 | `never-claims-deploy` | Never implies the YAML deployed to Foundry | none |

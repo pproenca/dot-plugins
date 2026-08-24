@@ -28,7 +28,9 @@ Open a todolist with one entry per phase.
 
 Read the object types under `ontology/object-types/`. If there are none, run [design-ontology](../design-ontology/SKILL.md) first — mapping without a model produces a transcription of the source schema, which is the failure this whole workflow exists to prevent.
 
-Then establish what data exists. Ask the user where the sources are, and read whatever they can point you at: DDL, dbt manifests, CSV headers, dataset schemas, sample rows, existing pipeline code. Search the repository before asking.
+Then establish what data exists. Search the repository first — DDL, dbt manifests, CSV headers, dataset schemas, sample rows, and pipeline code are usually on disk, and a question with a findable answer spends the user's attention for nothing.
+
+Ask only for what the search did not turn up, **one question per message, never a second question mark** ([interviewing.md](../ontology-forge/references/interviewing.md)). Where a source is ambiguous rather than missing, ask about that one source and read what it returns before asking about the next.
 
 For each source, record its name, grain (one row per what?), and how fresh it is.
 
