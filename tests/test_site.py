@@ -25,3 +25,4 @@ def test_marketplace_site_builds_from_catalog(tmp_path):
     assert data["skillCount"] == sum(plugin["skillCount"] for plugin in data["plugins"])
     assert (output / ".nojekyll").exists()
     assert all((output / plugin["icon"]).exists() for plugin in data["plugins"] if plugin["icon"])
+    assert {Path(plugin["icon"]).suffix for plugin in data["plugins"] if plugin["icon"]} == {".png"}

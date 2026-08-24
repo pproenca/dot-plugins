@@ -24,8 +24,8 @@
     "developerName": "Robert C. Martin",
     "category": "Developer Tools",
     "brandColor": "#059669",
-    "composerIcon": "./.codex-plugin/assets/swarm-forge-squad.svg",
-    "logo": "./.codex-plugin/assets/swarm-forge-squad.svg",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
     "capabilities": [
       "Interactive",
       "Write"

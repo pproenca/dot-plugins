@@ -25,8 +25,8 @@
     "developerName": "Lauren Tan",
     "category": "Developer Tools",
     "brandColor": "#7C3AED",
-    "composerIcon": "./.codex-plugin/assets/pstack.svg",
-    "logo": "./.codex-plugin/assets/pstack.svg",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
     "capabilities": [
       "Interactive",
       "Write"

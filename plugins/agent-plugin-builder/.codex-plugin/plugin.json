@@ -22,8 +22,8 @@
     "developerName": "pproenca",
     "category": "Developer Tools",
     "brandColor": "#3B82F6",
-    "composerIcon": "./.codex-plugin/assets/agent-plugin-builder.svg",
-    "logo": "./.codex-plugin/assets/agent-plugin-builder.svg",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
     "capabilities": [
       "Interactive",
       "Write"

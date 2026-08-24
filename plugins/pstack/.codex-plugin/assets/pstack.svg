@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">pstack</title>
-  <desc id="desc">A violet stacked workflow mark.</desc>
-  <rect width="64" height="64" rx="14" fill="#7C3AED"/>
-  <path fill="#EDE9FE" d="M16 18h32v8H16zM16 30h32v8H16zM16 42h32v8H16z"/>
-  <path fill="#A78BFA" d="M22 14h20v4H22zM22 26h20v4H22zM22 38h20v4H22z"/>
-  <path fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" d="M24 22h16M24 34h16M24 46h16"/>
-</svg>

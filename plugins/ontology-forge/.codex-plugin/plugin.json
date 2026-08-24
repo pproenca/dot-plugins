@@ -25,8 +25,8 @@
     "category": "Developer Tools",
     "websiteURL": "https://github.com/pproenca/dot-plugins",
     "brandColor": "#4CC9A6",
-    "composerIcon": "./.codex-plugin/assets/ontology-forge.svg",
-    "logo": "./.codex-plugin/assets/ontology-forge.svg",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
     "capabilities": [
       "Interactive",
       "Write"

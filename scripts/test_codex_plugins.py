@@ -289,12 +289,27 @@ def test_plugins(command: CodexCommand, marketplace: Path, names: list[str], tim
                 summary = plugin.get("summary") if isinstance(plugin, dict) else None
                 if not isinstance(summary, dict) or summary.get("name") != name:
                     raise CodexTestError(f"plugin/read returned the wrong plugin summary: {result}")
+                if not isinstance(plugin.get("description"), str) or not plugin["description"].strip():
+                    raise CodexTestError("plugin/read returned no plugin description")
+                interface = summary.get("interface")
+                if not isinstance(interface, dict):
+                    raise CodexTestError("plugin/read returned no marketplace interface metadata")
+                for field in ("displayName", "shortDescription", "longDescription"):
+                    if not isinstance(interface.get(field), str) or not interface[field].strip():
+                        raise CodexTestError(f"plugin/read returned no interface.{field}")
+                for field in ("composerIcon", "logo"):
+                    asset = interface.get(field)
+                    if not isinstance(asset, str) or not Path(asset).is_file():
+                        raise CodexTestError(f"plugin/read returned no usable interface.{field}")
                 skills = plugin.get("skills")
                 if not isinstance(skills, list) or not skills:
                     raise CodexTestError("plugin/read returned no skills")
                 mcp_servers = plugin.get("mcpServers", [])
                 hooks = plugin.get("hooks", [])
-                print(f"ok  {name}: {len(skills)} skills, {len(mcp_servers)} MCP servers, {len(hooks)} hooks")
+                print(
+                    f"ok  {interface['displayName']}: {len(skills)} skills, "
+                    f"{len(mcp_servers)} MCP servers, {len(hooks)} hooks"
+                )
             except CodexTestError as error:
                 failures.append((name, str(error)))
                 print(f"FAIL {name}", file=sys.stderr)

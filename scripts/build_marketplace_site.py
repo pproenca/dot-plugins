@@ -25,7 +25,7 @@ def build_plugin(entry: dict, output_dir: Path) -> dict:
     skill_names = sorted(path.parent.name for path in (plugin_dir / "skills").glob("*/SKILL.md"))
 
     icon_source = plugin_dir / interface.get("logo", "")
-    icon_name = f"{manifest['name']}.svg"
+    icon_name = f"{manifest['name']}{icon_source.suffix.lower()}"
     if icon_source.is_file():
         shutil.copy2(icon_source, output_dir / "assets" / "icons" / icon_name)
 

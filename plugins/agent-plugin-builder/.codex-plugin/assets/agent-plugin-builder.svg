@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">Agent Plugin Builder</title>
-  <desc id="desc">A blue plugin tile with connected builder blocks.</desc>
-  <rect width="64" height="64" rx="14" fill="#3B82F6"/>
-  <path fill="#DBEAFE" d="M17 18h14v12H17zM33 18h14v12H33zM17 34h14v12H17zM33 34h14v12H33z"/>
-  <path fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M31 24h2M24 30v4M40 30v4M31 40h2"/>
-  <circle cx="24" cy="24" r="3" fill="#1E3A8A"/>
-  <circle cx="40" cy="40" r="3" fill="#1E3A8A"/>
-</svg>
