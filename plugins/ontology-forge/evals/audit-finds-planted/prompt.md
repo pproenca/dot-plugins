@@ -1,7 +1,7 @@
 ---
 name: audit-finds-planted
 tags: [audit]
-allowed_tools: [Read, Grep, Glob, Write, Skill]
+allowed_tools: [Read, Grep, Glob, Write, Edit, Skill, Bash]
 max_turns: 40
 timeout_seconds: 900
 ---

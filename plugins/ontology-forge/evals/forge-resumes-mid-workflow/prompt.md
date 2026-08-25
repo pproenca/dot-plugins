@@ -1,7 +1,7 @@
 ---
 name: forge-resumes-mid-workflow
 tags: [workflow, continuity]
-allowed_tools: [Read, Grep, Glob, Write, Skill]
+allowed_tools: [Read, Grep, Glob, Write, Edit, Skill]
 max_turns: 15
 ---
 
