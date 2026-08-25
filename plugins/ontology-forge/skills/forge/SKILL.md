@@ -37,7 +37,15 @@ type filenames. Enough to describe the position accurately, not the whole model.
 
 ## Phase 2: Show the board
 
-Report the position before doing anything with it. Three things, briefly:
+**When there is nothing on disk, skip this phase and the next one.** Go straight to
+`ontology-forge:understand-domain`, which opens with one question. A board of four
+`not started` rows tells the user nothing they did not just tell you, a menu asking whether to
+start at the start is ceremony, and writing `STATUS.md` before a single answer exists records a
+position nobody has taken. Starting an interview with a status table and a set of options is
+also the batching failure the one-question rule exists to prevent — the user answers the option,
+and the actual first question goes unasked.
+
+Otherwise report the position before doing anything with it. Three things, briefly:
 
 - Each stage and its state, with what it produced.
 - Open questions and thin-evidence decisions carried forward, counted and named.
@@ -53,7 +61,6 @@ next step first. Options are real work, never "continue" — name the stage and 
 
 | Position | Offer first | Also offer |
 | -------- | ----------- | ---------- |
-| Nothing on disk | Stage 01, understand the domain | Design directly, flagged as skipping 01 |
 | 01 done | Stage 02, design the object model | Revisit an open question first |
 | 02 in progress | Resume 02 at its phase | Audit what exists so far |
 | 02 done | Stage 03, map source data | Audit before mapping |
@@ -61,6 +68,8 @@ next step first. Options are real work, never "continue" — name the stage and 
 | 04 done for one direction | The other direction — inbound or outbound | Audit the whole model |
 | 04 done | Audit the whole model | Extend it with a new requirement |
 | Open questions blocking a type | Resolve the question | Proceed and record it as thin evidence |
+
+Nothing on disk is not in that table on purpose: it is not a choice, it is stage 01. Run it.
 
 When the user arrives with a specific request — a new requirement, "audit this" — skip the menu
 and go straight to the stage that serves it. The menu is for when the next move is genuinely the

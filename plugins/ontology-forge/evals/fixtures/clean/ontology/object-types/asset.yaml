@@ -22,9 +22,21 @@ properties:
   commissionedDate:
     type: date
     description: Date the asset entered service.
-  openWorkOrderCount:
+  lastInspectionDate:
+    type: timestamp
+    description: >
+      Most recent completed inspection. Satisfies the inspectable interface. Empty on a
+      newly commissioned asset, rather than carrying a sentinel date.
+  inspectionIntervalDays:
     type: integer
-    description: How many work orders are currently open against this asset.
+    description: Required number of days between inspections. Satisfies the inspectable interface.
+    required: true
+  workOrderCount:
+    type: integer
+    description: >
+      How many work orders have ever been raised against this asset, in any state.
+      Not a backlog figure: derived aggregations take no predicate, so completed and
+      cancelled work is included.
     derived: true
     via: [workOrderAsset]
     aggregation: count

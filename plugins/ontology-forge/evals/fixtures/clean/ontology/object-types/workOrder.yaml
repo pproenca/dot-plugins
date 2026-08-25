@@ -27,13 +27,20 @@ properties:
   workOrderStatus:
     type: string
     description: Lifecycle state of the work order.
+    required: true
     constraints:
       enum: [draft, approved, inProgress, blocked, complete, cancelled]
   estimatedHours:
     type: double
     description: Planned technician hours. Null until the work order is approved.
-  openDurationDays:
-    type: integer
-    description: Days between raisedDate and completedDate, or today if still open.
-    derived: true
-    derivation: Depends on the current date, so it cannot be pre-computed in a batch.
+  actualHours:
+    type: double
+    description: Technician hours actually spent, recorded at close. Null until closed.
+  outcome:
+    type: string
+    description: How the work ended, recorded by the technician at close.
+    constraints:
+      enum: [resolved, partiallyResolved, referredOnward]
+  closingNotes:
+    type: string
+    description: What the technician recorded about the job when signing it off.
