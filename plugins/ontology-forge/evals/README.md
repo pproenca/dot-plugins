@@ -21,11 +21,12 @@ claude plugin eval ontology-forge --ablation with-without --runs 3
 ```
 
 `--ablation with-without` adds a no-plugin baseline arm and reports the delta —
-that is what shows whether the plugin earns its ~773 always-on tokens rather than
-merely sounding good. Graders marked `with-only` (the `tool_used: Skill` ones) are
+that is what shows whether the plugin earns its always-on cost rather than merely
+sounding good — eight skill descriptions, roughly 700 tokens by a characters-over-four
+estimate. Graders marked `with-only` (the `tool_used: Skill` ones) are
 plugin-fired indicators rather than part of the score.
 
-Three cases need a fixture staged into the working directory first. Each ships a
+Five cases need a fixture staged into the working directory first. Each ships a
 `scaffold.sh`; wire them to `scaffold_script` in a `case.yaml` and pass `--scaffold`,
 or use the manual runner below.
 
@@ -51,6 +52,9 @@ response by hand against the graders.
 | `map-without-model` | Refuses to transcribe a source table when no model exists; spots that one table holds three entities | none |
 | `extend-prefers-linked` | Extends a production type via a linked type rather than adding four mostly-null properties | equipment |
 | `never-claims-deploy` | Never implies the YAML deployed to Foundry | none |
+| `forge-resumes-mid-workflow` | Continuity. A workflow abandoned mid-stage-02 is resumed from `STATUS.md` without re-interviewing, and the next move is offered rather than a menu of commands | mid-workflow |
+| `output-stays-in-files` | Writes the brief to files under a prompt engineered to invite publishing a shareable page | none |
+| `contract-conforms-to-odcs` | Writes an inbound contract that passes the vendored ODCS v3.1.0 schema, and invents no guarantee the source has not agreed to | mapped-customer |
 
 ## Scoring the audit case
 
