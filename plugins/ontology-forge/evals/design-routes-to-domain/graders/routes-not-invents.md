@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 The working directory is empty — there is no domain brief, no glossary, and no
 existing ontology.
 

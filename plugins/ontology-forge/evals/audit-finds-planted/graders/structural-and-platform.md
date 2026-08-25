@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 Beyond the eight anti-patterns, the fixture plants structural and platform defects.
 Credit the response for each it catches:
 

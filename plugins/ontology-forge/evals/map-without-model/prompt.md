@@ -1,3 +1,9 @@
+---
+name: map-without-model
+tags: [mapping, guardrail]
+allowed_tools: [Read, Glob, Skill]
+---
+
 Here is our orders table:
 
   order_id, customer_name, customer_email, product_sku, product_name, quantity,

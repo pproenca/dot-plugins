@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 The whole point of `STATUS.md` is that a user returning after a break gets a real position
 instead of a guess. Everything needed is staged: stage 01 done, stage 02 stopped at phase 3,
 one open question, one thin-evidence decision, one deferred area.

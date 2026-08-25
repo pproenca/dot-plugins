@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 The fixture has 24 deliberately planted defects. Score the response on how many
 distinct ones it identifies.
 

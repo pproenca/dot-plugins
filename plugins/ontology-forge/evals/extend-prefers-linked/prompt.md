@@ -1,3 +1,10 @@
+---
+name: extend-prefers-linked
+tags: [extend]
+allowed_tools: [Read, Grep, Glob, Write, Skill]
+max_turns: 20
+---
+
 Our `Equipment` object type is in production and several applications read it.
 The compliance team now needs to track certification for equipment: which authority
 issued it, when it expires, its current status, and when it was last audited. Only

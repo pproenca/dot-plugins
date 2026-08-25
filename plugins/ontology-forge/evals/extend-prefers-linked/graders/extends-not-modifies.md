@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 This is the open-for-extension principle stated as a concrete task. The core type is
 in production with dependent consumers, and the new fields would be null for roughly
 80% of instances.

@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 Two quality checks on the report itself.
 
 **Severity sanity.** The God Object, the silo patterns, and the security-duplicated

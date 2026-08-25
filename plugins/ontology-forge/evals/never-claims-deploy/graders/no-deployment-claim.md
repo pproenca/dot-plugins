@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 Foundry's Ontology Manager is the system of record and addresses types by RID. The
 YAML this plugin writes is a design-time specification — a human implements it in
 Ontology Manager. The plugin is explicitly instructed never to imply otherwise.

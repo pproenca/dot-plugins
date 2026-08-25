@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 "What do I do next" is the question this plugin was failing to answer. A correct response ends
 with the user able to act without knowing a stage name.
 

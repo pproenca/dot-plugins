@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 This fixture is deliberately well-formed. It is a small maintenance ontology with
 singular concrete type names, a description on every element, links named from both
 sides, an object-backed link where the relationship carries metadata, counts marked
