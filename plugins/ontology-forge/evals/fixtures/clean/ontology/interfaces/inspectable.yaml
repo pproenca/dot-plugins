@@ -7,8 +7,7 @@ extends: []
 properties:
   lastInspectionDate:
     type: timestamp
-    description: Most recent completed inspection.
-    required: true
+    description: Most recent completed inspection. Empty until the first one happens.
   inspectionIntervalDays:
     type: integer
     description: Required number of days between inspections.

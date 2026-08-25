@@ -2,7 +2,7 @@
 name: extend-prefers-linked
 tags: [extend]
 allowed_tools: [Read, Grep, Glob, Write, Edit, Skill]
-max_turns: 20
+max_turns: 25
 ---
 
 Our `Equipment` object type is in production and several applications read it.

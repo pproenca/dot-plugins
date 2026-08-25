@@ -1,0 +1,37 @@
+apiName: workOrderAssignmentRecord
+displayName: Work Order Assignment Record
+pluralDisplayName: Work Order Assignments
+description: >
+  One technician's assignment to one work order: the capacity they are working in
+  and the period they are assigned for. Exists because the assignment carries data
+  of its own, which a direct link cannot hold.
+status: active
+groups: [maintenance]
+primaryKey: assignmentId
+titleProperty: assignmentId
+properties:
+  assignmentId:
+    type: string
+    description: Stable identifier for this assignment.
+    required: true
+  workOrderId:
+    type: string
+    description: The work order this assignment is against.
+    required: true
+  technicianId:
+    type: string
+    description: The technician assigned.
+    required: true
+  capacity:
+    type: string
+    description: The role the technician works in on this work order.
+    required: true
+    constraints:
+      enum: [lead, support, inspector]
+  assignedFrom:
+    type: timestamp
+    description: When the technician became responsible for this work order.
+    required: true
+  assignedUntil:
+    type: timestamp
+    description: When the assignment ended. Empty while the assignment is current.

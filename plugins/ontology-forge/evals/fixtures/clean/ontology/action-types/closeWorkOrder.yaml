@@ -23,6 +23,12 @@ modifies:
     to: complete
   - property: completedDate
     to: now()
+  - property: outcome
+    from: parameter outcome
+  - property: actualHours
+    from: parameter actualHours
+  - property: closingNotes
+    from: parameter notes
 sideEffects:
   - Notifies the requesting supervisor.
 validation:

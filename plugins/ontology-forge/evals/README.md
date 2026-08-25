@@ -7,8 +7,14 @@ A scored suite for `ontology-forge`, in the case format `claude plugin eval` con
 ## Running it
 
 ```bash
-claude plugin eval . --scaffold --ablation with-without --runs 3
+claude plugin eval . --scaffold --ablation with-without --runs 3 \
+  --judge-model sonnet --allow-tools Write Edit Bash
 ```
+
+**`--judge-model sonnet` is not optional for this suite.** On the default judge, three votes
+unanimously failed a response containing exactly one question mark and no object types — a
+textbook pass. Two cases scored wrong because of it. Any rubric here that turns on a
+distinction finer than keyword-matching needs the stronger judge.
 
 `--ablation with-without` adds a no-plugin baseline arm and reports the delta — that is what
 shows whether the plugin earns its always-on cost rather than merely sounding good (eight skill

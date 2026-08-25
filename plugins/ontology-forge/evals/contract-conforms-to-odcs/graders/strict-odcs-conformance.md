@@ -2,29 +2,29 @@
 type: llm
 ---
 
-The plugin claims contracts conform strictly to ODCS v3.1.0, and ships a validator plus the
-vendored schema to make that checkable. The fixture holds everything the contract needs: the
-object type, the source grain, the column types, and the freshness.
+An `llm` grader sees the final message, not the contract file, and the file's name is chosen by
+the response so it cannot be pinned with `focus: {source: file}`. Field-level conformance is
+therefore graded by `validator-passed`, which runs the real v3.1.0 schema. This rubric grades
+what only a reader of the message can judge: whether the response reports that check honestly
+and understands what it wrote.
 
-**PASS** if the contract is written to `ontology/contracts/inbound/` as a `.odcs.yaml` file, and
-**the validator was actually run on it** — `scripts/validate_contract.py` — with a clean result.
-Claiming conformance without running the check is the failure this grader exists to catch.
+**PASS** if the response states the validator's actual result rather than asserting conformance
+on its own authority, and says where the contract was written.
 
-The five required fundamentals must be present and correct: `apiVersion: v3.1.0`,
-`kind: DataContract`, a UUID `id`, a SemVer `version`, and a `status` from `proposed`, `draft`,
-`active`, `deprecated`, `retired`.
+**FAIL** if it claims the contract conforms to ODCS without reference to having checked, or
+reports a clean result the trace does not support. Claiming conformance is the failure this
+case exists to catch; the standard is strict precisely because plausible-looking guesses pass
+human review.
 
-**FAIL** on any field the standard does not define — `nullable`, `columns`, `dataType`, `owner`,
-`checks`, a bare `type` on a property. v3.1.0 sets `unevaluatedProperties: false`, so these are
-errors, not extensions. Anything genuinely outside the standard belongs in `customProperties`.
+**FAIL** if it describes writing a field the standard does not define — `nullable`, `columns`,
+`dataType`, a bare `type` on a property — as though that were acceptable, or if it names a
+`logicalType` outside `string, date, timestamp, time, number, integer, object, array, boolean`.
 
-**FAIL** if `logicalType` is anything outside `string, date, timestamp, time, number, integer,
-object, array, boolean`. `datetime` and `varchar` are the tempting wrong answers; the source type
-`VARCHAR(36)` belongs in `physicalType`.
+Credit for saying out loud what a contract cannot express: ODCS has no interface and no action
+type, so a property populated by an action must be called out or the contract reads as though
+the source supplies it. The fixture stages exactly that case — `creditRating` is action-populated
+with no source column.
 
-Credit for `required: true` stated explicitly rather than left to default to false, and for
-descriptions carried over from the object type rather than restating the column name.
-
-Note that `status: live` and an invented `slaProperties[].driver` both pass the schema — those
-values are examples in ODCS, not enums. A response that gets them right is doing something the
-validator cannot do for it.
+Credit for `status` being one of `proposed`, `draft`, `active`, `deprecated`, `retired`. Those
+are examples in the schema rather than an enum, so the validator cannot catch a wrong one and
+this rubric is the only thing that will.
