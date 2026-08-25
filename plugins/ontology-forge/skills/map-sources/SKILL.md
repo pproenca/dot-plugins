@@ -1,8 +1,6 @@
 ---
 name: map-sources
 description: "Stage 03 of ontology design. Use when /map-sources, 'map source data', 'back these object types with datasets', or deciding whether logic belongs in an action, a pipeline, a function, or a derived property. Maps real datasets and columns onto an existing object model, records what was deliberately excluded, and places every piece of logic in the right layer."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Map source data and logic
@@ -14,6 +12,12 @@ The direction matters: **source data is mapped onto the model, never the reverse
 Read [spec-format.md](../ontology-forge/references/spec-format.md) and [structural-guidance.md](../ontology-forge/references/structural-guidance.md) first.
 
 ## Start
+
+Read `ontology/STATUS.md` first. It carries the position, the open questions, and the
+thin-evidence decisions from earlier stages — the format is in
+[status-format.md](../ontology-forge/references/status-format.md). If it does not exist,
+reconstruct it from what is on disk using the derivation table there. Starting without it
+means re-asking questions the user has already answered.
 
 Open a todolist with one entry per phase.
 
@@ -96,7 +100,16 @@ Append to `ontology/DECISIONS.md` every reconciliation rule, dropped-record deci
 
 ## Finish
 
-Report:
+Write `ontology/STATUS.md` before reporting — see
+[status-format.md](../ontology-forge/references/status-format.md):
+
+- Mark stage 03 `done`, or `in progress` with the phase reached.
+- Every object type with no viable source, and every unmapped property, goes under **Open
+  questions** — these are the things a later reader will otherwise assume are fine.
+- Every precedence rule chosen without an authoritative answer goes under **Thin evidence**.
+- Set **Next** to `/ontology-forge:write-contracts`.
+
+Then report:
 
 - Object types with no viable source.
 - Properties left unmapped, and why.
@@ -104,3 +117,10 @@ Report:
 - Any place the data pushed back on the model — where the domain says one thing and the sources cannot support it. This is the most valuable output of the stage; do not bury it.
 
 Do not quietly reshape the model to fit the data. Bring the conflict to the user and let them decide.
+
+Offer stage 04 — hand back to [forge](../forge/SKILL.md) if it invoked this stage, otherwise ask
+whether to run `ontology-forge:write-contracts` now. What this stage recorded per source — grain,
+freshness, transformations, exclusions — is most of an inbound data contract, so writing the
+contracts while that work is fresh is cheaper than reconstructing it later.
+
+Mappings go to `ontology/mappings/` as files. Do not publish them as an artifact.

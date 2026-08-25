@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ontology-forge",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "description": "Design and extend a Palantir Foundry ontology the domain-driven way: interview the domain, shape object types, links, interfaces and actions, then map source data and logic onto them.",
   "author": {
     "name": "pproenca"
@@ -15,14 +15,17 @@
     "domain-driven-design",
     "data-modeling",
     "semantic-layer",
-    "anti-patterns"
+    "anti-patterns",
+    "data-contracts",
+    "odcs",
+    "open-data-contract-standard"
   ],
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Ontology Forge",
-        "shortDescription": "Design a Foundry ontology, domain first",
-        "longDescription": "Work through the three stages of ontology design — understand the domain, design the object model, map source data and logic — with Palantir's best practices, structural guidance, and anti-pattern catalog applied at every step.",
+        "shortDescription": "Drive a Foundry ontology design, domain first",
+        "longDescription": "Run the four stages of ontology design from one command — understand the domain, design the object model, map source data and logic, write the data contracts — with a checkpoint at every stage boundary and the position, open questions, and unconfirmed decisions carried in ontology/STATUS.md between sessions. Contracts conform strictly to Open Data Contract Standard v3.1.0 and are validated against its JSON schema. Palantir's best practices, structural guidance, and anti-pattern catalog are applied throughout.",
         "developerName": "pproenca",
         "category": "Developer Tools",
         "websiteURL": "https://github.com/pproenca/dot-plugins",
@@ -31,9 +34,9 @@
           "Write"
         ],
         "defaultPrompt": [
-          "Design an ontology for this domain",
-          "Extend the ontology with a new requirement",
-          "Audit this ontology for anti-patterns"
+          "Take me through designing an ontology for this domain",
+          "Continue the ontology where we left off",
+          "Write ODCS data contracts for these sources"
         ]
       }
     }

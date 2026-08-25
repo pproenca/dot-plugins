@@ -1,8 +1,6 @@
 ---
 name: understand-domain
 description: "Stage 01 of ontology design. Use when /understand-domain, 'understand the domain', starting an ontology from scratch, or when a model is being proposed before anyone has established what the domain actually contains. Interviews the user as a domain expert, separates entities from events from decisions, and produces a domain brief plus glossary that stage 02 designs against."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Understand the domain
@@ -14,6 +12,12 @@ Read [../ontology-forge/references/principles.md](../ontology-forge/references/p
 This stage is an interview. **One question per message, never a second question mark** — the whole of the rule and how to sequence questions is in [interviewing.md](../ontology-forge/references/interviewing.md). A batch of questions returns one answer and three silences, and the silences become assumptions.
 
 ## Start
+
+Read `ontology/STATUS.md` first. It carries the position, the open questions, and the
+thin-evidence decisions from earlier stages — the format is in
+[status-format.md](../ontology-forge/references/status-format.md). If it does not exist,
+reconstruct it from what is on disk using the derivation table there. Starting without it
+means re-asking questions the user has already answered.
 
 Open a todolist with one entry per phase.
 
@@ -125,6 +129,22 @@ Unresolved conflicts, terms two teams disagree on, gaps needing a stakeholder.
 
 ## Finish
 
-State plainly what is still unresolved, then offer stage 02: `/ontology-forge:design-ontology`.
+Write `ontology/STATUS.md` before saying anything to the user — the shape and its rules are in
+[status-format.md](../ontology-forge/references/status-format.md). Stage 01 is where the open
+questions list is born, so it matters most here:
+
+- Mark stage 01 `done`, naming what it produced.
+- Every term two teams disagreed on, every gap that needs a stakeholder, and everything the
+  user deferred goes under **Open questions**, with what each one blocks.
+- Anything answered by one person's recollection rather than a source goes under **Thin
+  evidence**, with what would settle it.
+- Set **Next** to `/ontology-forge:design-ontology`.
+
+Then report what was written and what is still unresolved, and offer stage 02 — hand back to
+[forge](../forge/SKILL.md) if that is what invoked this stage, otherwise ask whether to run
+`ontology-forge:design-ontology` now.
 
 Do not create object types in this stage, even when the shape looks obvious. Committing to a type here is how a domain brief silently becomes a source-schema transcription.
+
+Write the brief and the glossary as files under the model directory. Do not publish them as an
+artifact or render them as a page — the user reviews these in a diff alongside the model.

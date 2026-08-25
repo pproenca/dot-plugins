@@ -1,8 +1,6 @@
 ---
 name: audit-ontology
 description: "Use when /audit-ontology, 'audit the ontology', 'review this object model', 'check for anti-patterns', or before promoting a model to production. Fans out parallel reviewers across the anti-pattern catalog and structural guidance, verifies each finding against the actual files, and reports ranked violations with the evidence and the fix."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Audit the ontology
@@ -12,6 +10,12 @@ Review an existing model against the anti-pattern catalog and the structural gui
 Read [detection-rules.md](../ontology-forge/references/detection-rules.md) first — it turns every indicator below into a computable check. Then [anti-patterns.md](../ontology-forge/references/anti-patterns.md), [structural-guidance.md](../ontology-forge/references/structural-guidance.md), and [naming.md](../ontology-forge/references/naming.md) for what each hit means and how to fix it.
 
 ## Start
+
+Read `ontology/STATUS.md` first. It carries the position, the open questions, and the
+thin-evidence decisions from earlier stages — the format is in
+[status-format.md](../ontology-forge/references/status-format.md). If it does not exist,
+reconstruct it from what is on disk using the derivation table there. Starting without it
+means re-asking questions the user has already answered.
 
 Open a todolist with one entry per phase.
 
@@ -26,6 +30,10 @@ Open a todolist with one entry per phase.
 Locate the model. Default to `ontology/`; ask if the user's model lives elsewhere or is described in another format.
 
 Build an index before reviewing: every object type with its property count and null-tolerant property count, every link type with cardinality and backing, every interface with its implementors, every action type with its target and the properties it modifies. Read `DECISIONS.md` — a documented tradeoff is not a finding, and reporting one as a violation wastes the user's attention.
+
+If `ontology/contracts/` exists, run `../write-contracts/scripts/validate_contract.py` over it and
+carry the result into the report. A contract that no longer conforms to ODCS v3.1.0 is a finding
+the lanes below cannot see, because they read the ontology YAML rather than the contracts.
 
 If there is no model on disk, ask the user to point at one. Do not audit an ontology from a verbal description.
 
@@ -104,6 +112,24 @@ in the files, interfaces referenced but not defined.
 
 Be direct about severity. Report a healthy model as healthy — inventing findings to look thorough trains the user to ignore the next audit. If the model is good, say so and list only what would make it better.
 
+## Finish
+
+Update `ontology/STATUS.md` — see [status-format.md](../ontology-forge/references/status-format.md):
+
+- Record that an audit ran, when, and the count at each severity.
+- Every critical and major finding goes under **Open questions** until it is fixed or accepted.
+  A finding that lives only in `AUDIT.md` is one `git pull` away from being invisible.
+- Set **Next** to `/ontology-forge:extend-ontology` when there are findings to apply.
+
+Hand back to [forge](../forge/SKILL.md) if it invoked this stage.
+
 ## Fixing
 
 Do not apply fixes during the audit. When the user wants them applied, work through the findings in severity order with [extend-ontology](../extend-ontology/SKILL.md), which will check blast radius before changing an established type.
+
+## Where the report goes
+
+`ontology/AUDIT.md`, as a file in the repository. Do not publish the audit as an artifact or
+render it as a web page, however much a findings report invites it. The audit is reviewed in a
+diff next to the model it describes, and it is stale the moment the model changes — a published
+copy keeps asserting findings that have already been fixed.

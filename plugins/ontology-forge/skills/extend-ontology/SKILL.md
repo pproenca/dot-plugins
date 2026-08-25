@@ -1,8 +1,6 @@
 ---
 name: extend-ontology
 description: "Use when /extend-ontology, 'extend the ontology', 'add X to the model', or fitting a new requirement into an ontology that already exists. Finds where the requirement belongs, and prefers extending through new linked types and interfaces over modifying established core types, so applications built on those types keep working."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Extend the ontology
@@ -14,6 +12,12 @@ The governing principle is **open for extension, closed for modification**. Esta
 Read [principles.md](../ontology-forge/references/principles.md) and [structural-guidance.md](../ontology-forge/references/structural-guidance.md) first.
 
 ## Start
+
+Read `ontology/STATUS.md` first. It carries the position, the open questions, and the
+thin-evidence decisions from earlier stages — the format is in
+[status-format.md](../ontology-forge/references/status-format.md). If it does not exist,
+reconstruct it from what is on disk using the derivation table there. Starting without it
+means re-asking questions the user has already answered.
 
 Open a todolist with one entry per phase.
 
@@ -79,4 +83,18 @@ If the extension needs source data, continue with [map-sources](../map-sources/S
 
 ## Finish
 
-Report what changed, what was deliberately left alone, and any breaking change the user needs to rule on. If the requirement could not be fitted without modifying a core type, say that plainly rather than quietly reshaping it.
+Update `ontology/STATUS.md` — see [status-format.md](../ontology-forge/references/status-format.md):
+
+- Record the requirement that was added and which shape it took.
+- Any breaking change the user has not yet ruled on goes under **Open questions**. It stays
+  there until they decide; it is exactly the thing that gets forgotten between sessions.
+- Remove anything from **Not yet modelled** that this extension now covers.
+- Set **Next** to `/ontology-forge:map-sources` if the extension needs source data, otherwise
+  `/ontology-forge:audit-ontology`.
+
+Then report what changed, what was deliberately left alone, and any breaking change the user needs to rule on. If the requirement could not be fitted without modifying a core type, say that plainly rather than quietly reshaping it.
+
+Hand back to [forge](../forge/SKILL.md) if it invoked this stage.
+
+The changed YAML and the `DECISIONS.md` entry are files. Do not publish the result as an
+artifact or a rendered page.

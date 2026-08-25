@@ -1,8 +1,6 @@
 ---
 name: design-ontology
 description: "Stage 02 of ontology design. Use when /design-ontology, 'design the ontology', 'model this domain', or turning a domain understanding into object types, properties, link types, interfaces and action types. Produces the ontology YAML specification with every element named in business language, checked against the anti-pattern catalog, and with the reasoning recorded in DECISIONS.md."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Design the ontology
@@ -12,6 +10,12 @@ Stage 02 of three. Turn the domain picture into a specified object model. The ou
 Read [../ontology-forge/references/principles.md](../ontology-forge/references/principles.md), [naming.md](../ontology-forge/references/naming.md), [vocabulary.md](../ontology-forge/references/vocabulary.md), and [spec-format.md](../ontology-forge/references/spec-format.md) before starting.
 
 ## Start
+
+Read `ontology/STATUS.md` first. It carries the position, the open questions, and the
+thin-evidence decisions from earlier stages — the format is in
+[status-format.md](../ontology-forge/references/status-format.md). If it does not exist,
+reconstruct it from what is on disk using the derivation table there. Starting without it
+means re-asking questions the user has already answered.
 
 Open a todolist with one entry per phase.
 
@@ -104,10 +108,25 @@ Then write `ontology/DECISIONS.md`. One entry per decision a future reader would
 
 ## Finish
 
-Report what was created, then say plainly:
+Write `ontology/STATUS.md` before reporting — [status-format.md](../ontology-forge/references/status-format.md)
+has the shape:
+
+- Mark stage 02 `done`, or `in progress` with the phase reached if the stage stopped early.
+- List every part of the domain brief no type covers yet under **Not yet modelled**.
+- Add every decision made on thin evidence, naming the stakeholder question that would settle it.
+- Check off any stage 01 open question this stage resolved, with the answer inline. Carry the
+  rest forward untouched.
+- Set **Next** to `/ontology-forge:map-sources`.
+
+Then report what was created, and say plainly:
 
 - Which parts of the domain brief are not yet modelled.
 - Which decisions were made on thin evidence and want a stakeholder's confirmation.
 - That this is a design specification, and Ontology Manager remains the system of record.
 
-Offer stage 03: `/ontology-forge:map-sources`.
+Offer stage 03 — hand back to [forge](../forge/SKILL.md) if it invoked this stage, otherwise ask
+whether to run `ontology-forge:map-sources` now.
+
+The YAML and `DECISIONS.md` are files under the model directory. Never publish the model, or a
+summary of it, as an artifact or a rendered page — a copy of the model that is not the model is
+a second source of truth that starts drifting the moment it is written.
