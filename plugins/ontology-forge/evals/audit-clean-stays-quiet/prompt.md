@@ -1,7 +1,7 @@
 ---
 name: audit-clean-stays-quiet
 tags: [audit]
-allowed_tools: [Read, Grep, Glob, Write, Skill]
+allowed_tools: [Read, Grep, Glob, Write, Edit, Skill, Bash]
 max_turns: 30
 timeout_seconds: 600
 ---

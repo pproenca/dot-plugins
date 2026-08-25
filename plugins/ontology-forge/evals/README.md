@@ -17,8 +17,18 @@ for the five cases that stage a fixture; it runs author-supplied bash as you, wh
 off by default.
 
 Useful narrowing: `--case '<glob>'`, `--tag audit`, `--runs 1` while iterating,
-`--max-cost-usd <n>` for a hard ceiling. Cases declare `allowed_tools`, but gated tools also
-need the operator grant: `--allow-tools Bash Write`.
+`--max-cost-usd <n>` for a hard ceiling, `--keep-temp` to preserve each run's sandbox and
+`trace.jsonl` when a grader fails and you need to see why.
+
+**Cases declare `allowed_tools`, but gated tools also need the operator grant** —
+`--allow-tools Write Edit Bash`. Without it a case that must write files scores 0 because the
+agent could not act, not because the plugin misbehaved. That is a confusing failure: the judge
+reports the missing output, not the missing permission.
+
+Every case grants the tools it would have in real use, including the guardrail cases. A
+guardrail case must be *able* to do the wrong thing — a case that cannot write files does not
+test whether the plugin declines to publish, it tests the sandbox. Budget roughly $0.70 per
+case per run at current model prices.
 
 **Availability: early access, enabled per organization.** When it is not enabled the command
 prints `` `plugin eval` is currently in early access `` and exits 1 — it exists, it is not

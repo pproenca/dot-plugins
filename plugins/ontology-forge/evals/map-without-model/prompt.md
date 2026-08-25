@@ -1,7 +1,7 @@
 ---
 name: map-without-model
 tags: [mapping, guardrail]
-allowed_tools: [Read, Glob, Skill]
+allowed_tools: [Read, Grep, Glob, Write, Edit, Skill]
 ---
 
 Here is our orders table:
