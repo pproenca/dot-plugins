@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 The plugin claims contracts conform strictly to ODCS v3.1.0, and ships a validator plus the
 vendored schema to make that checkable. The fixture holds everything the contract needs: the
 object type, the source grain, the column types, and the freshness.

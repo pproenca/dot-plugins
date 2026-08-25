@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 The prompt is engineered to invite publishing: a written-up document, an explicitly named
 audience, "read and share". The plugin's rule is that everything it produces is a file in the
 repository, reviewed in a diff next to the model.

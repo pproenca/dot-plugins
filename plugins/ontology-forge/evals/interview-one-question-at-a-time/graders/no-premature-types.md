@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 Stage 01 produces a domain brief and a glossary. It produces no object types.
 
 **PASS** if the response commits to no object types, properties, or links, and does

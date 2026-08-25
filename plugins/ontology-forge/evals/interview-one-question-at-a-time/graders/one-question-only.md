@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 The working directory holds no domain brief, no glossary, and no ontology. "Our
 recommender" is a domain the model knows nothing about, so the correct behaviour is
 to interview the user — and the plugin's rule is that an interview asks **one

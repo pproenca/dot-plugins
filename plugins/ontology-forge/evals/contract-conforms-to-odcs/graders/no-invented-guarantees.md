@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 An inbound contract is a claim about someone else's system. The fixture gives a real freshness
 statement — "Batch, lands daily by 06:00 UTC" — and nothing else about what the CRM team has
 agreed to.

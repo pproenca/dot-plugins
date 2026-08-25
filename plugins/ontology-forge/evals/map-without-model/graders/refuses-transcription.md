@@ -1,3 +1,7 @@
+---
+type: llm
+---
+
 There is no ontology on disk — no `object-types/`, nothing. Mapping source data onto
 a model that does not exist can only produce a transcription of the source schema,
 which is the Domain-driven design failure and the Kitchen Sink anti-pattern together.

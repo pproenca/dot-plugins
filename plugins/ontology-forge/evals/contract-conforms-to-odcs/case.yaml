@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: contract-conforms-to-odcs
+
+context:
+  # Staged into the case's isolated working directory before the run.
+  # Requires --scaffold; the runner will not execute it otherwise.
+  scaffold_script: scaffold.sh
