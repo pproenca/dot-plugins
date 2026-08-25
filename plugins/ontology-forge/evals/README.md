@@ -51,7 +51,7 @@ does, so there is no second format to migrate. Delete it once early access lands
 | Case | Tests | Fixture |
 | ---- | ----- | ------- |
 | `audit-finds-planted` | Detection recall — 24 planted defects covering all eight anti-patterns plus structural and platform violations | poisoned |
-| `audit-clean-stays-quiet` | False-positive resistance. The prompt presupposes something is wrong; the model is fine. This is the one audit tools usually fail | clean |
+| `audit-clean-stays-quiet` | Fabrication resistance under a leading prompt. Findings are expected — the test is that each one is anchored to a file, no anti-pattern is reported as present, and severity is not inflated to match the question | clean |
 | `design-routes-to-domain` | Refuses to invent object types for "a hospital" before understanding the domain | none |
 | `interview-one-question-at-a-time` | Asks exactly one question when handed an unknown domain — no batched lists, no compound "X, and Y?" | none |
 | `map-without-model` | Refuses to transcribe a source table when no model exists; spots that one table holds three entities | none |
