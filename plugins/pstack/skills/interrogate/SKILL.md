@@ -34,21 +34,18 @@ Write one clear paragraph. Reviewers challenge whether the work achieves the int
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message using the Task tool. Use the `interrogate reviewers` list from `~/.cursor/rules/pstack-models.mdc` when present, one reviewer per entry, extending or shrinking the Reviewer A/B/C/D labels below to the configured entry count; otherwise use the table defaults.
+Launch all reviewers together with the collaboration tools. Use the `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry, extending or shrinking the Reviewer A/B/C/D labels below to the configured entry count. Otherwise inherit the parent model and vary the reasoning effort when the available model list has no valid alternatives.
 
 | Subagent | Default model |
 |----------|---------------|
-| Reviewer A | `claude-fable-5-thinking-max` |
-| Reviewer B | `gpt-5.6-sol-max` |
-| Reviewer C | `grok-4.6-fast-xhigh` |
-| Reviewer D | `claude-opus-5-thinking-xhigh` |
+| Reviewer A | `gpt-5.6-sol@max` |
+| Reviewer B | `gpt-5.6-terra@xhigh` |
+| Reviewer C | `gpt-5.6-luna@high` |
+| Reviewer D | `gpt-5.5@xhigh` |
 
-For each reviewer:
-- `subagent_type`: `generalPurpose`
-- `model`: the configured `interrogate reviewers` entry, or the table default with no configured line
-- `readonly`: `true`
+For each reviewer, pass the configured model and reasoning effort when both are valid. Omit the model override for `inherit-parent` or `auto`. Give every reviewer a read-only task and forbid file edits in the prompt.
 
-If a model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Task tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured value or default table. Do not block the review on the slug issue. If the configured value is `inherit-parent` or `auto`, omit `model` instead; never treat those aliases as broken slugs or enter this fallback for them.
+If a model slug or reasoning effort is rejected, use the current collaboration tool's supported model list. Pick the closest valid model and effort, then continue. Record the stale configured value for a separate update. Do not block the review on model configuration drift.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent

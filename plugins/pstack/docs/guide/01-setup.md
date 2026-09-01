@@ -4,13 +4,13 @@ In this page you install the plugin, pick which models pstack uses, and run your
 
 ## Install the plugin
 
-In a Cursor chat, run:
+In a terminal with the `dot-plugins` marketplace configured, run:
 
 ```text
-/add-plugin pstack
+codex plugin add pstack@dot-plugins
 ```
 
-Cursor confirms the plugin is installed.
+Codex confirms the plugin is installed. Start a new task after installation so it loads the skills.
 
 ## Pick your models
 
@@ -20,7 +20,7 @@ Run:
 /setup-pstack
 ```
 
-[`/setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models you have access to, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.cursor/rules/pstack-models.mdc`, a small rule every pstack skill reads.
+[`/setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models and reasoning efforts available to collaboration agents, shows every role, and asks what you want. It writes `~/.codex/pstack-models.md`, which routed pstack skills read before spawning workers.
 
 You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default later, delete that role's line, or just run `/setup-pstack` again.
 
@@ -30,9 +30,9 @@ You might be wondering what happens if you use Auto. Set a role to `inherit-pare
 
 At the end of setup, `/setup-pstack` looks for a way to prove app behavior in your project, either a `verify-*` skill or an existing harness. If it finds neither, it offers once to generate one with [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md).
 
-Say yes and it writes `.cursor/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `/create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers when it earns its place.
+Say yes and it writes `.agents/skills/verify-<app>/`, a repository-local skill that teaches agents to drive your app the way a user does. It proves the skill once before handing it over. Say no and setup moves on.
 
-After setup, start a new chat. The model rule applies to new sessions.
+Pstack reads the model file on each invocation, so model changes do not require a restart.
 
 ## Run your first task
 

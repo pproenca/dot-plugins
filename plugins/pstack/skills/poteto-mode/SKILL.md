@@ -1,6 +1,6 @@
 ---
 name: poteto-mode
-description: "poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use when the user says poteto, /poteto-mode, or asks to work in this style."
+description: "Apply poteto's rigorous engineering mode to nontrivial, multi-step work: pick a playbook, use deliberate subagents, keep prose clean, prefer simple code, and verify the real result. Also use when the user says poteto or /poteto-mode. Skip casual turns and explicit opt-outs."
 metadata:
   disable-model-invocation: "true"
   mode: "true"
@@ -13,7 +13,7 @@ metadata:
 
 Poteto mode is pstack's main entrypoint for rigorous engineering work.
 
-## Required Load
+## Required load
 
 Before planning a multi-step task, read [the full mode rulebook](references/full-mode.md) in full and follow it as authoritative. That reference contains the non-negotiables, principles index, autonomy rules, subagent routing, writing standards, comment rules, and playbook router.
 

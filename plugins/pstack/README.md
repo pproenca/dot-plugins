@@ -4,18 +4,18 @@ i'm [poteto](https://x.com/poteto). i'm not a president or ceo, but i've worked 
 
 there's a growing sense that ai writes too much slop code. i agree. i don't want to ship like a team of twenty slop artists. throughput without quality is not a goal i aspire to. if you want to go fast, go deep first. 
 
-**pstack is my answer.** these are the same skills i use everyday to ship high quality code at Cursor. this turns cursor into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. pstack helps you write less, but higher quality code.
+**pstack is my answer.** these are the same skills i use every day to ship high quality code at Cursor, ported to Codex tools and skill discovery. the goal is not to maximize loc. pstack helps you write less, but higher quality code.
 
 **pstack gives you fearless parallelism.** when you can go deep on one agent and trust it to write good, verifiable code, you can truly parallelize with confidence. start multiple agents up with `poteto-mode` and trust that they'll apply rigorous engineering principles to their work.
 
-**cursor gives you the best of all worlds.** every frontier model has its strengths and weaknesses. use any model with pstack. in fact, many of my skills use multi-model workflows to take advantage of each model's unique strengths.
+**codex lets pstack split work across collaboration agents.** configure the models and reasoning efforts available on your host, or inherit the parent model everywhere.
 
 fork it. improve it. make it yours. PRs are welcome! 
 
 ## install
 
 ```bash
-/add-plugin pstack
+codex plugin add pstack@dot-plugins
 ```
 
 ## get started
@@ -27,7 +27,7 @@ two steps:
 
 new here? the [pstack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs.
 
-that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: precisely-specified code goes to sol, fast mechanical code goes to grok, and prose and judgment go to fable. the default panel is fable / sol / grok / opus 5. [`/setup-pstack`](./skills/setup-pstack/SKILL.md) changes any of it.
+that's it. the other skills are situational; the mode skill uses them as needed. [`/setup-pstack`](./skills/setup-pstack/SKILL.md) reads the models and reasoning efforts the current Codex host supports and writes the role mapping.
 
 ## usage
 
@@ -88,9 +88,9 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/poteto-mode/SKILL.md`](./skills/poteto-mode/SKILL.md).
 
-[`/poteto-mode`](./skills/poteto-mode/SKILL.md) is also a sticky mode: once entered it stays on across turns, applying itself when a playbook matches or the task needs rigor and staying out of the way otherwise. opt out any time by saying so.
+[`/poteto-mode`](./skills/poteto-mode/SKILL.md) describes nontrivial engineering work directly, so Codex can select it without a slash command. opt out any time by saying so.
 
-[`/poteto-mode`](./skills/poteto-mode/SKILL.md) works extremely well with cursor's `/loop` command. you can make cursor work for many hours without sacrificing rigor.
+for long runs, pair [`/poteto-mode`](./skills/poteto-mode/SKILL.md) with a Codex thread heartbeat automation and a checkable finish condition.
 
 ## skills
 
@@ -119,6 +119,7 @@ the full rules and playbooks live in [`skills/poteto-mode/SKILL.md`](./skills/po
 | [`/swarm`](./skills/swarm/SKILL.md) | you want N parallel workers across different slices or races, then one aggregated report. |
 | [`/interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want several different models to try to break it, including a strict code-quality lens. |
 | [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
+| [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a local page or dashboard whose fixed actions start Codex tasks. |
 | [`/setup-pstack`](./skills/setup-pstack/SKILL.md) | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
 | [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`/teach`](./skills/teach/SKILL.md) | you want to actually understand a change or subsystem, not just have it summarized. runs how + why and weaves one plain explanation, built up diagram by diagram. |
@@ -182,13 +183,11 @@ automate-me:       /automate-me
 
 </details>
 
-## the `poteto-agent` and Comment Sicko subagents
+## collaboration subagents
 
-pstack also ships a subagent that runs my style end to end. spawn it from a parent agent via [`subagent_type: "poteto-agent"`](./com.cursor/agents/poteto-agent.md). it reads `poteto-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts.
+pstack tells ordinary collaboration workers to read [`poteto-mode`](./skills/poteto-mode/SKILL.md) before acting. routed skills such as `how`, `why`, `arena`, `swarm`, and `interrogate` define their own worker prompts.
 
-[`/poteto-mode`](./skills/poteto-mode/SKILL.md) and [`subagent_type: "poteto-agent"`](./com.cursor/agents/poteto-agent.md) route through the same wrapper.
-
-pstack also ships [Comment Sicko](./com.cursor/agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "Comment Sicko"`. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
+pstack also preserves [Comment Sicko](./com.cursor/agents/comment-sicko.md). [`/no-comments`](./skills/no-comments/SKILL.md) loads those rules into a fresh read-only collaboration agent.
 
 ## principles
 
@@ -223,19 +222,19 @@ twenty-one short skills, one principle each. `poteto-mode` indexes them inline a
 
 </details>
 
-## not shipped here
+## companion capabilities
 
-a few things `poteto-mode` references but doesn't bundle:
+a few workflows use Codex capabilities outside this plugin:
 
-- `/deslop` and the `deslop` skill ship in the `cursor-team-kit` plugin.
-- `control-cli` (for CLIs and TUIs) and `control-ui` (for browser, Electron, web) ship in `cursor-team-kit` too.
-- `/create-skill` is a cursor built-in. cursor also ships a built-in `/babysit`; inside `poteto-mode`, the [babysit playbook](./skills/poteto-mode/playbooks/babysit.md) supersedes it for pr-status requests.
+- Codex ships **skill-creator** for authoring skills.
+- Browser control and computer use drive web and native products when installed.
+- **control-cli** drives CLIs and TUIs when installed.
 
-install `cursor-team-kit` alongside pstack if you want the full set.
+When a control skill is unavailable, [`/create-verification-skill`](./skills/create-verification-skill/SKILL.md) builds a repository-local one.
 
 ## why are there no planning skills?
 
-cursor already has a great plan mode which works great with pstack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/poteto-mode`](./skills/poteto-mode/SKILL.md) covers it, but it's not a default. 
+codex has a plan mode that works with pstack. but personally, i don't believe in planning. the best spec is code. if you do want a plan, [`/poteto-mode`](./skills/poteto-mode/SKILL.md) covers it, but it is not the default.
 
 ## make it yours
 
@@ -243,13 +242,13 @@ cursor already has a great plan mode which works great with pstack. but personal
 
 type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
 
-models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
+models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models and reasoning efforts available to collaboration agents and writes `~/.codex/pstack-models.md`. every routed skill reads it and inherits the parent when a role is absent.
 
 ## automations
 
 pstack also ships a dormant [benny automation pack](./com.cursor/automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
 
-to set it up, point cursor at [`FOR_AGENTS.md`](./com.cursor/automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables pstack there for shared skills, and keeps user configuration outside the copied pack.
+the preserved pack is Cursor-specific source material. Codex recurring work uses thread heartbeat or cron automations. Port the pack's prompts into those automations when you need Benny on Codex; do not treat the Cursor files as active Codex configuration.
 
 ## license
 
