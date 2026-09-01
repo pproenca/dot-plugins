@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Read-only worktree prune audit. Classifies every git worktree by size, merge
-# state, uncommitted work, remote/PR state, and the most recent chat that
-# operated in it. Emits a table sorted by size with a suggested bucket. Never
-# deletes anything; deletion stays a human-gated step in the playbook.
+# state, uncommitted work, remote/PR state, and an exact task transcript when
+# the environment provides one. Emits a table sorted by size with a suggested
+# bucket. Never deletes anything; deletion stays a human-gated step in the
+# playbook.
 #
 # Usage: worktree-audit.sh [repo-path]   (defaults to the current repo)
 set -u
@@ -22,8 +23,7 @@ prs=$(mktemp)
 gh pr list --author "@me" --state all --limit 1000 \
 	--json number,state,headRefName 2>/dev/null > "$prs" || echo "[]" > "$prs"
 
-codex_home="${CODEX_HOME:-"$HOME/.codex"}"
-sessions="$codex_home/sessions"
+transcript="${CODEX_TRANSCRIPT_PATH:-}"
 now=$(date +%s)
 
 printf "SIZE\tAGE\tMERGED\tDIRTY\tREMOTE\tPR\tLAST_CHAT\tBUCKET\tWORKTREE\n"
@@ -59,13 +59,13 @@ git worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt;
 		'.[] | select(.headRefName==$b) | "#\(.number)/\(.state)"' "$prs" 2>/dev/null | head -1)
 	[ -z "$pr" ] && pr="-"
 
-	# Most recent Codex session that mentions this exact worktree path.
+	# Read only the exact active-task transcript supplied by the environment.
 	last="-"; last_ts=0
-	if [ -d "$sessions" ]; then
-		f=$(rg -l -F "\"cwd\":\"$wt\"" "$sessions" 2>/dev/null \
-			| xargs stat -f '%m %N' 2>/dev/null | sort -rn | head -1)
-		if [ -n "$f" ]; then last_ts=$(echo "$f" | awk '{print $1}')
-			last=$(date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null); fi
+	if [ -f "$transcript" ] && rg -q -F "\"cwd\":\"$wt\"" "$transcript" 2>/dev/null; then
+		last_ts=$(stat -f '%m' "$transcript" 2>/dev/null || echo 0)
+		if [ "$last_ts" -gt 0 ] 2>/dev/null; then
+			last=$(date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null)
+		fi
 	fi
 	recent=$([ "$last_ts" -gt 0 ] 2>/dev/null && [ $(( (now - last_ts) / 86400 )) -le 4 ] && echo yes || echo no)
 

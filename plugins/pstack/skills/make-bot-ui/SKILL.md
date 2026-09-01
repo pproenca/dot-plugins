@@ -1,9 +1,25 @@
 ---
 name: make-bot-ui
-description: Build a local page or dashboard whose fixed actions start Codex tasks, including safe server-side prompting and optional Tailscale access. Use when a user wants buttons or a custom UI to wake Codex. Do not use for arbitrary remote prompt execution.
+description: Build a page or dashboard that wakes a persistent Codex task through an authenticated webhook when the environment supports that workflow. If it does not, explain the gap instead of silently replacing the bot with independent Codex tasks.
 ---
 
-# Make a Codex task UI
+# Make a bot UI
+
+The Cursor workflow creates a persistent bot routine, stores a webhook sender key outside chat, and wakes that same bot with each request. Preserve those semantics.
+
+## Check the Codex capability first
+
+Inspect the current Codex tools for all three required capabilities:
+
+- create a persistent task with an authenticated webhook trigger;
+- request or store the sender secret without exposing it in chat;
+- deliver webhook events back to that same task.
+
+If any capability is unavailable, stop and name the missing capability. Do not claim that a local `codex exec` launcher is equivalent. It starts independent tasks and changes the product's identity, state, and delivery model.
+
+If the user explicitly accepts an independent-task launcher instead of a persistent webhook bot, use the substitute below. Treat that choice as a new design, not a migration detail.
+
+## Build the independent-task substitute
 
 Build a page the user clicks. A local server maps each button to a fixed action and starts Codex with that action. Keep command construction, project paths, and any credentials on the server. Never accept an arbitrary shell command or unrestricted prompt from the browser.
 

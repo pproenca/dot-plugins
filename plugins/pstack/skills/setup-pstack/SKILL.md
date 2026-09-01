@@ -64,4 +64,4 @@ Tell the user which path was written and which roles inherit the parent. Pstack 
 
 ### 7. Offer a verification skill
 
-Check whether the repository has a skill that drives the real product for proof. If not, offer once to run **create-verification-skill**. On yes, invoke that skill. On no, move on.
+Check whether the repository has a way to drive the real product for proof, either a `verify-*` skill or an existing browser, PTY, CLI, or HTTP control tool. If not, offer once to run **create-verification-skill**. On yes, invoke that skill. On no, move on.

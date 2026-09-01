@@ -34,7 +34,7 @@ Write `.agents/skills/verify-<app>/SKILL.md` with YAML frontmatter. Use `name: v
 
 ## 3. Seed the feature map
 
-Create `.agents/skills/verify-<app>/features/README.md` plus one file per user-facing feature you can identify. Aim for the top three to five from routes, commands, menus, or docs. Follow [`references/feature-map-example/`](references/feature-map-example/). Each file explains what the feature is, how a user reaches it, how the control tool drives it, and what end state proves it works. Use the four H2s `Sub-features`, `How to get to it (user POV)`, `Driving it with <control tool>`, and `Gotchas`.
+Create `.agents/skills/verify-<app>/features/README.md` plus one file per user-facing feature you can identify. Aim for the top three to five from routes, commands, menus, or docs. Follow [`references/feature-map-example/`](references/feature-map-example/). Each file explains what the feature is, how a user reaches it, how the control tool drives it, and what end state proves it works. Use the four H2s `Sub-features`, `How to get to it (user POV)`, `Driving it with <control tool>`, and `Gotchas`. The map is the repository's maintained verification source. A proof that drives one convenient entry point is incomplete when the map lists others.
 
 ## 4. Prove the generated skill before handing it over
 
