@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.1
+
+### Bug Fixes
+
+- (pstack) Restore Cursor parity by @pproenca in [eaaf9565](https://github.com/pproenca/dot-plugins/commit/eaaf9565cdb5adf2af4f44b1a9114b4d43521c24)
+
 ## 0.15.2
 
 ### Other Changes
