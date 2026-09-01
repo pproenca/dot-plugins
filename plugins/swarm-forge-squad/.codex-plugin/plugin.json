@@ -1,6 +1,6 @@
 {
   "name": "swarm-forge-squad",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "The SwarmForge squad workflow: a persistent squad leader that spawns short-lived specialist workers on demand, each bound by a capability contract.",
   "author": {
     "name": "Robert C. Martin"
