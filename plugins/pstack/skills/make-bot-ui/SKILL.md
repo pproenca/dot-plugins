@@ -37,7 +37,7 @@ If a task fails, append the same bounded request and the error class to a local 
 
 Only expose the server when the user asks. Confirm an existing Tailscale node with `tailscale status` before installing or starting anything. Reuse the current node.
 
-When remote access is required, bind to `0.0.0.0:<port>` and restrict access to the tailnet with the host firewall or Tailscale Serve. Give the user the tailnet hostname and IPv4 URL. Do not expose the port to the public internet.
+When remote access is required, keep the app on `127.0.0.1:<port>` and proxy it with Tailscale Serve. If the user explicitly needs a direct listener instead, bind only to the machine's Tailscale IP and enforce tailnet access. Never bind the Codex launcher to `0.0.0.0`. Give the user the tailnet hostname and IPv4 URL. Do not expose the port to the public internet or the local LAN.
 
 Probe the tailnet URL and expect HTTP 200 for the page. Then trigger the harmless action through that URL and verify its Codex output.
 

@@ -304,6 +304,28 @@ def test_plugins(command: CodexCommand, marketplace: Path, names: list[str], tim
                 skills = plugin.get("skills")
                 if not isinstance(skills, list) or not skills:
                     raise CodexTestError("plugin/read returned no skills")
+                source = summary.get("source")
+                source_path = source.get("path") if isinstance(source, dict) else None
+                if isinstance(source, dict) and source.get("type") == "local" and isinstance(source_path, str):
+                    expected_skills = {
+                        f"{name}:{skill.parent.name}" for skill in Path(source_path, "skills").glob("*/SKILL.md")
+                    }
+                    loaded_skills = {
+                        skill.get("name")
+                        for skill in skills
+                        if isinstance(skill, dict)
+                        and isinstance(skill.get("name"), str)
+                        and isinstance(skill.get("description"), str)
+                        and skill["description"].strip()
+                        and isinstance(skill.get("path"), str)
+                        and Path(skill["path"]).is_file()
+                    }
+                    if loaded_skills != expected_skills:
+                        raise CodexTestError(
+                            "plugin/read skill discovery differs from source: "
+                            f"missing={sorted(expected_skills - loaded_skills)}, "
+                            f"unexpected={sorted(loaded_skills - expected_skills)}"
+                        )
                 mcp_servers = plugin.get("mcpServers", [])
                 hooks = plugin.get("hooks", [])
                 print(

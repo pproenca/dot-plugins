@@ -43,7 +43,7 @@ Spawn three collaboration reviewers together with explicit valid models when con
 | Tooling | your configured reflect-tooling model, or inherit parent | `references/tooling-reviewer.md` |
 | Divergent | your configured reflect-judgment model, or inherit parent | `references/divergent-reviewer.md` |
 
-Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
+Pass each template verbatim, substituting the transcript path or digest where marked. Collect each reviewer's final response from the collaboration mailbox.
 
 ### 3. Synthesize
 

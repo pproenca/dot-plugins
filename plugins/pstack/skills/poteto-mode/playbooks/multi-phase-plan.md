@@ -45,7 +45,8 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 
 ### Spawn owners
 
-- [ ] Spawn one isolated collaboration agent per PR with the full lifecycle the execution playbook names.
+- [ ] Create one explicit worktree and branch per PR. Record each absolute path.
+- [ ] Spawn one collaboration agent per PR. Pass its worktree path and require every command to use that working directory.
 - [ ] Follow this dependency graph. Start dependent work only after its parent merges, or base it on the parent branch when the execution playbook stacks.
   - [ ] <PR id> and <PR id> are independent and first. Both branch from `main`.
   - [ ] <PR id> after <PR id>.
@@ -68,7 +69,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 
 ### Boot recipe, for every live lane
 
-Each live lane runs in its own worktree or cloud environment at the PR head. Drive through the selected control skill.
+Each live lane runs in its own explicit worktree at the PR head. Create and record those worktrees before spawning the lanes. Drive through the selected control skill.
 
 - [ ] `git fetch origin <head-branch> && git checkout <head SHA>`.
 - [ ] <Start the backend and product. Wait for ready.>

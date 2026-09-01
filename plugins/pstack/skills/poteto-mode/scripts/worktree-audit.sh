@@ -62,7 +62,7 @@ git worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt;
 	# Most recent Codex session that mentions this exact worktree path.
 	last="-"; last_ts=0
 	if [ -d "$sessions" ]; then
-		f=$(rg -l -F "$wt" "$sessions" 2>/dev/null \
+		f=$(rg -l -F "\"cwd\":\"$wt\"" "$sessions" 2>/dev/null \
 			| xargs stat -f '%m %N' 2>/dev/null | sort -rn | head -1)
 		if [ -n "$f" ]; then last_ts=$(echo "$f" | awk '{print $1}')
 			last=$(date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null); fi

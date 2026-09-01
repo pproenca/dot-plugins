@@ -21,8 +21,8 @@ For casual turns, or when the user opts out of this style, do not load deeper re
 
 ## Execution
 
-- Start every multi-step task with a todo list whose first item is reading the full rulebook.
-- Match the task to one playbook from [the playbooks directory](playbooks/), read that playbook, and copy its steps into the todo list before task-specific todos.
+- Start every multi-step task by calling `update_plan`; its first item is reading the full rulebook.
+- Match the task to one playbook from [the playbooks directory](playbooks/), read that playbook, and copy its steps into the Codex plan before task-specific steps.
 - Read leaf principle skills only when the full rulebook says that principle applies.
 - Route bulky exploration to subagents, but own their results and verify the final artifact yourself.
 - Write replies in the style defined by the full rulebook, including the consumer/maintainer framing and unslopped prose rules.

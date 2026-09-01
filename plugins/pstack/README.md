@@ -81,14 +81,14 @@ morning.
 
 when invoked it:
 
-1. opens a todo list. the first item is reading the inline principles index in the skill.
+1. opens a Codex plan with `update_plan`. the first item is reading the inline principles index in the skill.
 2. matches your task to a [playbook](./skills/poteto-mode/playbooks/) and copies the steps in verbatim.
 3. routes to the other skills as the steps fire.
 4. writes unslopped replies framed for the consumer and the maintainer.
 
 the full rules and playbooks live in [`skills/poteto-mode/SKILL.md`](./skills/poteto-mode/SKILL.md).
 
-[`/poteto-mode`](./skills/poteto-mode/SKILL.md) describes nontrivial engineering work directly, so Codex can select it without a slash command. opt out any time by saying so.
+[`/poteto-mode`](./skills/poteto-mode/SKILL.md) describes nontrivial engineering work directly, which makes it eligible for Codex's automatic skill selection without a slash command. explicit invocation remains the deterministic path. opt out any time by saying so.
 
 for long runs, pair [`/poteto-mode`](./skills/poteto-mode/SKILL.md) with a Codex thread heartbeat automation and a checkable finish condition.
 

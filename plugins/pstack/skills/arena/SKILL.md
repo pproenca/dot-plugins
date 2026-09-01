@@ -11,7 +11,7 @@ Fan out N parallel attempts at the same task. Read every candidate end to end. P
 
 ## Start
 
-Open a todolist with one entry per phase before launching anything. The arena runs autonomously and the list keeps phases from silently disappearing.
+Call `update_plan` with one entry per phase before launching anything. The arena runs autonomously and the plan keeps phases from silently disappearing.
 
 1. Frame
 2. Fan out
