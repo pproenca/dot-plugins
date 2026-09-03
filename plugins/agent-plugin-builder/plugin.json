@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "agent-plugin-builder",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.0.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
   "author": {
     "name": "pproenca"

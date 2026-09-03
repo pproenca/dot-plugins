@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.2
+
+### Other Changes
+
+- Document Codex tool availability and delegation fallbacks by @pproenca in [d83e633d](https://github.com/pproenca/dot-plugins/commit/d83e633d6f36ecdd3bf54dc5d9bc10a846bd5cdf)
+
 ## 0.16.1
 
 ### Bug Fixes

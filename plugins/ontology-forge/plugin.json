@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ontology-forge",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "Design and extend a Palantir Foundry ontology the domain-driven way: interview the domain, shape object types, links, interfaces and actions, then map source data and logic onto them.",
   "author": {
     "name": "pproenca"
