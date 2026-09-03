@@ -8,7 +8,7 @@ there's a growing sense that ai writes too much slop code. i agree. i don't want
 
 **pstack gives you fearless parallelism.** when you can go deep on one agent and trust it to write good, verifiable code, you can truly parallelize with confidence. start multiple agents up with `poteto-mode` and trust that they'll apply rigorous engineering principles to their work.
 
-**codex lets pstack split work across collaboration agents.** configure the models and reasoning efforts available on your host, or inherit the parent model everywhere.
+**codex lets pstack split work across collaboration agents.** pstack reads the tools exposed in each turn, uses Codex collaboration v2 directly, and falls back to local work when delegation is unavailable. configure validated model overrides for your host, or inherit the parent model everywhere.
 
 fork it. improve it. make it yours. PRs are welcome! 
 
@@ -81,7 +81,7 @@ morning.
 
 when invoked it:
 
-1. opens a Codex plan with `update_plan`. the first item is reading the inline principles index in the skill.
+1. records the playbook phases with `update_plan` when Codex exposes it, or in a normal progress update when it does not. the first phase reads the inline principles index in the skill.
 2. matches your task to a [playbook](./skills/poteto-mode/playbooks/) and copies the steps in verbatim.
 3. routes to the other skills as the steps fire.
 4. writes unslopped replies framed for the consumer and the maintainer.
@@ -187,6 +187,8 @@ automate-me:       /automate-me
 
 pstack tells ordinary collaboration workers to read [`poteto-mode`](./skills/poteto-mode/SKILL.md) before acting. routed skills such as `how`, `why`, `arena`, `swarm`, and `interrogate` define their own worker prompts.
 
+the [Codex tool contract](./skills/poteto-mode/references/codex-tools.md) is the shared rule for tool availability, direct collaboration calls, `fork_turns`, model overrides, shared working directories, status, waiting, and interruption.
+
 pstack also preserves [Comment Sicko](./com.cursor/agents/comment-sicko.md). [`/no-comments`](./skills/no-comments/SKILL.md) loads those rules into a fresh read-only collaboration agent.
 
 ## principles
@@ -242,7 +244,7 @@ codex has a plan mode that works with pstack. but personally, i don't believe in
 
 type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
 
-models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models and reasoning efforts available to collaboration agents and writes `~/.codex/pstack-models.md`. every routed skill reads it and inherits the parent when a role is absent.
+models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models and reasoning efforts exposed by `spawn_agent` and writes `~/.codex/pstack-models.md`. every routed skill reads it and inherits the parent when a role is absent or stale.
 
 ## automations
 

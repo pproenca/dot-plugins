@@ -11,6 +11,8 @@ Spawn Comment Sicko. Act on accepted findings.
 
 Authoring agents defend comments. Defer to Comment Sicko's fresh perspective.
 
+Before spawning Comment Sicko in Codex, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED`. The authoring agent cannot replace the independent reviewer.
+
 ## Scope
 
 Use the caller's files or diff. Otherwise use the current diff against the base branch, default `main`, including the working tree.

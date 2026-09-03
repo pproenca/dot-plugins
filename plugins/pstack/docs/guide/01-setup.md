@@ -20,9 +20,9 @@ Run:
 /setup-pstack
 ```
 
-[`/setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models and reasoning efforts available to collaboration agents, shows every role, and asks what you want. It writes `~/.codex/pstack-models.md`, which routed pstack skills read before spawning workers.
+[`/setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models and reasoning efforts exposed by `spawn_agent`, shows every role, and asks what you want. It writes `~/.codex/pstack-models.md`, which routed pstack skills read before spawning workers. If Codex hides model overrides, setup uses `inherit-parent` instead of guessing model names.
 
-You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default later, delete that role's line, or just run `/setup-pstack` again.
+You only override what you care about. A role with no line inherits the parent model. To remove an override later, delete that role's line, or run `/setup-pstack` again.
 
 You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and pstack omits the subagent `model` field, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
 
@@ -42,7 +42,7 @@ Pick something real but small, and describe it the way you'd describe it to a co
 /poteto-mode add a --json flag to this command. text output stays byte-identical. verify both.
 ```
 
-Watch the Codex plan. The first item is always "read the Principles section". The rest are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/poteto-mode` skips a step, the step stays in the plan with `skip: <reason>`, so you can see what it chose not to do.
+Watch the Codex plan or progress updates. The first phase is "read the Principles section". The rest are the matched playbook's steps, the Feature playbook for this prompt. If `/poteto-mode` skips a step, the step stays visible with `skip: <reason>`, so you can see what it chose not to do.
 
 From here you can type normal follow-ups. `/poteto-mode` is sticky. It stays on for the conversation until you opt out by saying so.
 

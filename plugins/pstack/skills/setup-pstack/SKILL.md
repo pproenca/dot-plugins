@@ -5,17 +5,21 @@ description: Configure the Codex models and reasoning efforts pstack uses per co
 
 # Setup pstack
 
-Write `~/.codex/pstack-models.md`, the configuration file pstack skills read before spawning collaboration agents. Missing roles inherit each skill's default. This file is not a Codex instruction file and does not alter global `AGENTS.md` guidance.
+Write `~/.codex/pstack-models.md`, the configuration file pstack skills read before spawning collaboration agents. Missing roles inherit the parent model. This file is not a Codex instruction file and does not alter global `AGENTS.md` guidance.
+
+Read the [Codex tool contract](../poteto-mode/references/codex-tools.md) before inspecting collaboration metadata.
 
 ## Steps
 
 ### 1. Detect available models
 
-Read the model names and supported reasoning efforts exposed by the current collaboration tools. That is the source of truth for this session. Never save a model or effort that the tool does not list. The aliases `inherit-parent` and `auto` are always valid and both mean to omit model and reasoning overrides.
+Read the model names and supported reasoning efforts exposed by `spawn_agent` in the current turn. That schema is the source of truth for this session. Never save a model or effort that the tool does not list. The aliases `inherit-parent` and `auto` are always valid and both mean to omit model and reasoning overrides.
+
+If `spawn_agent` or its override fields are absent, the only validated choice is `inherit-parent`. Do not infer model names from memory, another host, or an existing configuration file.
 
 ### 2. Load current state
 
-If `~/.codex/pstack-models.md` exists, read it and treat its values as current. Otherwise start from the defaults in step 5.
+If `~/.codex/pstack-models.md` exists, read it and treat its values as current candidates. Otherwise start from the portable values in step 5. A value from another host remains stale until the current `spawn_agent` schema validates it.
 
 ### 3. Map and confirm
 
@@ -29,34 +33,34 @@ Every saved model and effort must appear in the current collaboration tool metad
 
 ### 5. Write the configuration
 
-Overwrite `~/.codex/pstack-models.md` so repeated setup converges to one file. Use this shape:
+Overwrite `~/.codex/pstack-models.md` so repeated setup converges to one file. Replace inherited values with validated overrides only when the user chooses them. Use this portable shape:
 
 ```markdown
 # pstack model configuration
 
-Delete a line to use the skill default. `inherit-parent` and `auto` omit model and reasoning overrides.
+Delete a line to inherit the parent. `inherit-parent` and `auto` omit model and reasoning overrides.
 
-feature, refactoring: gpt-5.6-luna@high
-bug-fix: gpt-5.6-sol@max
-perf-issue: gpt-5.6-sol@max
-hillclimb: gpt-5.6-sol@max
-judgment and prose: gpt-5.6-sol@xhigh
-hardest tasks: gpt-5.6-sol@max
-how explorer: gpt-5.6-luna@high
-how explainer: gpt-5.6-terra@xhigh
-how critics: gpt-5.6-sol@max, gpt-5.6-terra@xhigh, gpt-5.6-luna@high, gpt-5.5@xhigh
-why investigators: gpt-5.6-luna@high
-why synthesizer: gpt-5.6-sol@xhigh
-reflect tooling: gpt-5.6-terra@high
-reflect judgment, divergent, synthesizer: gpt-5.6-sol@xhigh
-arena runners: gpt-5.6-sol@max, gpt-5.6-terra@xhigh, gpt-5.6-luna@high, gpt-5.5@xhigh
-arena cross-judge pool: gpt-5.6-sol@max, gpt-5.6-terra@xhigh, gpt-5.6-luna@high, gpt-5.5@xhigh
-swarm workers: gpt-5.6-luna@high
-architect runners: gpt-5.6-sol@max, gpt-5.6-terra@xhigh, gpt-5.6-luna@high, gpt-5.5@xhigh
-interrogate reviewers: gpt-5.6-sol@max, gpt-5.6-terra@xhigh, gpt-5.6-luna@high, gpt-5.5@xhigh
+feature, refactoring: inherit-parent
+bug-fix: inherit-parent
+perf-issue: inherit-parent
+hillclimb: inherit-parent
+judgment and prose: inherit-parent
+hardest tasks: inherit-parent
+how explorer: inherit-parent
+how explainer: inherit-parent
+how critics: inherit-parent, inherit-parent, inherit-parent
+why investigators: inherit-parent
+why synthesizer: inherit-parent
+reflect tooling: inherit-parent
+reflect judgment, divergent, synthesizer: inherit-parent
+arena runners: inherit-parent, inherit-parent, inherit-parent
+arena cross-judge pool: inherit-parent
+swarm workers: inherit-parent
+architect runners: inherit-parent, inherit-parent, inherit-parent
+interrogate reviewers: inherit-parent, inherit-parent, inherit-parent
 ```
 
-If any example default is unavailable, replace it with a detected equivalent before writing. Do not save a knowingly invalid default.
+Do not save a stale or guessed override. If a configured value is rejected later, the calling skill omits the override and inherits the parent.
 
 ### 6. Confirm
 

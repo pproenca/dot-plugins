@@ -9,6 +9,8 @@ metadata:
 
 Mine the current conversation for durable learnings, then route them into skill edits.
 
+Before spawning Codex reviewers, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED`. Independent reviewers are part of this skill's evidence, not optional ceremony.
+
 ## When to invoke
 
 - The user said "reflect" or "/reflect".

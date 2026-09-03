@@ -1,6 +1,6 @@
 # Route work through `/poteto-mode`
 
-`/poteto-mode` is the front door. You give it a goal, it matches one of twenty-two playbooks, copies that playbook's steps into a Codex plan with `update_plan`, and calls the other skills as the steps need them. In this page you learn what a good prompt looks like, and how little of one you actually need.
+`/poteto-mode` is the front door. You give it a goal, it matches one of twenty-two playbooks, records the playbook phases with `update_plan` when Codex exposes it, and calls the other skills as the steps need them. When the tool is absent, pstack keeps the same phases in normal progress updates. In this page you learn what a good prompt looks like, and how little of one you actually need.
 
 ![A dispatcher pulls a switch lever to route robots on rail handcars toward lit gates, under a /poteto-mode departure board listing BUG FIX, FEATURE, and INVESTIGATION.](./images/router.jpg)
 
@@ -35,7 +35,7 @@ You don't write a spec. You say what's wrong or what you want, plus anything you
 /poteto-mode users get two notifications after a retry. repro first, then fix and verify.
 ```
 
-That's a Bug fix prompt. "repro first" is a real constraint, not politeness, and the playbook honors it. Watch the Codex plan fill with the Bug fix steps. A skipped step stays visible with `skip: <reason>`.
+That's a Bug fix prompt. "repro first" is a real constraint, not politeness, and the playbook honors it. Watch the Bug fix phases appear in the Codex plan or progress updates. A skipped step stays visible with `skip: <reason>`.
 
 When the conversation already carries the context, the prompt shrinks to almost nothing. All of these are enough:
 

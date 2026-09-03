@@ -20,7 +20,7 @@ When you find a potential bug, trace the execution path. Don't just flag "this c
 
 Is the code fixing the actual problem or papering over a symptom?
 
-Answering this often requires looking beyond the changed files. Read the surrounding code (callers, callees, type definitions, sibling modules) and understand the architecture the change lives in. Use the tools available to you (Read, Grep, Glob) to explore. Follow the call chain. Read the types. Understand why the code exists before judging whether the change addresses the right layer.
+Answering this often requires looking beyond the changed files. Read the surrounding code, including callers, callees, type definitions, and sibling modules. Use `rg --files` and `rg` when they are available, then read the matching source. Follow the call chain. Read the types. Understand why the code exists before judging whether the change addresses the right layer.
 
 - Guard clauses that mask a deeper invariant violation
 - Retry logic that hides a broken contract

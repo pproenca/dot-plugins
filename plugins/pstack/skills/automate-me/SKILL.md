@@ -11,6 +11,8 @@ A guided flow for turning the user's working conventions into a skill agents wil
 
 This skill orchestrates three others: an inline mining pass, the built-in **skill-creator** skill, and **unslop**. It sequences them; it does not replace them.
 
+Before spawning Codex history readers, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, mine the scoped history locally and note that cross-slice independence was unavailable.
+
 ## Flow
 
 ### 0. Check for an existing skill

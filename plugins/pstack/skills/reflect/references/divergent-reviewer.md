@@ -22,7 +22,7 @@ Findings must point to skills, tools, or MCPs invoked in this transcript. Specul
 
 - Reads of any `SKILL.md` file in repository `.agents/skills/`, user `~/.agents/skills/`, system skills, or plugin cache paths
 - Collaboration prompts that name a skill path
-- Tool calls (Shell, Grep, MCP, etc.) that match a skill's documented commands
+- Tool calls such as terminal search or MCP queries that match a skill's documented commands
 
 Two valid finding shapes:
 

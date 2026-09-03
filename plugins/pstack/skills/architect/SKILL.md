@@ -9,9 +9,11 @@ metadata:
 
 Design before implementing. Sketch types, function signatures, class shapes, and module boundaries with `not implemented` bodies and pseudocode. Synthesize across multiple model perspectives, then fill in code against the chosen sketch. If implementation proves the sketch wrong, throw it out and redesign.
 
+Before using Codex plan or collaboration tools, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED` because this skill requires independent design candidates.
+
 ## Start
 
-Call `update_plan` with one entry per phase before starting. Autonomous mode without checkpoints needs the plan to show phase position and keep phases from silently disappearing.
+Put one entry per phase in `update_plan` when it is available. Otherwise state the same phases in a normal progress update. Autonomous work still needs its current phase to stay visible.
 
 1. Ground
 2. Sketch

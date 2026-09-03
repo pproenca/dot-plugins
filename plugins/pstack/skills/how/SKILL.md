@@ -7,6 +7,8 @@ description: "Use when \"how does X work\", code walkthroughs before changing so
 
 Explore the codebase to answer "how does X work?" questions. Produce clear architectural explanations at the level of a senior engineer onboarding onto a subsystem. Enough to build a working mental model, not annotated source code.
 
+Before spawning Codex explorers or critics, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, explore and explain locally. Mark multi-agent critique as `INCONCLUSIVE` instead of simulating independent reviewers.
+
 Two modes:
 
 1. **Explain** (default). Explore the codebase and produce a clear explanation
@@ -45,7 +47,7 @@ The right decomposition depends on the question. Use your judgment. Narrow quest
 Spawn all collaboration explorers together. Use the configured `how explorer` model from `~/.codex/pstack-models.md` when valid. Otherwise inherit the parent model. Give each explorer a read-only task and forbid file edits in the prompt.
 
 Each explorer gets the same base prompt from `references/explorer-prompt.md` plus a specific exploration angle naming its slice. Each explorer should:
-- Start broad: Glob for relevant directories, Grep for key types/interfaces/class names
+- Start broad: use `rg --files` for relevant directories and `rg` for key types, interfaces, and class names
 - Follow the thread: from an entry point, trace the call chain (callers, callees, data flow, type definitions)
 - Read the actual code, don't guess from file names
 - Stop when it can describe the full path from input to output (or trigger to effect) without hand-waving any step
@@ -59,7 +61,7 @@ Then proceed to Step 3.
 
 Spawn one collaboration subagent that explores and explains in one pass. Use the configured `how explainer` model from `~/.codex/pstack-models.md` when valid. Otherwise inherit the parent model. Give it a read-only task.
 
-The agent does its own exploration (Glob, Grep, Read) and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Same structure, just no explorer findings as input.
+The agent searches with `rg --files` and `rg`, reads the matching source, and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Same structure, just no explorer findings as input.
 
 Proceed to Step 4.
 

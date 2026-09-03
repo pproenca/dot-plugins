@@ -9,9 +9,11 @@ metadata:
 
 Fan out N parallel attempts at the same task. Read every candidate end to end. Pick the strongest as the base. Graft the best ideas from the others into it. Verify the synthesized result.
 
+Before using Codex collaboration, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED` because independent candidates are this skill's core behavior.
+
 ## Start
 
-Call `update_plan` with one entry per phase before launching anything. The arena runs autonomously and the plan keeps phases from silently disappearing.
+Put one entry per phase in `update_plan` when it is available. Otherwise state the same phases in a normal progress update. The phase list keeps autonomous work from silently dropping a step.
 
 1. Frame
 2. Fan out
@@ -31,7 +33,7 @@ The N candidates will receive the same prompt, so the prompt is the contract. Ge
 
 ## Phase B: Fan out
 
-Spawn all N collaboration subagents together. Give each the task, the shared grounding path, its own output path, and instructions to produce both the artifact and a short rationale. Use the collaboration wait mechanism to drain them.
+Spawn all N collaboration subagents together with unique task names. Give each the task, the shared grounding path, its own output path, and instructions to produce both the artifact and a short rationale. Use `list_agents` for status and `wait_agent` only when the next phase needs a result.
 
 The rationale is mandatory. Without it, the parent cannot tell whether a candidate's structure is principled or accidental, which makes Phase E grafting unreliable. Each rationale names the alternatives the candidate considered and what it rejected.
 

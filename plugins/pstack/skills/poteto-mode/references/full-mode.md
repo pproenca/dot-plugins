@@ -15,7 +15,7 @@ Paths in this reference are relative to the `skills/poteto-mode/` skill root unl
 
 ## Non-negotiables
 
-**Start every multi-step task by calling `update_plan`; its first item is to read the Principles section below in full.** The principles ground every trigger here. In your reply, name each principle that shaped a decision and the specific choice it changed. A citation with no decision behind it means you skipped its leaf skill; it must trace to a real choice the leaf's rule drove.
+**Start every multi-step task with the matched playbook's phases.** Read the [Codex tool contract](codex-tools.md), then use `update_plan` when the current turn exposes it and the session is not in Plan mode. Otherwise keep the phases in a normal progress update. The first phase is to read the Principles section below in full. The principles ground every trigger here. In your reply, name each principle that shaped a decision and the specific choice it changed. A citation with no decision behind it means you skipped its leaf skill; it must trace to a real choice the leaf's rule drove.
 
 Remaining triggers:
 
@@ -89,11 +89,11 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-Use collaboration subagents for playbook workers. Tell ordinary workers to read the **poteto-mode** skill before acting. Routed workflow skills such as **how**, **why**, **interrogate**, **reflect**, and **swarm** define their own prompts and model selection. Respect those instructions.
+Use collaboration subagents for playbook workers when Codex exposes `spawn_agent`. Follow the [Codex tool contract](codex-tools.md) for every spawn, message, wait, status check, and interruption. Tell ordinary workers to read the **poteto-mode** skill before acting. Routed workflow skills such as **how**, **why**, **interrogate**, **reflect**, and **swarm** define their own prompts and model selection. Respect those instructions.
 
-For every collaboration spawn, pass file pointers instead of source dumps and use a valid model only when the role benefits from an override. Read per-role choices from `~/.codex/pstack-models.md`. A missing role, `inherit-parent`, or `auto` means to omit model and reasoning overrides. Give hard judgment work the strongest available reasoning model, precise mechanical work a strong instruction-following model, and small searches a fast model.
+For every collaboration spawn, pass file pointers instead of source dumps and use a valid model only when the role benefits from an override. Read per-role choices from `~/.codex/pstack-models.md`. A missing role, `inherit-parent`, `auto`, or a stale value means to omit model and reasoning overrides. When an override is valid, avoid a full-history fork as the Codex tool contract requires. Give hard judgment work the strongest available reasoning model, precise mechanical work a strong instruction-following model, and small searches a fast model.
 
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
+You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Follow-up tasks after an interruption can lose prior directives, so spawn a fresh subagent with consolidated scope instead of trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
 
 ## Writing the reply
 
@@ -136,7 +136,7 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Orchestrate.** A standing project handed to one coordinator chat: multi-day, many stacked PRs, dozens to hundreds of subagents, minimal human turns ("run this whole project", "own this migration until it lands"). Distinct from Autonomous run, which drives one task to a predicate; work one agent could finish inside the session's budget routes there, not here, however program-shaped the phrasing sounds. `playbooks/orchestrate.md`.
 - **Autopilot-full.** A queue of independent PRs run to merged with full autonomy: one owner per PR carries build through merge, and the root swarm-verifies each merge-ready head before its owner merges ("autopilot this queue", "full autopilot", one-owner-per-PR programs). `playbooks/autopilot-full.md`.
 - **Autopilot-stack.** A queue of changes built and verified with full autonomy, delivered as one linear reviewed Graphite stack the operator lands herself ("autopilot-stack", "stack them, don't ship", "build the stack, I'll land it"). `playbooks/autopilot-stack.md`.
-- **Session pickup.** Resuming or taking over a prior agent's in-flight work from a transcript, cloud-agent URL, or pushed branch. `playbooks/session-pickup.md`.
+- **Session pickup.** Resuming or taking over a prior agent's in-flight work from a transcript, Codex task id or URL, or pushed branch. `playbooks/session-pickup.md`.
 - **Pause safely.** Suspending work cleanly on an explicit pause, going offline, a Codex restart, or imminent context compaction. Full steps: `playbooks/pause-safely.md`.
 - **Multi-phase or multi-PR plan.** Work that spans phases or stacked PRs. `playbooks/multi-phase-plan.md`.
 - **Worktree and simulator cleanup.** Reclaiming local disk by pruning merged or abandoned git worktrees and stale iOS simulators ("what's using my disk", "clean up worktrees", "prune safe-to-prune worktrees", "free up space", "delete old simulators"). `playbooks/worktree-cleanup.md`.

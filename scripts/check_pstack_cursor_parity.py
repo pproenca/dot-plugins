@@ -10,6 +10,7 @@ CODEX_ONLY = {
     "assets/icon.png",
     "plugin.json",
     "skills/poteto-mode/references/full-mode.md",
+    "skills/poteto-mode/references/codex-tools.md",
 }
 
 TRANSLATABLE = frozenset(
@@ -31,7 +32,10 @@ skills/bro/SKILL.md
 skills/create-verification-skill/SKILL.md
 skills/figure-it-out/SKILL.md
 skills/how/SKILL.md
+skills/how/references/explainer-prompt.md
+skills/how/references/explorer-prompt.md
 skills/interrogate/SKILL.md
+skills/interrogate/references/rubric.md
 skills/maintain-verification-skill/SKILL.md
 skills/make-bot-ui/SKILL.md
 skills/no-comments/SKILL.md
@@ -95,8 +99,8 @@ skills/unslop/SKILL.md
 skills/why/SKILL.md""".splitlines()
 )
 
-EXPECTED_TRANSLATION_SOURCE_DIGEST = "fabf5f9c14abd1dd12e381e0ccfe12f730b5cb5f1682f50c65e13d8b87741e4d"
-EXPECTED_TRANSLATION_TARGET_DIGEST = "ac51ff8fa19d7ed1d412fb9ca6cd3f48c0a03073ca86e90d966c913d2a5ad8a7"
+EXPECTED_TRANSLATION_SOURCE_DIGEST = "74502378a94391d868f5b7ccfc3c4312404ffccbbf4cd95b34ceb4a7f4a08e2e"
+EXPECTED_TRANSLATION_TARGET_DIGEST = "fd93c498d3a392d4fe40c0b5c649a3430766e134fbc3adb102bf1c183f8026df"
 
 DEAD_CODEX_REFERENCES = {
     "~/.cursor/": "Cursor home path",
@@ -121,6 +125,8 @@ DEAD_CODEX_REFERENCES = {
     "/deslop": "Cursor prose command",
     "git reset --hard": "destructive worktree recovery",
     "allow_multiple": "unsupported question-tool field",
+    "Use Read, Grep, and Glob": "Cursor file-search tools",
+    "Use Glob": "Cursor file-search tool",
     "isolated collaboration agent": "false implicit-worktree claim",
     "`Task` response": "Cursor delegation response",
     "Multiple `Task`": "Cursor delegation call",
