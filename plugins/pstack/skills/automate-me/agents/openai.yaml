@@ -1,0 +1,6 @@
+interface:
+  display_name: "Automate Me"
+  short_description: "Run the Automate Me pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

@@ -1,8 +1,6 @@
 ---
 name: recall
 description: "Reconstruct your recent working context from your own chat history, live state, and the shared record (user reports, prior fixes, incidents), then hand back a tight current-state brief. Use when 'recall my work on X', 'catch me up', 'what have I been working on', 'where did I leave off', before starting or resuming work."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Recall
@@ -11,7 +9,7 @@ metadata:
 
 Keep it tight and on-topic. Read only what the in-scope threads need, then stop. The heavy reading fans out to parallel subagents. The main thread keeps only their findings and the final brief.
 
-Before spawning Codex history readers, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, read the scoped tasks locally and keep the same output contract.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). Use collaboration agents for independent history slices when the current turn permits delegation. Otherwise read the scoped tasks locally and keep the same output contract.
 
 Your context lives in two records. Your own chat history holds what you did and decided. The shared record holds everything that happened around the same code under other names: the symptoms users keep reporting, the fixes that shipped and got reverted, the errors still firing in prod. That second record is what the **why** skill searches, across source control, the issue tracker, chat and issue channels, long-form docs, and error tracking. A feature with a long bug tail keeps most of its story there, so don't reconstruct it from your transcripts alone.
 

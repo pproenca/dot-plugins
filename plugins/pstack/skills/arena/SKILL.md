@@ -1,19 +1,17 @@
 ---
 name: arena
-description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use when /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
-metadata:
-  disable-model-invocation: "true"
+description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use when $pstack:arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
 ---
 
 # Arena
 
 Fan out N parallel attempts at the same task. Read every candidate end to end. Pick the strongest as the base. Graft the best ideas from the others into it. Verify the synthesized result.
 
-Before using Codex collaboration, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED` because independent candidates are this skill's core behavior.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). This workflow requires independent collaboration agents. If the current turn does not expose or authorize delegation, report `BLOCKED` because independent candidates are this skill's core behavior.
 
 ## Start
 
-Put one entry per phase in `update_plan` when it is available. Otherwise state the same phases in a normal progress update. The phase list keeps autonomous work from silently dropping a step.
+Keep one visible entry per phase throughout the run. Use the current mode's planning capability when available. Otherwise maintain the same phases in progress updates.
 
 1. Frame
 2. Fan out
@@ -33,7 +31,7 @@ The N candidates will receive the same prompt, so the prompt is the contract. Ge
 
 ## Phase B: Fan out
 
-Spawn all N collaboration subagents together with unique task names. Give each the task, the shared grounding path, its own output path, and instructions to produce both the artifact and a short rationale. Use `list_agents` for status and `wait_agent` only when the next phase needs a result.
+Start all N collaboration agents together with unique task names. Give each agent the task, the shared grounding path, its own output path, and instructions to produce both the artifact and a short rationale. Continue non-overlapping local work. Check worker status only when needed, and wait only when the next phase requires a result.
 
 The rationale is mandatory. Without it, the parent cannot tell whether a candidate's structure is principled or accidental, which makes Phase E grafting unreliable. Each rationale names the alternatives the candidate considered and what it rejected.
 

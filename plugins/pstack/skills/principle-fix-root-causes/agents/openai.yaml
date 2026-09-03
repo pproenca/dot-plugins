@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Fix Root Causes"
+  short_description: "Run the Principle Fix Root Causes pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

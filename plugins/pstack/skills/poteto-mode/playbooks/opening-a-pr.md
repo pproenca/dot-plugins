@@ -8,7 +8,7 @@ Invoked at the end of every other playbook.
 
 **PRs.** Inspect the diff for dead compatibility paths, unsupported guards, unrelated edits, and narrating comments before commit. Run **no-comments** before review. Write every PR title, description, and commit body with **technical-writing**, then apply **unslop**. Apply every technical-writing layer except Diátaxis.
 
-**Titles.** Use Conventional Commits in the form `type(scope): subject`. Use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf` as the type. Use the changed area, such as `pstack` or `poteto-mode`, as the scope. Keep the subject short and imperative. Apply the same `/technical-writing` and `/unslop` pass as the body. Name a real symbol when one carries the change. For example, `fix(pstack): retarget opening-a-pr babysit trigger`. Do not add a trailing period.
+**Titles.** Use Conventional Commits in the form `type(scope): subject`. Use `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf` as the type. Use the changed area, such as `pstack` or `poteto-mode`, as the scope. Keep the subject short and imperative. Apply the same `$pstack:technical-writing` and `$pstack:unslop` pass as the body. Name a real symbol when one carries the change. For example, `fix(pstack): retarget opening-a-pr babysit trigger`. Do not add a trailing period.
 
 **Descriptions.** Use these sections in order. Drop a section when it is empty.
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Bro"
+  short_description: "Run the Bro pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

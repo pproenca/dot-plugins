@@ -1,0 +1,6 @@
+interface:
+  display_name: "Technical Writing"
+  short_description: "Run the Technical Writing pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

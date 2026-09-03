@@ -1,8 +1,6 @@
 ---
 name: automate-me
 description: "Use when \"automate me\", \"create/update/refresh my -mode skill\", \"turn/capture my preferences or working style into a skill\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill via skill-creator and unslop, optionally pulling fresh evidence from recent transcripts."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Automate me
@@ -11,13 +9,13 @@ A guided flow for turning the user's working conventions into a skill agents wil
 
 This skill orchestrates three others: an inline mining pass, the built-in **skill-creator** skill, and **unslop**. It sequences them; it does not replace them.
 
-Before spawning Codex history readers, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, mine the scoped history locally and note that cross-slice independence was unavailable.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). Use collaboration agents for independent history slices when the current turn permits delegation. Otherwise mine the scoped history locally and note that cross-slice independence was unavailable.
 
 ## Flow
 
 ### 0. Check for an existing skill
 
-Look recursively for `.agents/skills/**/*-mode/SKILL.md` and `~/.agents/skills/*-mode/SKILL.md` matching the user's handle. If one exists, confirm intent with `request_user_input` when available, unless the user already asked to update it:
+Look recursively for `.agents/skills/**/*-mode/SKILL.md` and `~/.agents/skills/*-mode/SKILL.md` matching the user's handle. If one exists, confirm intent unless the user already asked to update it:
 
 - Update the existing skill (default for repeat runs)
 - Start fresh (rare; ask why before doing it)
@@ -44,7 +42,7 @@ Cross-check across slices before elevating a signal. Patterns seen in 2+ slices 
 
 ### 2. Ask the user directly
 
-Mining misses intent that has not come up yet. Use `request_user_input` when available. Otherwise ask one concise question at a time.
+Mining misses intent that has not come up yet. Ask one concise question at a time.
 
 Shape: one or two questions with two or three mutually exclusive options each. Start broad ("Which area matters most?"), then follow up on the selected area with specific options. Ask one free-form chat question afterward to catch anything the options missed.
 
@@ -73,7 +71,7 @@ Use the built-in **skill-creator** skill to author the skill. Placement:
 - Handle: the user's first name or chosen identifier.
 - Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
 - Frontmatter formatting: follow **skill-creator**'s YAML rules. Keep `description` as one YAML scalar; quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
-- Frontmatter `metadata.disable-model-invocation: "true"` by default. Mode skills are heavy and opinionated; they should only apply when the user explicitly invokes them (by name or slash command), not auto-trigger on description matching. Opt out only if the user explicitly wants their mode to apply on every turn. Agent Plugins closes the frontmatter field set, so client-specific keys go under `metadata` as strings; a client that reads only the top-level key will not honor it.
+- Add `agents/openai.yaml` with `policy.allow_implicit_invocation: false` by default. Mode skills are heavy and opinionated, so Codex should load them only when the user invokes them explicitly. Omit that policy only when the user wants automatic selection.
 
 ### 5. Iterate on prose
 

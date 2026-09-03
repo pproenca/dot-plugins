@@ -1,19 +1,17 @@
 ---
 name: reflect
 description: "Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Reflect
 
 Mine the current conversation for durable learnings, then route them into skill edits.
 
-Before spawning Codex reviewers, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED`. Independent reviewers are part of this skill's evidence, not optional ceremony.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). This workflow requires independent collaboration agents. If the current turn does not expose or authorize delegation, report `BLOCKED`. Independent reviewers are part of this skill's evidence.
 
 ## When to invoke
 
-- The user said "reflect" or "/reflect".
+- The user said "reflect" or "$pstack:reflect".
 - A complex task (5+ tool calls) just landed cleanly and the recipe is worth keeping.
 - The agent hit dead ends, found the working path, and the path generalizes.
 - The user corrected the agent's approach mid-task.

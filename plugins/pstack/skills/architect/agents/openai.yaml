@@ -1,0 +1,6 @@
+interface:
+  display_name: "Architect"
+  short_description: "Run the Architect pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

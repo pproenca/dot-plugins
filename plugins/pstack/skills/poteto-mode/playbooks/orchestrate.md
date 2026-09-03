@@ -10,13 +10,13 @@ Three rules carry the rest.
 - Every spawn and every follow-up task carries the standing orders verbatim.
 - The brief is the product. A vague brief fails quietly, because a worker cannot ask you a question.
 
-Read the [Codex tool contract](../references/codex-tools.md). Copy the steps below into `update_plan` when it is available. Otherwise keep the same steps in a normal progress update. A step you skip stays listed with `skip: <reason>`.
+Read the [Codex collaboration contract](../references/codex-tools.md). Keep the steps below visible in the current planning capability or in normal progress updates. A step you skip stays listed with `skip: <reason>`.
 
 #### Roles and placement
 
 - **Coordinator (this chat).** Local. Frames, authors briefs, drains the inbox, owns the human report, and makes judgment calls. It never authors or edits code. Conflicted merges, restacks, and code changes are worker tasks. Agents are spawned and drained through collaboration tools. State reads and writes go through `scripts/orch/orch.ts` at drain points. The CLI never spawns, waits, or wakes agents.
 - **Sub-coordinator.** Always local, durable, one per track, and only when the program exceeds what one coordinator's drains can manage. A track the coordinator can drain itself needs no middle layer: each nested layer re-pays a full orientation preamble, and a blocking sub-coordinator hides its children while the parent idles. Owns its track's units and boards, authors its workers' briefs, and spawns its own workers and verifiers with the collaboration schema exposed in the current session. Rolls up aggregates at wave boundaries; never forwards raw child reports. Cap in-flight children at what one drain can process as a rolling window, never as blocking batches, which cost the slowest child of every batch.
-- **Worker / verifier.** Use an isolated worktree when writing. Keep work local when it needs browser control, computer use, CLI control, simulators, local IDE state, or local authentication. Prefer fewer, broader workers and one writer per worktree or branch. Run a unit's verifier on a different available model or reasoning profile from its worker.
+- **Worker / verifier.** Use an isolated worktree when writing. Keep work local when it needs browser control, computer use, CLI control, simulators, local IDE state, or local authentication. Prefer fewer, broader workers and one writer per worktree and branch. Run a unit's verifier on a different available model or reasoning profile from its worker.
 
 Depth stays at coordinator, track, worker. Author the track decomposition per project (build, landing, and verification are common cuts, not a required shape); hard-coded swarm trees were tried and parked as too rigid.
 
@@ -55,7 +55,7 @@ Size the brief to the unit. A one-command unit gets the template collapsed to a 
 
 A sub-coordinator brief adds its track boundary and unit list, its spawn budget within the current collaboration limit, the drain protocol, and the rollup format (per child: name, status, PR, head SHA, verdict, one line; plus track status and frontier delta).
 
-A dependency is a context relay, not just ordering: undeclared upstream context makes the worker guess. Missing fields are a refuse-to-spawn condition. Audit one sampled worker brief per sub-coordinator per wave, concurrently with the wave it samples, never as a gate in front of it; a failing brief stops that track and fixes the sub-coordinator's instructions, not just the worker, because brief quality decays late in a run. Never chain an interrupted brief through `followup_task`; spawn a fresh agent with consolidated scope.
+A dependency is a context relay, not just ordering: undeclared upstream context makes the worker guess. Missing fields are a refuse-to-spawn condition. Audit one sampled worker brief per sub-coordinator per wave, concurrently with the wave it samples, never as a gate in front of it; a failing brief stops that track and fixes the sub-coordinator's instructions, not just the worker, because brief quality decays late in a run. Never continue an interrupted brief as follow-up work. Dispatch a fresh agent with consolidated scope.
 
 #### Steps
 

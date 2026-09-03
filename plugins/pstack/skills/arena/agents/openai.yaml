@@ -1,0 +1,6 @@
+interface:
+  display_name: "Arena"
+  short_description: "Run the Arena pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

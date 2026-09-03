@@ -1,35 +1,26 @@
----
-name: poteto-mode
-description: "poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use when poteto, /poteto-mode, or requests to work in this style."
-metadata:
-  disable-model-invocation: "true"
-  mode: "true"
-  icon: "crown"
-  color: "yellow"
-  reminder: "New task? Playbook match or rigor needed -> apply /poteto-mode. Casual turn or user opts out -> don't."
----
-
-# Poteto mode
+# Full poteto mode rulebook
 
 Paths in this reference are relative to the `skills/poteto-mode/` skill root unless they say otherwise.
 
 ## Non-negotiables
 
-**Start every multi-step task with the matched playbook's phases.** Read the [Codex tool contract](codex-tools.md), then use `update_plan` when the current turn exposes it and the session is not in Plan mode. Otherwise keep the phases in a normal progress update. The first phase is to read the Principles section below in full. The principles ground every trigger here. In your reply, name each principle that shaped a decision and the specific choice it changed. A citation with no decision behind it means you skipped its leaf skill; it must trace to a real choice the leaf's rule drove.
+**Start every multi-step task with the matched playbook's phases.** Read the [Codex collaboration contract](codex-tools.md), then keep the phases visible in the current planning capability or in normal progress updates. The first phase is to read the Principles section below in full. The principles ground every trigger here. In your reply, name each principle that shaped a decision and the specific choice it changed. A citation with no decision behind it means you skipped its leaf skill; it must trace to a real choice the leaf's rule drove.
+
+Every route below is also a file-load instruction. Before acting on a routed workflow or principle, resolve its bold skill name to `../../<skill-name>/SKILL.md` from this file and read that file in full. Codex does not recursively load a hidden skill merely because this rulebook names it.
 
 Remaining triggers:
 
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
-- Before asking a "which approach", "how should I", or "what should this do" question, classify it. If a run can answer it, use the Prototype playbook and let the result decide. Reserve `request_user_input`, or a concise direct question when that tool is unavailable, for a product or preference call no experiment can settle.
+- Before asking a "which approach", "how should I", or "what should this do" question, classify it. If a run can answer it, use the Prototype playbook and let the result decide. Ask one concise question only for a product or preference call no experiment can settle.
 - Any code → name the data shape first, and choose its organizing structure per **principle-model-the-domain**.
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
 - Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface → the **unslop** skill. Your reply is a prose surface; write it per **Writing the reply**. Agent-facing prose also follows the built-in **skill-creator** skill.
-- Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`).
+- Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`$pstack:technical-writing`).
 - Before commit → inspect the diff for dead compatibility paths, unsupported guards, unrelated edits, and narrating comments.
-- Before review → the **no-comments** skill (`/no-comments`).
+- Before review → the **no-comments** skill (`$pstack:no-comments`).
 - Shipping UI, native app, or CLI → the matching available control skill. Use browser control for web products, computer use for native apps, and **control-cli** for CLIs and TUIs when installed. For bug fixes, reproduce first on the same product yourself.
 - Any PR-status request → the **Babysit** playbook (`playbooks/babysit.md`). That includes "babysit this", "get it green", "address the bot comments", "check on PR X", and "anything outstanding on X". Merely opening a PR does not trigger it.
 - Asked to land or ship a green stack → the **Shipping** playbook (`playbooks/shipping.md`). Green is not safe. Nothing gets armed before an independent per-PR verdict, and only the contiguous verified run from the root lands.
@@ -39,7 +30,7 @@ Remaining triggers:
 
 ## Principles
 
-Read the leaf skill in full for any principle you apply. Each entry names when it applies.
+Read the leaf skill in full for any principle you apply. Resolve each bold directory name through the sibling-skill path rule above. Each entry names when it applies.
 
 **Core**
 
@@ -89,9 +80,9 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-Use collaboration subagents for playbook workers when Codex exposes `spawn_agent`. Follow the [Codex tool contract](codex-tools.md) for every spawn, message, wait, status check, and interruption. Tell ordinary workers to read the **poteto-mode** skill before acting. Routed workflow skills such as **how**, **why**, **interrogate**, **reflect**, and **swarm** define their own prompts and model selection. Respect those instructions.
+Use collaboration agents for playbook workers when the current turn exposes and authorizes delegation. Follow the [Codex collaboration contract](codex-tools.md). Tell ordinary workers to read the **poteto-mode** skill before acting. Routed workflow skills such as **how**, **why**, **interrogate**, **reflect**, and **swarm** define their own prompts and model selection. Respect those instructions.
 
-For every collaboration spawn, pass file pointers instead of source dumps and use a valid model only when the role benefits from an override. Read per-role choices from `~/.codex/pstack-models.md`. A missing role, `inherit-parent`, `auto`, or a stale value means to omit model and reasoning overrides. When an override is valid, avoid a full-history fork as the Codex tool contract requires. Give hard judgment work the strongest available reasoning model, precise mechanical work a strong instruction-following model, and small searches a fast model.
+For every delegated task, pass file pointers instead of source dumps and use a valid model only when the role benefits from an override. Read per-role choices from `~/.codex/pstack-models.md`. A missing role, `inherit-parent`, `auto`, or a stale value means to omit model and reasoning overrides. When an override is valid, use a context inheritance shape that the current collaboration description permits. Give hard judgment work the strongest available reasoning model, precise mechanical work a strong instruction-following model, and small searches a fast model.
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Follow-up tasks after an interruption can lose prior directives, so spawn a fresh subagent with consolidated scope instead of trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
 

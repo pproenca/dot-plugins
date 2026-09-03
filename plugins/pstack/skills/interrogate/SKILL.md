@@ -1,8 +1,6 @@
 ---
 name: interrogate
 description: "Use when \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Interrogate
@@ -11,7 +9,7 @@ Spawn one reviewer per configured model to adversarially review code changes. Ea
 
 The deliverable is a synthesized verdict. Do NOT auto-apply changes.
 
-Before spawning Codex reviewers, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED`. If model overrides are unavailable, the review can still run, but label model diversity `INCONCLUSIVE`.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). This workflow requires independent collaboration agents. If the current turn does not expose or authorize delegation, report `BLOCKED`. If the current collaboration capability does not advertise validated model overrides, run the review with inherited settings and label model diversity `INCONCLUSIVE`.
 
 ## Step 1, Determine Scope
 

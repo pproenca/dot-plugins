@@ -1,21 +1,19 @@
 ---
 name: figure-it-out
-description: "Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions via show-me-your-work. Use when /figure-it-out, 'figure it out', a large migration, or when no narrower playbook applies."
-metadata:
-  disable-model-invocation: "true"
+description: "Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions via show-me-your-work. Use when $pstack:figure-it-out, 'figure it out', a large migration, or when no narrower playbook applies."
 ---
 
 # Figure it out
 
 When the task matches no playbook, design one. The deliverable before any code is the workflow itself: a sequence of phases that scales rigor to the task, runs the scientific method, and leaves a decision trail a human can audit after stepping away. Bias toward more rigor. The cost of building the wrong thing dwarfs the cost of being careful.
 
-Before using Codex plan or collaboration tools, read the [Codex tool contract](../poteto-mode/references/codex-tools.md).
+Before planning or delegating in Codex, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md).
 
 Don't reinvent a playbook you already have. A focused single-unit task that matches Bug fix, Perf, Feature, Visual parity, Eval, or Multi-phase plan routes there. But a large or cross-cutting version of one (a migration across many call sites, an ambitious multi-part change), or work the user reviews after stepping away, belongs here even though a single-unit version would be a Feature. The rigor and the audit trail are the point.
 
 ## Start
 
-Use `update_plan` when it is available. Otherwise state the same phase list in a normal progress update. Its first item is to read the Principles section of the **poteto-mode** skill. Add the phases below after it.
+Keep the phase list visible in the current planning capability or in normal progress updates. Its first item is to read the Principles section of the **poteto-mode** skill. Add the phases below after it.
 
 ## Phase A: Frame
 

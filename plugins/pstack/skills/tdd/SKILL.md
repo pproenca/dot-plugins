@@ -1,8 +1,6 @@
 ---
 name: tdd
 description: "Use when the user explicitly asks for TDD, a failing test, or a regression test, OR when the bug has an obvious cheap local test target. Skip when the test path is unclear, expensive, integration-heavy, or not requested."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # TDD Bug Fix

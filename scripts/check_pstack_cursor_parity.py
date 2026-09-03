@@ -7,20 +7,65 @@ from pathlib import Path
 
 CODEX_ONLY = {
     ".codex-plugin/plugin.json",
-    "assets/icon.png",
     "plugin.json",
     "skills/poteto-mode/references/full-mode.md",
     "skills/poteto-mode/references/codex-tools.md",
 }
 
+CODEX_POLICY_SKILLS = frozenset(
+    """architect
+arena
+automate-me
+blast-radius
+bro
+create-verification-skill
+figure-it-out
+interrogate
+maintain-verification-skill
+no-comments
+poteto-mode
+principle-boundary-discipline
+principle-build-the-lever
+principle-encode-lessons-in-structure
+principle-exhaust-the-design-space
+principle-experience-first
+principle-fix-root-causes
+principle-foundational-thinking
+principle-guard-the-context-window
+principle-laziness-protocol
+principle-make-operations-idempotent
+principle-migrate-callers-then-delete-legacy-apis
+principle-minimize-reader-load
+principle-model-the-domain
+principle-never-block-on-the-human
+principle-outcome-oriented-execution
+principle-prove-it-works
+principle-redesign-from-first-principles
+principle-separate-before-serializing-shared-state
+principle-sequence-verifiable-units
+principle-subtract-before-you-add
+principle-type-system-discipline
+recall
+reflect
+show-me-your-work
+swarm
+tdd
+teach
+technical-writing""".splitlines()
+)
+
 TRANSLATABLE = frozenset(
     """.cursor-plugin/plugin.json
 README.md
+assets/logo.png
 docs/guide/01-setup.md
 docs/guide/02-poteto-mode.md
+docs/guide/03-understand.md
+docs/guide/04-design.md
 docs/guide/05-build-and-clean.md
 docs/guide/06-verify-and-ship.md
 docs/guide/07-overnight.md
+docs/guide/08-principles.md
 docs/guide/09-make-it-yours.md
 docs/guide/10-recipes-and-pitfalls.md
 docs/guide/README.md
@@ -99,8 +144,9 @@ skills/unslop/SKILL.md
 skills/why/SKILL.md""".splitlines()
 )
 
-EXPECTED_TRANSLATION_SOURCE_DIGEST = "74502378a94391d868f5b7ccfc3c4312404ffccbbf4cd95b34ceb4a7f4a08e2e"
-EXPECTED_TRANSLATION_TARGET_DIGEST = "fd93c498d3a392d4fe40c0b5c649a3430766e134fbc3adb102bf1c183f8026df"
+EXPECTED_TRANSLATION_SOURCE_DIGEST = "81d73a4f15ee2e567542875b243742c66864f163493fb6cefecda754e713431f"
+EXPECTED_TRANSLATION_TARGET_DIGEST = "b2c22859ab7feeb014972bfdc8eb7c29fbad6df23b0bb08aeb13bd6636fa55ed"
+EXPECTED_CODEX_ONLY_DIGEST = "3d72e92af007b404f306543145cf7be5b9d290fea4d75ddbe60fcdc32af918e1"
 
 DEAD_CODEX_REFERENCES = {
     "~/.cursor/": "Cursor home path",
@@ -136,6 +182,8 @@ DEAD_CODEX_REFERENCES = {
 def source_to_codex(path: str) -> str:
     if path == ".cursor-plugin/plugin.json":
         return "com.cursor/plugin.json"
+    if path == "assets/logo.png":
+        return "assets/icon.png"
     if path.startswith(("agents/", "automations/")):
         return f"com.cursor/{path}"
     return path
@@ -143,6 +191,15 @@ def source_to_codex(path: str) -> str:
 
 def can_translate(path: str) -> bool:
     return path in TRANSLATABLE
+
+
+def is_codex_only(path: str) -> bool:
+    return path in expected_codex_only_paths()
+
+
+def expected_codex_only_paths() -> frozenset[str]:
+    policy_paths = {f"skills/{skill}/agents/openai.yaml" for skill in CODEX_POLICY_SKILLS}
+    return frozenset(CODEX_ONLY | policy_paths)
 
 
 def files(root: Path) -> dict[str, Path]:
@@ -158,6 +215,33 @@ def translation_digest(entries: list[tuple[str, Path]]) -> str:
         digest.update(len(payload).to_bytes(8, "big"))
         digest.update(payload)
     return digest.hexdigest()
+
+
+def mapping_collision_failures(source_paths: set[str]) -> list[str]:
+    mapped_sources: dict[str, list[str]] = {}
+    for source_path in source_paths:
+        mapped_sources.setdefault(source_to_codex(source_path), []).append(source_path)
+    return [
+        f"source mapping collision: {sorted(source_paths)} -> {target_path}"
+        for target_path, source_paths in sorted(mapped_sources.items())
+        if len(source_paths) > 1
+    ]
+
+
+def codex_only_receipt_failures(
+    local: dict[str, Path],
+    actual_paths: set[str],
+    expected_paths: frozenset[str] | None = None,
+    expected_digest: str = EXPECTED_CODEX_ONLY_DIGEST,
+) -> list[str]:
+    expected = expected_paths or expected_codex_only_paths()
+    failures = [f"unexpected Codex-only file: {path}" for path in sorted(actual_paths - expected)]
+    failures.extend(f"missing required Codex-only file: {path}" for path in sorted(expected - actual_paths))
+    if not (expected - actual_paths) and (
+        translation_digest([(path, local[path]) for path in expected]) != expected_digest
+    ):
+        failures.append("Codex-only digest differs from the reviewed migration")
+    return failures
 
 
 def translation_receipt_failures(
@@ -197,8 +281,8 @@ def main() -> int:
     upstream = files(args.cursor_pstack.resolve())
     codex_root = args.codex_pstack.resolve()
     local = files(codex_root)
+    failures = mapping_collision_failures(set(upstream))
     mapped = {source_to_codex(path) for path in upstream}
-    failures: list[str] = []
     exact = 0
     translated = 0
     translated_paths: set[str] = set()
@@ -220,11 +304,7 @@ def main() -> int:
             failures.append(f"unlisted byte difference: {source_path} -> {target_path}")
 
     extras = set(local) - mapped
-    unexpected_extras = extras - CODEX_ONLY
-    for path in sorted(unexpected_extras):
-        failures.append(f"unexpected Codex-only file: {path}")
-    for path in sorted(CODEX_ONLY - extras):
-        failures.append(f"missing required Codex-only file: {path}")
+    failures.extend(codex_only_receipt_failures(local, extras))
 
     failures.extend(translation_receipt_failures(upstream, local, translated_paths))
 

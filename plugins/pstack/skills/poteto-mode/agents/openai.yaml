@@ -1,0 +1,6 @@
+interface:
+  display_name: "Poteto Mode"
+  short_description: "Run the Poteto Mode pstack workflow"
+
+policy:
+  allow_implicit_invocation: true

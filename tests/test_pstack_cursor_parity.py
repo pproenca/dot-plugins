@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import subprocess
 from pathlib import Path
 
 
@@ -46,3 +47,52 @@ def test_translation_digest_binds_the_source_path(tmp_path: Path) -> None:
 
     assert first != second
     assert first != hashlib.sha256(payload.read_bytes()).hexdigest()
+
+
+def test_codex_only_receipt_rejects_changed_policy(tmp_path: Path) -> None:
+    parity = load_parity_module()
+    policy = tmp_path / "openai.yaml"
+    policy.write_text("policy:\n  allow_implicit_invocation: false\n")
+    paths = frozenset({"skills/demo/agents/openai.yaml"})
+    digest = parity.translation_digest([("skills/demo/agents/openai.yaml", policy)])
+
+    policy.write_text("policy:\n  allow_implicit_invocation: true\n")
+
+    assert parity.codex_only_receipt_failures(
+        {"skills/demo/agents/openai.yaml": policy},
+        set(paths),
+        paths,
+        digest,
+    ) == ["Codex-only digest differs from the reviewed migration"]
+
+
+def test_source_mapping_collisions_are_rejected() -> None:
+    parity = load_parity_module()
+
+    failures = parity.mapping_collision_failures(
+        {"agents/comment-sicko.md", "com.cursor/agents/comment-sicko.md"}
+    )
+
+    assert failures == [
+        "source mapping collision: ['agents/comment-sicko.md', "
+        "'com.cursor/agents/comment-sicko.md'] -> com.cursor/agents/comment-sicko.md"
+    ]
+
+
+def test_codex_multi_phase_template_passes_its_checker(tmp_path: Path) -> None:
+    root = Path(__file__).resolve().parents[1]
+    playbook = root / "plugins/pstack/skills/poteto-mode/playbooks/multi-phase-plan.md"
+    checker = root / "plugins/pstack/skills/poteto-mode/scripts/check-plan.mjs"
+    source = playbook.read_text()
+    template = source.split("````markdown\n", 1)[1].split("\n````", 1)[0]
+    plan = tmp_path / "plan.md"
+    plan.write_text(template)
+
+    result = subprocess.run(
+        ["node", checker, plan],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr

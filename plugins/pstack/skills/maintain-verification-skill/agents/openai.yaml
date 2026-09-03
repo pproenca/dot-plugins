@@ -1,0 +1,6 @@
+interface:
+  display_name: "Maintain Verification Skill"
+  short_description: "Run the Maintain Verification Skill pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

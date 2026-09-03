@@ -1,15 +1,13 @@
 ---
 name: show-me-your-work
-description: "Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use when /show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away."
-metadata:
-  disable-model-invocation: "true"
+description: "Keep a reviewable decision trail for long-running or unattended work: a TSV log with one row per decision (what, why, evidence, result). Local by default; commit it when a reviewer needs the trail to trust the result. Use when $pstack:show-me-your-work, autonomous or multi-phase runs, or work a human reviews after stepping away."
 ---
 
 # Show me your work
 
 For work a human reviews after the fact, a decision trail lets them reconstruct what was decided, why, and on what evidence, without rerunning the work or reading the whole transcript. Keep one canonical log so the trail is consistent and a future agent can find it.
 
-Before spawning the final Codex reviewer, read the [Codex tool contract](../poteto-mode/references/codex-tools.md).
+Before delegating the final Codex review, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md).
 
 ## The format
 
@@ -67,9 +65,9 @@ Fix the log, not the story. If the work diverged from what a row claims, the row
 
 ## Cross-model review of the trail
 
-Before handing back, spawn a subagent on a different model family from the one that did the work when `spawn_agent` and a validated model override are available. Self-review is not a substitute; the point is fresh eyes you cannot bring yourself. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+Before handing back, run an independent review on a different model family when the current collaboration capability advertises a validated override. Self-review is not a substitute. The reviewer reads the audit trail and the run's transcript, then flags what the user should inspect. This is a risk scan, not a redo of the work.
 
-If Codex does not expose `spawn_agent` or model overrides, do not invent an independent review. Finish the run and mark the cross-model gate `INCONCLUSIVE` in the Attention section with the missing capability.
+If Codex does not expose collaboration or model overrides, do not invent an independent review. Finish the run and mark the cross-model gate `INCONCLUSIVE` in the Attention section with the missing capability.
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the transcript.

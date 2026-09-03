@@ -1,19 +1,17 @@
 ---
 name: architect
-description: "Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use when /architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape."
-metadata:
-  disable-model-invocation: "true"
+description: "Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use when $pstack:architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape."
 ---
 
 # Architect
 
 Design before implementing. Sketch types, function signatures, class shapes, and module boundaries with `not implemented` bodies and pseudocode. Synthesize across multiple model perspectives, then fill in code against the chosen sketch. If implementation proves the sketch wrong, throw it out and redesign.
 
-Before using Codex plan or collaboration tools, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED` because this skill requires independent design candidates.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). This workflow requires independent collaboration agents. If the current turn does not expose or authorize delegation, report `BLOCKED` because this skill requires independent design candidates.
 
 ## Start
 
-Put one entry per phase in `update_plan` when it is available. Otherwise state the same phases in a normal progress update. Autonomous work still needs its current phase to stay visible.
+Keep one visible entry per phase throughout the run. Use the current mode's planning capability when available. Otherwise maintain the same phases in progress updates.
 
 1. Ground
 2. Sketch
@@ -47,7 +45,7 @@ Arena returns one synthesized design package. The synthesis decision populates t
 
 Default: proceed directly to implementation with the synthesized design. No human checkpoint.
 
-Opt in to a checkpoint when the invoker explicitly asks: "/architect with checkpoint," "stop and show me before implementing," or similar. Then surface the synthesized design and pause for sign-off.
+Opt in to a checkpoint when the invoker explicitly asks: "$pstack:architect with checkpoint," "stop and show me before implementing," or similar. Then surface the synthesized design and pause for sign-off.
 
 The synthesis can ship as its own commit either way. That's the "scaffold first" mode of the **foundational-thinking** principle skill; subsequent commits read as filling in bodies against a stable contract. Planned and scoped breakage during fill-in is fine, per the **outcome-oriented-execution** principle skill. For adversarial pressure on the design before implementing, run the **interrogate** skill on the synthesized sketch.
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Experience First"
+  short_description: "Run the Principle Experience First pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

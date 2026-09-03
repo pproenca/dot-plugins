@@ -1,8 +1,6 @@
 ---
 name: principle-never-block-on-the-human
 description: "Use when tempted to ask 'should I do X?' on reversible work. Proceed, present the result, let the human course-correct after the fact; reserve confirmation for irreversible actions."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Never Block on the Human

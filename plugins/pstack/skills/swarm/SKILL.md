@@ -1,19 +1,17 @@
 ---
 name: swarm
-description: "Fan out N parallel workers, drain them, and return one report. Use when /swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration."
-metadata:
-  disable-model-invocation: "true"
+description: "Fan out N parallel workers, drain them, and return one report. Use when $pstack:swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration."
 ---
 
 # Swarm
 
 Fan out N parallel workers. They may cover separate slices, race the same brief, or mix both. The parent waits, aggregates, and returns one report.
 
-Before using Codex collaboration, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, report `BLOCKED` because parallel coverage is this skill's core behavior.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). This workflow requires independent collaboration agents. If the current turn does not expose or authorize delegation, report `BLOCKED` because parallel coverage is this skill's core behavior.
 
 ## Start
 
-Put one entry per phase in `update_plan` when it is available. Otherwise state the same phases in a normal progress update before launching anything.
+Keep one visible entry per phase throughout the run. Use the current mode's planning capability when available. Otherwise maintain the same phases in progress updates.
 
 1. Frame
 2. Fan out
@@ -26,11 +24,11 @@ Put one entry per phase in `update_plan` when it is available. Otherwise state t
 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
 3. Set N from the user or derive it from the shape. N is total workers, not the current concurrency limit. Run only as many at once as the visible collaboration instructions allow.
 4. Pick the worker model from `swarm workers` in `~/.codex/pstack-models.md` when present. Otherwise inherit the parent model. For a model race, name each arm's available model up front.
-5. Give each worker its own writable output when it writes. Use a worktree, branch, or `/tmp/swarm-<slug>/worker-<n>/`.
+5. Give each worker its own writable output. Repository writers get separate worktrees and branches. Artifact-only workers get unique directories such as `/tmp/swarm-<slug>/worker-<n>/`.
 
 ## Phase B: Fan out
 
-Spawn all N collaboration workers together with unique task names and self-contained messages. Use shared-directory agents for read-only slices. Give writing workers separate worktrees or disjoint file ownership. Use `list_agents` for status and `wait_agent` only when the next aggregation step is blocked.
+Start the first wave up to the current collaboration limit with unique task names and self-contained briefs. As workers finish, refill the available slots until all N have started. Use the shared checkout for read-only slices. Give every repository writer its own worktree and branch. Continue non-overlapping local work. Check worker status only when needed, and wait only when aggregation cannot proceed without a result.
 
 When a worker must start from a non-default branch, create its isolated worktree from that exact branch or commit.
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Model The Domain"
+  short_description: "Run the Principle Model The Domain pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

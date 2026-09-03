@@ -1,8 +1,6 @@
 ---
 name: principle-experience-first
 description: "Use when product, UX, or feature-scope tradeoffs come up. Choose user delight over implementation convenience; ship fewer polished features over more rough ones."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Experience First

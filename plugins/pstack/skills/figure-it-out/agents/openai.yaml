@@ -1,0 +1,6 @@
+interface:
+  display_name: "Figure It Out"
+  short_description: "Run the Figure It Out pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

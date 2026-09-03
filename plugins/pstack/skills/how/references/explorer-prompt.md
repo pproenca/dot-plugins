@@ -18,7 +18,7 @@ Other explorers are investigating different slices of the same subsystem in para
 
 ## Exploration Instructions
 
-Start by finding the relevant code. Use `rg --files` to find directories and files, then `rg` to find key symbols. Read the matching source to understand the implementation. Don't guess from names.
+Start by finding the relevant code. Search for directories, files, and key symbols. Read the matching source to understand the implementation. Don't guess from names.
 
 Follow this pattern:
 1. **Find the entry point.** What triggers this behavior? A user action, an API call, a scheduled job? Find where it starts.

@@ -1,29 +1,29 @@
 ---
 name: setup-pstack
-description: Configure the Codex models and reasoning efforts pstack uses per collaboration role. Detect available choices and write ~/.codex/pstack-models.md. Use when the user says /setup-pstack, configure pstack models, or change pstack's model choices.
+description: Configure the Codex models and reasoning efforts pstack uses per collaboration role. Detect available choices and write ~/.codex/pstack-models.md. Use when the user says $pstack:setup-pstack, configure pstack models, or change pstack's model choices.
 ---
 
 # Setup pstack
 
 Write `~/.codex/pstack-models.md`, the configuration file pstack skills read before spawning collaboration agents. Missing roles inherit the parent model. This file is not a Codex instruction file and does not alter global `AGENTS.md` guidance.
 
-Read the [Codex tool contract](../poteto-mode/references/codex-tools.md) before inspecting collaboration metadata.
+Read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md) before inspecting collaboration metadata.
 
 ## Steps
 
 ### 1. Detect available models
 
-Read the model names and supported reasoning efforts exposed by `spawn_agent` in the current turn. That schema is the source of truth for this session. Never save a model or effort that the tool does not list. The aliases `inherit-parent` and `auto` are always valid and both mean to omit model and reasoning overrides.
+Inspect the collaboration capability exposed in the current turn for available model and reasoning overrides. Treat those advertised values as the session source of truth. Never save a model or effort that the current capability does not list. The aliases `inherit-parent` and `auto` are always valid and both mean to omit model and reasoning overrides.
 
-If `spawn_agent` or its override fields are absent, the only validated choice is `inherit-parent`. Do not infer model names from memory, another host, or an existing configuration file.
+If collaboration or its override fields are absent, the only validated choice is `inherit-parent`. Do not infer model names from memory, another host, or an existing configuration file.
 
 ### 2. Load current state
 
-If `~/.codex/pstack-models.md` exists, read it and treat its values as current candidates. Otherwise start from the portable values in step 5. A value from another host remains stale until the current `spawn_agent` schema validates it.
+If `~/.codex/pstack-models.md` exists, read it and treat its values as current candidates. Otherwise start from the portable values in step 5. A value from another host remains stale until the current collaboration metadata validates it.
 
 ### 3. Map and confirm
 
-Show every role with its current value. Mark unavailable models or reasoning efforts as needing a choice. Use `request_user_input` when available. Otherwise ask one concise question with the valid options.
+Show every role with its current value. Mark unavailable models or reasoning efforts as needing a choice. Ask one concise question with the valid options.
 
 A single role uses `<model>@<reasoning-effort>`. A panel role uses a comma-separated list. One collaboration agent runs per panel entry. `arena cross-judge pool` is a list from which Arena chooses a model different from the candidate models when possible.
 

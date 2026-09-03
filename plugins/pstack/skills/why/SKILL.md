@@ -9,7 +9,7 @@ Investigate the motivation and intent behind code. Why was it built this way? Wh
 
 Companion to the `how` skill. `how` answers what the code does and how it works. `why` answers what forces led to its shape.
 
-Before spawning Codex investigators or a synthesizer, read the [Codex tool contract](../poteto-mode/references/codex-tools.md). If `spawn_agent` is unavailable, run the available evidence searches locally and report the lost parallel coverage.
+Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). Use collaboration agents for independent evidence searches when the current turn permits delegation. Otherwise run the available searches locally and report that independent coverage was unavailable.
 
 ## How this skill works
 

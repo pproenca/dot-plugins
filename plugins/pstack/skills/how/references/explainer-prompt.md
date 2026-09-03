@@ -20,7 +20,7 @@ The explorers each investigated a different angle of the same subsystem. Their f
 
 Write an explanation a senior engineer unfamiliar with this area could read and walk away with a solid mental model, understanding the architecture well enough to start working in it confidently.
 
-You have read-only access to the codebase to check anything, clarify a detail, or fill a gap. Use `rg --files` and `rg`, then read the matching source as needed. The explorers did the heavy lifting, so you shouldn't need to re-explore from scratch.
+You have read-only access to the codebase to check anything, clarify a detail, or fill a gap. Search for relevant files and symbols, then read the matching source as needed. The explorers did the heavy lifting, so you shouldn't need to re-explore from scratch.
 
 ## Output Format
 

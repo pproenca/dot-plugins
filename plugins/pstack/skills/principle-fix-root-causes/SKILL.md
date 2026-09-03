@@ -1,8 +1,6 @@
 ---
 name: principle-fix-root-causes
 description: "Use when debugging. Trace each symptom to its root cause and fix it there; reproduce first, ask why until you reach it, resist nil-check guards that silence crashes."
-metadata:
-  disable-model-invocation: "true"
 ---
 
 # Fix Root Causes

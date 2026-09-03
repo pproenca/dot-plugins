@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Laziness Protocol"
+  short_description: "Run the Principle Laziness Protocol pstack workflow"
+
+policy:
+  allow_implicit_invocation: false

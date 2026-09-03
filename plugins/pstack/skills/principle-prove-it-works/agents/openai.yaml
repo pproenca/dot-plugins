@@ -1,0 +1,6 @@
+interface:
+  display_name: "Principle Prove It Works"
+  short_description: "Run the Principle Prove It Works pstack workflow"
+
+policy:
+  allow_implicit_invocation: false
