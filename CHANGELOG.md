@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.4
+
+### Other Changes
+
+- Add Codex compatibility checks and update pstack guidance by @pproenca in [7f0b4a87](https://github.com/pproenca/dot-plugins/commit/7f0b4a87c4b37b6592997e741c1ca9c7fcad8cef)
+
 ## 0.16.3
 
 ### Other Changes
