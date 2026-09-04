@@ -101,9 +101,10 @@ lives *inside* the plugin that owns it, not at the repo root.
 2. Validate it (see below) until it passes.
 3. Add matching entries to `.claude-plugin/marketplace.json` and
    `.agents/plugins/marketplace.json`.
-4. When changing an existing plugin, bump its version in the portable manifest,
-   Codex manifest, and Claude catalog. Codex caches installed snapshots by
-   marketplace, plugin name, and version.
+4. Do not bump plugin versions in a feature commit. After the change lands on
+   `master`, the release workflow updates every portable manifest, Codex
+   manifest, and Claude catalog entry to one lockstep version. A manual bump
+   causes release validation to fail.
 5. Run `uv run pytest` — the suite fails on an unlisted directory, mismatched
    catalogs, or metadata drift between manifests.
 
