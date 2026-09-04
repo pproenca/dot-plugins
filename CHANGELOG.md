@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.3
+
+### Other Changes
+
+- Update pstack README for namespaced skill invocations by @pproenca in [db8e1d21](https://github.com/pproenca/dot-plugins/commit/db8e1d2132ee867f1d3f9e03f450c8d8a736db7b)
+
 ## 0.16.2
 
 ### Other Changes
