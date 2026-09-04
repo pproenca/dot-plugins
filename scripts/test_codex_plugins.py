@@ -77,7 +77,7 @@ def parse_args() -> argparse.Namespace:
 
 def prepare_codex(args: argparse.Namespace) -> CodexCommand:
     if args.codex_bin is not None:
-        binary = args.codex_bin.expanduser().resolve()
+        binary = args.codex_bin.expanduser().absolute()
         if not binary.is_file():
             raise CodexTestError(f"Codex executable does not exist: {binary}")
         return CodexCommand((str(binary),), str(binary))

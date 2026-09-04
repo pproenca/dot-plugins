@@ -32,15 +32,15 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 ### Arm the program
 
 - [ ] State the protocol and this plan to the operator, then stop. Start execution only on her explicit go.
-- [ ] On her go, create a goal with this exact objective. "<The plan path, the PR ids in order, the verification rule, who merges, and the done condition.>"
+- [ ] On her go, record this finish condition in the plan. Create a goal only if the operator explicitly requests one. "<The plan path, the PR ids in order, the verification rule, who merges, and the done condition.>"
 - [ ] Resolve these paths at program start and record them in the plan. Re-read them at every tick.
   - [ ] `<active pstack skill root>$pstack:poteto-mode/playbooks/<execution playbook>.md`
   - [ ] `<active pstack skill root>$pstack:swarm/SKILL.md`
   - [ ] `<active control skill path>`
   - [ ] `<active pstack skill root>$pstack:poteto-mode/playbooks/opening-a-pr.md`
   - [ ] `<active pstack skill root>/<each other leaf skill the program uses>/SKILL.md`
-- [ ] Arm a 30-minute thread heartbeat automation. Never leave the cadence to memory.
-- [ ] Use this tick prompt verbatim. "Re-read the execution playbook from its recorded active skill path and re-read the active goal. Audit the operation against both and fix drift in this tick. Probe every active lane and judge progress by side effects only. Stand down a stuck lane and dispatch its replacement now. Then send the operator a status message, whether or not anything changed, with the queue table of PR, owner, state, and head SHA, the verdicts since the last tick, what merged, open operator gates, and blockers."
+- [ ] If recurring follow-ups are requested, create or update a thread heartbeat with the available automation tool. Follow the scheduling rules in the Codex collaboration contract and the operator's requested cadence.
+- [ ] Use this tick prompt, preserving any explicit request for periodic status updates. "Re-read the execution playbook from its recorded active skill path and the finish condition in the plan or active goal. Audit the operation against both and fix drift in this tick. Probe active lanes and verify progress through their outputs. Replace a stuck lane when the evidence warrants it. Stay quiet while nothing meaningful changes. On meaningful progress, completion, failure, or required operator action, report the queue of PR, owner, state, and head SHA, new verdicts, merges, open gates, and blockers. Stop this automation when the finish condition is met."
 - [ ] On the operator's hold or stand-down, send every owner a zero-writes order at once.
 
 ### Spawn owners

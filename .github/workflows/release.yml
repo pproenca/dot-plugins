@@ -50,6 +50,12 @@ jobs:
         if: steps.changes.outputs.release == 'true'
         run: uv sync --frozen
 
+      - name: Set up Node.js for Codex compatibility checks
+        if: steps.changes.outputs.release == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
       - name: Install verified Craft 2.30.1
         if: steps.changes.outputs.release == 'true'
         shell: bash
@@ -97,6 +103,7 @@ jobs:
           test "$(git branch --show-current)" = "${{ steps.prepare.outputs.branch }}"
           uv run pytest
           uv run ruff check .
+          uv run python scripts/test_codex_plugins.py
           site_dir="$(mktemp -d)"
           uv run python scripts/build_marketplace_site.py --output "${site_dir}"
           git diff --exit-code

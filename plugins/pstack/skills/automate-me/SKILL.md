@@ -27,9 +27,9 @@ Update mode changes the rest of the flow:
 
 ### 1. Mine their history
 
-List recent Codex tasks in the active workspace before fanning out. Use task tools to read only matching tasks. Never scan another workspace or unrelated local session logs.
+Use the available `list_threads` tool to identify recent Codex tasks matching the active workspace. Read only those tasks with `read_thread`, using the returned task IDs, host IDs, and pagination cursors. Never scan another workspace or unrelated local session logs. If these tools are unavailable, use the current conversation and user-provided examples.
 
-Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel subagents across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
+Survey recent agent conversations within that scope for recurring patterns. Delegate independent history slices when enough relevant history is available. Give each worker the selected task and host IDs, or scoped excerpts when it cannot read the history itself. Do not invent transcript filesystem paths. Each worker returns patterns with evidence pointers. Default signals worth hunting:
 
 - Response preferences (length, tone, format, "dumb it down" corrections)
 - Delegation habits (subagents, models, specialized workflows, parallelism)

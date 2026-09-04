@@ -101,6 +101,8 @@ Run the full explain flow above (Steps 1-4). You must understand the architectur
 
 After the explanation is complete, spawn one architectural critic per valid entry in the configured `how critics` list, all together. Without a configured list, use available models or reasoning efforts that provide real diversity.
 
+Report the models that actually ran. Different reasoning efforts on one model are same-model review. If every critic uses the same model after fallbacks, label model diversity `INCONCLUSIVE`.
+
 Give each critic one model and reasoning effort from the configured list. The lead may raise the reasoning effort when the architecture warrants it. Every critic is read-only and receives an explicit no-edits instruction.
 
 Read `references/critic-prompt.md` for the prompt template. Each critic gets:

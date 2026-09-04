@@ -29,6 +29,9 @@
         "developerName": "pproenca",
         "category": "Developer Tools",
         "websiteURL": "https://github.com/pproenca/dot-plugins",
+        "brandColor": "#4CC9A6",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png",
         "capabilities": [
           "Interactive",
           "Write"

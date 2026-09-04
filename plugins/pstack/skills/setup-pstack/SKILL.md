@@ -23,13 +23,15 @@ If `~/.codex/pstack-models.md` exists, read it and treat its values as current c
 
 ### 3. Map and confirm
 
-Show every role with its current value. Mark unavailable models or reasoning efforts as needing a choice. Ask one concise question with the valid options.
+Show every role with its current value. Apply choices the user has already authorized. Ask one concise question only for an unresolved preference. For unavailable values, use `inherit-parent` unless the user chooses another validated value.
+
+Use `inherit-parent` for roles that should follow the user's selected model, including GPT-6 Astra when available. Keep explicit overrides for intentional cost or review-diversity choices. Do not upgrade every worker solely because the parent model changed.
 
 A single role uses `<model>@<reasoning-effort>`. A panel role uses a comma-separated list. One collaboration agent runs per panel entry. `arena cross-judge pool` is a list from which Arena chooses a model different from the candidate models when possible.
 
 ### 4. Validate
 
-Every saved model and effort must appear in the current collaboration tool metadata. `inherit-parent` and `auto` always pass. Ask again if any other value is unavailable.
+Every saved model and effort must appear in the current collaboration tool metadata. `inherit-parent` and `auto` always pass. Fall back to `inherit-parent` if a value becomes unavailable.
 
 ### 5. Write the configuration
 

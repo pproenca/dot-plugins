@@ -40,6 +40,8 @@ For each reviewer, pass the configured model and reasoning effort when both are 
 
 If a model slug or reasoning effort is rejected, omit both overrides and inherit the parent model. Record the stale configured value for a separate update. Do not guess a replacement or block the review on model configuration drift.
 
+Count the distinct models that actually ran after fallbacks. If all reviewers used one model, report independent same-model review and label model diversity `INCONCLUSIVE`. Do not describe agreement among those reviewers as cross-model consensus.
+
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent
 2. The diff or file contents
