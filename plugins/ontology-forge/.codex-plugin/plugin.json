@@ -1,6 +1,6 @@
 {
   "name": "ontology-forge",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "description": "Design and extend a Palantir Foundry ontology the domain-driven way: interview the domain, shape object types, links, interfaces and actions, then map source data and logic onto them.",
   "author": {
     "name": "pproenca"
