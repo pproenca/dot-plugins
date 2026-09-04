@@ -23,11 +23,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          ref: master
+          fetch-depth: 0
+      - name: Select latest release tag
+        id: release
+        shell: bash
+        run: |
+          latest_tag="$(git tag --merged HEAD --list 'v*' --sort=-version:refname | head -n 1)"
+          if [[ -z "${latest_tag}" ]]; then
+            echo "No v* release tag found" >&2
+            exit 1
+          fi
+          git checkout --detach "${latest_tag}"
+          echo "version=${latest_tag#v}" >> "$GITHUB_OUTPUT"
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Build marketplace
-        run: python scripts/build_marketplace_site.py --output _site
+        run: >-
+          python scripts/build_marketplace_site.py
+          --output _site
+          --expected-version "${{ steps.release.outputs.version }}"
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
