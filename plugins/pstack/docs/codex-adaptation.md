@@ -24,6 +24,8 @@ The full rulebook becomes an optional principles index. Function boundaries no l
 
 The [Codex collaboration contract](../skills/poteto-mode/references/codex-tools.md) keeps model inheritance as the default and validates overrides against current host metadata. It describes available-slot limits, separate writer worktrees, bounded briefs, and task-versus-subagent behavior. It also distinguishes scheduled continuation from work in the current turn.
 
+The collaboration contract now keeps agent workspaces and deliverables in durable project locations. Swarm and Arena previously suggested `/tmp` output paths, and worktree instructions left the destination unspecified. Workers now use the host or repository worktree convention, with a sibling `<repository-name>-worktrees/<task-slug>/` directory as the fallback. Project output directories hold reports and screenshots. Temporary tool caches and test scratch files remain allowed; moving an existing temporary worktree requires coordination with its active owner.
+
 Official Astra guidance calls out sensitivity to skill instructions, possible approval pauses, limited spontaneous delegation, and excessive testing on small changes. Our effort table is a starting heuristic for workload tuning, not an OpenAI benchmark: lower effort for bounded mechanical work, more for unresolved judgment. A skill cannot change the active parent's settings. [Using GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
 
 ## Remaining capability boundaries

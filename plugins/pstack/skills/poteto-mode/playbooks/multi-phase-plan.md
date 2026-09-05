@@ -75,7 +75,7 @@ Each live lane runs in its own explicit worktree at the PR head. Create and reco
 - [ ] `git fetch origin <head-branch> && git checkout <head SHA>`.
 - [ ] <Start the backend and product. Wait for ready.>
 - [ ] <Deliver input only through the control skill. Name the read-only diagnostics.>
-- [ ] Save every screenshot to `/tmp/swarm-<pr-id>/worker-<n>/<slug>.png` and return the paths with the report.
+- [ ] Save screenshots under the durable project output directory, for example `<project-root>/artifacts/swarm-<pr-id>/worker-<n>/<slug>.png`, and return their absolute paths with the report.
 
 ## <Task as a verb phrase> (<PR id>)
 

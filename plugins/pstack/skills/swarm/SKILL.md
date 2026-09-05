@@ -24,7 +24,7 @@ Keep one visible entry per phase throughout the run. Use the current mode's plan
 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
 3. Set N from the user or derive it from the shape. N is total workers, not the current concurrency limit. Run only as many at once as the visible collaboration instructions allow.
 4. Pick the worker model from `swarm workers` in `~/.codex/pstack-models.md` when present. Otherwise inherit the parent model. For a model race, name each arm's available model up front.
-5. Give each worker its own writable output. Repository writers get separate worktrees and branches. Artifact-only workers get unique directories such as `/tmp/swarm-<slug>/worker-<n>/`.
+5. Give each worker its own writable output using the durable locations in the Codex collaboration contract. Repository writers get separate worktrees and branches. Artifact-only workers get unique project output directories such as `<project-root>/artifacts/swarm-<slug>/worker-<n>/`.
 
 ## Phase B: Fan out
 

@@ -8,6 +8,16 @@ Use collaboration agents for concrete independent work that can run alongside us
 
 Launch independent work up to the available concurrency limit, counting the parent and active descendants. Run larger panels in waves. Keep coupled edits with one owner. Read-only workers can share a checkout; concurrent repository writers need separate worktrees and branches. Artifact-only workers can use distinct output directories. A branch name alone does not isolate files. Shared browsers, servers, and other mutable resources need one owner or separate instances too.
 
+## Keep agent work in durable locations
+
+Use the user's checkout for local work. When isolation is needed, use the host's managed worktree location or the repository's established convention. Otherwise create a sibling worktree at `<repository-parent>/<repository-name>-worktrees/<task-slug>/`. Resolve and pass the absolute working directory to every worker, and require its commands to use that directory.
+
+Keep source edits, prototypes, candidate implementations, reports, and verification evidence in the assigned checkout or a durable project output directory. Artifact-only workers can use `<project-root>/artifacts/<task-slug>/worker-<n>/`, following the project's conventions for generated files. Do not use `/tmp`, `/private/tmp`, `$TMPDIR`, or another operating-system temporary directory as an agent workspace or the only copy of its deliverables. Disposable tool caches and test scratch files may remain temporary. A user-requested temporary experiment is an explicit exception.
+
+If a durable destination needs additional permission, request it instead of substituting a temporary workspace. If existing work is already in a temporary worktree, coordinate with its owner and preserve its changes before moving it with Git; never move a directory underneath an active worker.
+
+## Coordinate ongoing work
+
 Continue local work while agents run. Use current message and follow-up tools to steer them, preserving accepted constraints. Wait when the next step needs their results. Inspect their artifacts before integrating. Reuse an agent for related work when its context remains useful; start fresh for independent review or substantially different scope.
 
 When delegation is unavailable, ordinary work proceeds locally. Workflows whose purpose is independent candidates or review must report the missing independence instead of claiming it occurred. They may still prepare the brief, evidence, or a clearly labeled local assessment.
