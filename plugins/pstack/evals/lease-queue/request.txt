@@ -1,0 +1,1 @@
+Build the in-memory lease queue described in README.md. It needs to handle retries and stale acknowledgements without losing or duplicating jobs. Keep the interface small, verify the behavior, and explain the main design choice when you finish.

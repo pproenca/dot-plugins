@@ -256,6 +256,10 @@ the preserved pack is Cursor-specific source material. Codex recurring work uses
 
 The [upstream comparison and Astra tuning notes](./docs/codex-adaptation.md) record what is preserved, what changed, and how to validate future edits. Pstack inherits the parent model by default. The [collaboration contract](./skills/poteto-mode/references/codex-tools.md#choose-models-and-reasoning) gives workload-based effort guidance without changing your active task settings.
 
+## evaluate changes
+
+The [quality suite](./evals/README.md) compares frozen instruction variants on the same model and reasoning level. It provides isolated coding tasks, held-out behavior checks, and a review rubric based on the original engineering standards. Use the [Eval playbook](./skills/poteto-mode/playbooks/eval.md) to run, diagnose, and retest changes before promoting them.
+
 ## license
 
 MIT
