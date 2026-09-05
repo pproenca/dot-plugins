@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.6
+
+### Other Changes
+
+- Document deterministic Codex marketplace refresh and local development by @pproenca in [20543eb5](https://github.com/pproenca/dot-plugins/commit/20543eb57c7c67321aaf77f22740940bd4793bc5)
+
 ## 0.16.5
 
 ### Other Changes
