@@ -1,6 +1,15 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.5
+
+### Other Changes
+
+- Improve pstack outcomes with targeted independent review by @pproenca in [9fef68f4](https://github.com/pproenca/dot-plugins/commit/9fef68f412275efb5869e49d2b700dd49c7dbee2)
+- Add plugin capabilities and marketplace metadata by @pproenca in [8ffb6baf](https://github.com/pproenca/dot-plugins/commit/8ffb6bafa083026f5dd259e89d3686485afa46d6)
+- Add pstack quality evaluation suite by @pproenca in [28c1e3a4](https://github.com/pproenca/dot-plugins/commit/28c1e3a4129cb4737f69b34310a52ddb13c4c134)
+- Clarify pstack defaults and streamline workflow guidance by @pproenca in [c4aac778](https://github.com/pproenca/dot-plugins/commit/c4aac7780228998d217bba34fee0f85ea397e501)
+
 ## 0.16.4
 
 ### Other Changes
