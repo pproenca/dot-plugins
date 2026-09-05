@@ -1,6 +1,6 @@
 {
   "name": "domain-mapping",
-  "version": "0.16.7",
+  "version": "0.16.8",
   "description": "Discover business domains through EventStorming, evidence, recursive questions, and conformance checks.",
   "author": {
     "name": "Pedro Proenca"

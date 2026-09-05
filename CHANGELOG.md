@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.8
+
+### Other Changes
+
+- Reduce redundant pstack orchestration and context loading by @pproenca in [49d2af6f](https://github.com/pproenca/dot-plugins/commit/49d2af6fccb2dba8aca9d3e67dde397f2a4f70ed)
+
 ## 0.16.7
 
 ### Other Changes
