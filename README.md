@@ -39,11 +39,23 @@ codex plugin add swarm-forge-squad@dot-plugins
 ```
 
 Using the full Git URL and explicit ref makes the same command deterministic
-across Codex CLI and desktop installations. Or point Codex at a local clone:
+across Codex CLI and desktop installations. Refresh this Git catalog with
+`codex plugin marketplace upgrade dot-plugins` after publishing new plugins.
+When working in this repository, Codex also discovers its local catalog. If it
+contains plugins absent from the downloaded catalog, Codex can show a second
+`dot-plugins` entry until the Git catalog catches up.
+
+For local development, register the repository root instead. Run this from
+inside the clone, removing the Git registration first if it is already configured:
 
 ```bash
-codex plugin marketplace add ./dot-plugins
+codex plugin marketplace remove dot-plugins # only when already configured
+codex plugin marketplace add .
 ```
+
+Codex resolves catalog paths such as `./plugins/pstack` from the repository root,
+not from `.agents/plugins/`. Install repository plugins as `<name>@dot-plugins`;
+they do not need duplicate entries in the personal marketplace.
 
 ## Install in Claude Code
 
