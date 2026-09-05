@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "domain-mapping",
-  "version": "0.16.4",
+  "version": "0.16.5",
   "description": "Discover business domains through EventStorming, evidence, recursive questions, and conformance checks.",
   "author": {
     "name": "Pedro Proenca"
