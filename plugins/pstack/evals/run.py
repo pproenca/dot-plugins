@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-CASES = ('event-feed', 'lease-queue')
+CASES = ('event-feed', 'lease-queue', 'inventory-holds')
 
 
 def tree_digest(root):

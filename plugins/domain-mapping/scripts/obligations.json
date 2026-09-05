@@ -1,0 +1,12 @@
+{
+  "actor": ["goals", "responsibilities", "authority", "information", "workarounds"],
+  "command": ["intent", "inputs-defaults", "actor-authority", "preconditions", "outcomes-rejections-noops", "side-effects", "timing-retries-concurrency"],
+  "event": ["meaning-payload", "producer", "consumers-or-terminal", "ordering-identity", "observable-vs-proposed"],
+  "policy": ["trigger", "decision-inputs", "conditions-exceptions", "human-or-automatic", "commands", "timing-retries-owner"],
+  "read_model": ["decision-purpose", "definition-calculation", "visibility", "freshness", "empty-error-states"],
+  "entity": ["identity-value-semantics", "lifecycle-history", "invariants", "relationships", "archive-delete-merge"],
+  "aggregate": ["responsibility", "consistency-invariants", "command-decisions", "lifecycle", "boundary-evidence"],
+  "context": ["language-purpose", "ownership", "external-contracts", "translation", "failure-consistency"],
+  "system": ["responsibility", "entry-points", "external-contracts", "failure-timing", "data-history"],
+  "process": ["trigger-value", "actors-systems", "baseline-story", "alternatives-failures", "termination-loops", "handoffs", "stakeholder-walkthrough"]
+}

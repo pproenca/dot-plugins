@@ -6,7 +6,7 @@ This suite checks whether prompt changes preserve useful engineering behavior. I
 
 Freeze both plugin trees by explicit revision or immutable copy, and freeze this suite before a run. Check the preparation receipts before scheduling: instruction hashes must differ for an instruction comparison, while case hashes match. Identical instruction hashes mean repeated runs of one variant, regardless of their labels. Use fresh workspaces for each arm. Hold the candidate model, reasoning effort, tool access, task prompt, and delegation policy constant within each pair. Run a separate pair to study another reasoning level. Repeat pairs before treating a small difference as a reliable result.
 
-Set the run budget before dispatch. Two cases, two instruction versions, two efforts, and two repetitions require 16 candidate runs, plus review. Record blocked or interrupted runs separately; they are neither quality failures nor passing replacements. This is a coordinator-run workflow with a preparation and verification CLI, not an unattended benchmark service.
+Set the run budget before dispatch. Two selected cases, two instruction versions, two efforts, and two repetitions require 16 candidate runs, plus review. Record blocked or interrupted runs separately; they are neither quality failures nor passing replacements. This is a coordinator-run workflow with a preparation and verification CLI, not an unattended benchmark service.
 
 A control should be a known Codex-compatible version. An unmodified Cursor plugin can require unavailable tools; that measures host compatibility as well as instruction quality. Record the original upstream revision and any adapter changes. Keep the original pstack's caller-first design, domain ownership, root-cause fixes, and direct verification as the quality standard.
 
@@ -43,6 +43,7 @@ These commands execute candidate Python code in a subprocess with a timeout. Use
 |---|---|
 | Event feed | Repair pagination at the filter and cursor boundary, stable ordering, timestamp ties, changing page sizes, and full traversal in both directions. |
 | Lease queue | Model deduplication, lease expiry, retries, completion, stale tokens, boundary validation, and payload ownership behind four operations. |
+| Inventory holds | Preserve stock across atomic reservations, capture, release, expiry, permanent replay keys, and detached snapshots. Authored independently as a transfer case. |
 
 The seed smoke tests intentionally pass while the tasks remain unfinished. The held-out checks must reject each unfinished seed. Validate the checks against an independent correct implementation too. Checks inspect behavior, never literal source strings, prescribed class names, or skill citations.
 
@@ -67,6 +68,9 @@ A candidate is not promoted if it adds a correctness failure, a serious scope or
 4. Rerun affected pairs on fresh workspaces and add a transfer task before promoting a fix. Never continue a failed arm with the hidden answer and count that as a fresh pass.
 5. Record the settings, artifacts, verdict, unresolved coverage, and promotion decision. Keep large generated workspaces and transcripts outside the plugin.
 
+For a workflow that includes review and repair, preserve the initial output and grade the final workflow output separately. A reviewer may derive findings from public requirements and code; keep coordinator-owned checks hidden. Report improvement across these stages honestly, including the extra review work. A repaired output is not a new independent candidate run.
+
 The suite is a small regression set, not proof of universal parity. Expand it from real failures and important workflows, not a target count of tests.
 
 See the [first comparison report](2026-09-05-comparison.md) for results, setup errors, and remaining coverage.
+The [completed improvement loop](2026-09-05-improvement.md) records a rejected prompt addition, successful review-driven repairs, and a fresh check of the resulting workflow.

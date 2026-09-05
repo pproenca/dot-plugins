@@ -1,0 +1,29 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "domain-mapping",
+  "version": "0.16.3",
+  "description": "Discover business domains through EventStorming, evidence, recursive questions, and conformance checks.",
+  "author": {
+    "name": "Pedro Proenca"
+  },
+  "repository": "https://github.com/pproenca/dot-plugins",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Domain Mapping",
+        "shortDescription": "Map behavior, verify evidence, and improve the method.",
+        "longDescription": "Collaborative EventStorming with a portable domain model, missing-question checks, evidence drift detection, recorded conformance results, and regression-based workflow improvement.",
+        "developerName": "Pedro Proenca",
+        "category": "Productivity",
+        "capabilities": [],
+        "defaultPrompt": [
+          "Map this business process with evidence and unresolved questions.",
+          "Audit this domain map and explain the next experiments.",
+          "Improve the mapping method from this reproduced failure."
+        ],
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
+      }
+    }
+  }
+}

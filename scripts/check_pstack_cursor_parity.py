@@ -11,6 +11,7 @@ CODEX_ONLY = {
     "docs/codex-adaptation.md",
     "evals/README.md",
     "evals/2026-09-05-comparison.md",
+    "evals/2026-09-05-improvement.md",
     "evals/run.py",
     "evals/event-feed/heldout.py",
     "evals/event-feed/request.txt",
@@ -23,6 +24,11 @@ CODEX_ONLY = {
     "evals/lease-queue/workspace/README.md",
     "evals/lease-queue/workspace/dispatch.py",
     "evals/lease-queue/workspace/test_dispatch.py",
+    "evals/inventory-holds/heldout.py",
+    "evals/inventory-holds/request.txt",
+    "evals/inventory-holds/workspace/README.md",
+    "evals/inventory-holds/workspace/inventory.py",
+    "evals/inventory-holds/workspace/test_inventory.py",
     "skills/poteto-mode/references/full-mode.md",
     "skills/poteto-mode/references/codex-tools.md",
 }
@@ -160,8 +166,8 @@ skills/why/SKILL.md""".splitlines()
 )
 
 EXPECTED_TRANSLATION_SOURCE_DIGEST = "81d73a4f15ee2e567542875b243742c66864f163493fb6cefecda754e713431f"
-EXPECTED_TRANSLATION_TARGET_DIGEST = "ac6c79a8b07b0cc2f5748cc5299ebb7c18a0f9f2067c39f648f852e28fa87828"
-EXPECTED_CODEX_ONLY_DIGEST = "79523d8f5362c7acb6530d178b8ce6225529dc82614f57a6dece5bacd5e25366"
+EXPECTED_TRANSLATION_TARGET_DIGEST = "768a42ec0290f5cffe67e08bb6c7da3a2803ac029d023d57b78c5446b9d8ba40"
+EXPECTED_CODEX_ONLY_DIGEST = "4d148776882734ce210b89f0294ecd0b05453598b78503cb11ba331178136fac"
 
 DEAD_CODEX_REFERENCES = {
     "~/.cursor/": "Cursor home path",

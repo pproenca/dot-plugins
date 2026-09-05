@@ -60,7 +60,7 @@ $pstack:poteto-mode run the eval playbook on this skill change. same task for bo
 
 The [Eval playbook](../../skills/poteto-mode/playbooks/eval.md) compares anonymous outputs under one rubric. Hold the model, reasoning effort, tools, and starting task constant within a pair; use separate pairs for another reasoning level. Grade behavior and code quality with held-out checks and independent review. Skill citations are not evidence of engineering quality.
 
-The [bundled quality suite](../../evals/README.md) supplies pagination and lease-queue tasks, isolated project preparation, and coordinator-owned acceptance checks. Its loop freezes the contract, runs both variants, diagnoses regressions, and reruns a narrow fix on fresh workspaces plus a transfer task. It runs when evaluating a pstack change, not before every edit.
+The [bundled quality suite](../../evals/README.md) supplies pagination, lease-queue, and inventory-reservation tasks, isolated project preparation, and coordinator-owned acceptance checks. Its loop freezes the contract, runs both variants, diagnoses regressions, and reruns a narrow fix on fresh workspaces plus a transfer task. It runs when evaluating a pstack change, not before every edit. The [completed improvement loop](../../evals/2026-09-05-improvement.md) shows how measured outcomes changed the Feature playbook.
 
 Read every output yourself before accepting the verdict. If you disagree with the judge, suspect the rubric before you suspect your judgment.
 

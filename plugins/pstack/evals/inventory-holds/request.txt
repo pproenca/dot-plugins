@@ -1,0 +1,1 @@
+Finish the inventory reservation module for our checkout flow. The README has the API contract, and inventory.py is just a starting point. Please implement the behavior, add useful coverage for it, and run the checks. Keep it self-contained with the Python standard library. When you're done, summarize what changed and any decisions that matter to someone calling the API.

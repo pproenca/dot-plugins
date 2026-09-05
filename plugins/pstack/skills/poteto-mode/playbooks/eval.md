@@ -2,6 +2,8 @@
 
 Evaluate a prompt or skill change against the quality of the work it produces. Preserve the original pstack's engineering standards while reducing instructions that add no value.
 
+For an improvement request, deliver a change-and-retest decision with before/after outcome evidence. A baseline score alone leaves that loop unfinished. Keep a useful change or reject an ineffective one; do not manufacture a winning result.
+
 ## Frame and freeze
 
 Freeze each plugin by explicit revision or immutable copy and record its content hash. Confirm the hashes match the intended arms before scheduling. Choose representative tasks and write the acceptance criteria before running either variant. Keep correctness, scope, and honest verification as hard gates. Assess domain modeling, interface quality, root-cause fixes, and simplicity from the artifacts. Loading more skills or writing less code is not itself a quality score.
@@ -33,6 +35,6 @@ Read only the exact run transcript or history the host exposes for these agents.
 3. Rerun affected tasks from fresh starting states, then use a transfer task that did not drive the fix. Preserve previous failures in the report.
 4. Promote only when quality evidence supports the change. Prefer less instruction and overhead when quality is preserved. Otherwise revise or revert the relevant change. A small suite supports a bounded conclusion, not universal parity.
 
-For pstack changes, use the bundled [quality suite](../../../evals/README.md) for paired pagination and lease-queue tasks and the reusable prepare/verify commands. Add cases from real failures. Keep this workflow conditional on skill evaluation or a meaningful regression concern; it does not run before every edit.
+For pstack changes, use the bundled [quality suite](../../../evals/README.md) for pagination, lease-queue, and inventory-reservation tasks and the reusable prepare/verify commands. Add cases from real failures. Keep this workflow conditional on skill evaluation or a meaningful regression concern; it does not run before every edit.
 
 **Reply:** control and variant, tasks, model and effort settings, acceptance results, blind review, observed regressions, iteration evidence, promotion decision, and coverage limits.

@@ -49,7 +49,7 @@ def test_prepare_isolates_inputs_and_refuses_overwrite(tmp_path):
     assert result['case_sha256'] == changed['case_sha256']
 
 
-@pytest.mark.parametrize('case', ['event-feed', 'lease-queue'])
+@pytest.mark.parametrize('case', ['event-feed', 'lease-queue', 'inventory-holds'])
 def test_behavior_checks_reject_unfinished_seed(tmp_path, case):
     module = runner()
     workspace = tmp_path / 'project'

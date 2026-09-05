@@ -106,6 +106,16 @@
         "worktrees",
         "contracts"
       ]
+    },
+    {
+      "name": "domain-mapping",
+      "version": "0.16.3",
+      "description": "Discover business domains through EventStorming, evidence, recursive questions, and conformance checks.",
+      "author": {
+        "name": "Pedro Proenca"
+      },
+      "source": "./plugins/domain-mapping",
+      "category": "productivity"
     }
   ]
 }
