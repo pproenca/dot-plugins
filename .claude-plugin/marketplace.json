@@ -12,7 +12,7 @@
       "name": "agent-plugin-builder",
       "source": "./plugins/agent-plugin-builder",
       "description": "Authoring and conformance tooling for the Agent Plugins Specification v1.0.0: scaffolds plugin.json, skills/, and mcp.json, and verifies them with a bundled validator.",
-      "version": "0.16.3",
+      "version": "0.16.4",
       "author": {
         "name": "pproenca"
       },
@@ -30,7 +30,7 @@
       "name": "pstack",
       "source": "./plugins/pstack",
       "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
-      "version": "0.16.3",
+      "version": "0.16.4",
       "author": {
         "name": "Lauren Tan"
       },
@@ -51,7 +51,7 @@
       "name": "ontology-forge",
       "source": "./plugins/ontology-forge",
       "description": "Design and extend a Palantir Foundry ontology the domain-driven way: interview the domain, shape object types, links, interfaces and actions, then map source data and logic onto them.",
-      "version": "0.16.3",
+      "version": "0.16.4",
       "author": {
         "name": "pproenca"
       },
@@ -71,7 +71,7 @@
       "name": "swarm-forge",
       "source": "./plugins/swarm-forge",
       "description": "Disciplined tmux-based agent orchestration: pick a pack of specialist agents, give each its own git worktree, and drive them from a local web cockpit.",
-      "version": "0.16.3",
+      "version": "0.16.4",
       "author": {
         "name": "Robert C. Martin"
       },
@@ -91,7 +91,7 @@
       "name": "swarm-forge-squad",
       "source": "./plugins/swarm-forge-squad",
       "description": "The SwarmForge squad workflow: a persistent squad leader that spawns short-lived specialist workers on demand, each bound by a capability contract.",
-      "version": "0.16.3",
+      "version": "0.16.4",
       "author": {
         "name": "Robert C. Martin"
       },
@@ -109,7 +109,7 @@
     },
     {
       "name": "domain-mapping",
-      "version": "0.16.3",
+      "version": "0.16.4",
       "description": "Discover business domains through EventStorming, evidence, recursive questions, and conformance checks.",
       "author": {
         "name": "Pedro Proenca"

@@ -101,9 +101,12 @@ lives *inside* the plugin that owns it, not at the repo root.
 2. Validate it (see below) until it passes.
 3. Add matching entries to `.claude-plugin/marketplace.json` and
    `.agents/plugins/marketplace.json`.
-4. When changing an existing plugin, bump its version in the portable manifest,
-   Codex manifest, and Claude catalog. Codex caches installed snapshots by
-   marketplace, plugin name, and version.
+4. Keep plugin versions at the current marketplace release, including when adding
+   a plugin. Pushing changes to `master` runs Craft, which selects the next version
+   and updates every portable manifest, Codex manifest, and Claude catalog entry
+   together. Do not pre-bump versions for ordinary changes: Craft checks the
+   previous version before preparing the release. Codex caches installed snapshots
+   by marketplace, plugin name, and version.
 5. Run `uv run pytest` — the suite fails on an unlisted directory, mismatched
    catalogs, or metadata drift between manifests.
 
