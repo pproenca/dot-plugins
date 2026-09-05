@@ -3,6 +3,7 @@
 
 import argparse
 import hashlib
+import json
 from pathlib import Path
 
 CODEX_ONLY = {
@@ -165,9 +166,9 @@ skills/unslop/SKILL.md
 skills/why/SKILL.md""".splitlines()
 )
 
-EXPECTED_TRANSLATION_SOURCE_DIGEST = "81d73a4f15ee2e567542875b243742c66864f163493fb6cefecda754e713431f"
-EXPECTED_TRANSLATION_TARGET_DIGEST = "768a42ec0290f5cffe67e08bb6c7da3a2803ac029d023d57b78c5446b9d8ba40"
-EXPECTED_CODEX_ONLY_DIGEST = "4d148776882734ce210b89f0294ecd0b05453598b78503cb11ba331178136fac"
+EXPECTED_TRANSLATION_SOURCE_DIGEST = "1696e7a399c111c888cddde3e705c99993439306bb15752f3f2d0efed8a594b8"
+EXPECTED_TRANSLATION_TARGET_DIGEST = "fc32e34932a79d2b5948f6f08c3ee6cdbb3ddbfd9bf2962ede26e4e82eb48de7"
+EXPECTED_CODEX_ONLY_DIGEST = "979b5bc4f5b24e0746d68e7177305f136ff5ec62997d00d21b83953df398288a"
 
 DEAD_CODEX_REFERENCES = {
     "~/.cursor/": "Cursor home path",
@@ -231,6 +232,11 @@ def translation_digest(entries: list[tuple[str, Path]]) -> str:
     digest = hashlib.sha256()
     for source_path, path in sorted(entries):
         payload = path.read_bytes()
+        if source_path in {"plugin.json", ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json"}:
+            manifest = json.loads(payload)
+            if isinstance(manifest.get("version"), str):
+                manifest["version"] = "<release-version>"
+            payload = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
         digest.update(source_path.encode())
         digest.update(b"\0")
         digest.update(len(payload).to_bytes(8, "big"))

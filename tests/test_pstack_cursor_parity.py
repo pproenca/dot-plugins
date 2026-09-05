@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import json
 import subprocess
 from pathlib import Path
 
@@ -47,6 +48,23 @@ def test_translation_digest_binds_the_source_path(tmp_path: Path) -> None:
 
     assert first != second
     assert first != hashlib.sha256(payload.read_bytes()).hexdigest()
+
+
+def test_release_version_preserves_review_receipt_but_metadata_changes_do_not(tmp_path: Path) -> None:
+    parity = load_parity_module()
+    manifest = tmp_path / "plugin.json"
+    payload = {"name": "example", "version": "1.0.0", "skills": "./skills/"}
+    manifest.write_text(json.dumps(payload))
+    entries = [(".codex-plugin/plugin.json", manifest)]
+    reviewed = parity.translation_digest(entries)
+
+    payload["version"] = "1.0.1"
+    manifest.write_text(json.dumps(payload, indent=2))
+    assert parity.translation_digest(entries) == reviewed
+
+    payload["skills"] = "./other-skills/"
+    manifest.write_text(json.dumps(payload))
+    assert parity.translation_digest(entries) != reviewed
 
 
 def test_codex_only_receipt_rejects_changed_policy(tmp_path: Path) -> None:
