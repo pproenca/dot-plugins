@@ -1,6 +1,6 @@
 ---
 name: unslop
-description: "Cut AI tells from any writing. Must always apply. Use when cleaning up any prose surface; must always apply to drafted user-facing writing."
+description: "Edit prose to remove stock AI phrasing while preserving meaning and voice."
 ---
 
 # Unslop

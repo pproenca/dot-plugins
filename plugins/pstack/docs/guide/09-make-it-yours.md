@@ -36,7 +36,7 @@ When you already know the workflow you want to capture:
 $pstack:poteto-mode write a skill for verifying database migrations in this repo
 ```
 
-Writing a skill matches the [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md), which routes through **skill-creator**, validates the frontmatter and links, and ships the result through the Opening a PR playbook.
+Writing a skill matches the [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md), which routes through **skill-creator**, validates the frontmatter and links, and uses Opening a PR when PR delivery is in scope.
 
 One special case has its own generator. A skill that must drive your app and prove behavior is a verification skill, so use [`$pstack:create-verification-skill`](../../skills/create-verification-skill/SKILL.md) and [`$pstack:maintain-verification-skill`](../../skills/maintain-verification-skill/SKILL.md) instead. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers both.
 

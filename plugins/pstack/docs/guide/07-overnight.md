@@ -24,7 +24,7 @@ Walk through what each line buys you:
 - A Codex thread heartbeat automation wakes this task on a schedule and re-checks the finish condition.
 - The escape hatch lets it stop at a genuine dead end and write up why, which beats eight hours of creative goal reinterpretation.
 
-Because you'll review this work after stepping away, `$pstack:poteto-mode` routes it through [`$pstack:figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases before any code and wires in the decision log.
+When the migration needs a workflow beyond the bundled playbooks, `$pstack:poteto-mode` routes it through [`$pstack:figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases before any code and wires in the decision log.
 
 ## What the loop does all night
 
@@ -64,7 +64,7 @@ The contract above drives one task to one finish condition. Some nights hold mor
 $pstack:poteto-mode full autopilot on this queue. each item is independent. i want them merged by morning.
 ```
 
-[Autopilot-stack](../../skills/poteto-mode/playbooks/autopilot-stack.md) runs the same owner loop but ships nothing. You wake up to one linear Graphite stack with a verifier's verdict on every link, and you review and land it yourself. Pick it over Autopilot-full when the changes are coupled, or when you want your own eyes on the work before anything merges:
+[Autopilot-stack](../../skills/poteto-mode/playbooks/autopilot-stack.md) runs the same owner loop but ships nothing. You wake up to one linear base-branch stack with a verifier's verdict on every link, and you review and land it yourself. Pick it over Autopilot-full when the changes are coupled, or when you want your own eyes on the work before anything merges:
 
 ```text
 $pstack:poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.

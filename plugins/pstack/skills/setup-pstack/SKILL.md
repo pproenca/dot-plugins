@@ -1,6 +1,6 @@
 ---
 name: setup-pstack
-description: Configure the Codex models and reasoning efforts pstack uses per collaboration role. Detect available choices and write ~/.codex/pstack-models.md. Use when the user says $pstack:setup-pstack, configure pstack models, or change pstack's model choices.
+description: "Configure pstack collaboration models and reasoning efforts from choices supported by the current Codex host."
 ---
 
 # Setup pstack
@@ -21,9 +21,9 @@ If collaboration or its override fields are absent, the only validated choice is
 
 If `~/.codex/pstack-models.md` exists, read it and treat its values as current candidates. Otherwise start from the portable values in step 5. A value from another host remains stale until the current collaboration metadata validates it.
 
-### 3. Map and confirm
+### 3. Map the requested choices
 
-Show every role with its current value. Apply choices the user has already authorized. Ask one concise question only for an unresolved preference. For unavailable values, use `inherit-parent` unless the user chooses another validated value.
+Show the relevant roles and apply choices the user has already authorized. Use the [effort guidance](../poteto-mode/references/codex-tools.md#choose-models-and-reasoning) when tuning for Astra or another model. Ask only for a preference that materially affects the requested setup; portable inherited defaults need no extra confirmation. For unavailable values, use `inherit-parent` unless the user chooses another validated value.
 
 Use `inherit-parent` for roles that should follow the user's selected model, including GPT-6 Astra when available. Keep explicit overrides for intentional cost or review-diversity choices. Do not upgrade every worker solely because the parent model changed.
 
@@ -35,7 +35,7 @@ Every saved model and effort must appear in the current collaboration tool metad
 
 ### 5. Write the configuration
 
-Overwrite `~/.codex/pstack-models.md` so repeated setup converges to one file. Replace inherited values with validated overrides only when the user chooses them. Use this portable shape:
+Update `~/.codex/pstack-models.md` in place, preserving unrelated roles and comments. For first setup, use this portable shape. Replace inherited values with validated overrides for the choices the user requested:
 
 ```markdown
 # pstack model configuration
@@ -67,7 +67,3 @@ Do not save a stale or guessed override. If a configured value is rejected later
 ### 6. Confirm
 
 Tell the user which path was written and which roles inherit the parent. Pstack reads the file on each invocation, so no session restart is required.
-
-### 7. Offer a verification skill
-
-Check whether the repository has a way to drive the real product for proof, either a `verify-*` skill or an existing browser, PTY, CLI, or HTTP control tool. If not, offer once to run **create-verification-skill**. On yes, invoke that skill. On no, move on.

@@ -9,7 +9,7 @@
 ```mermaid
 flowchart TD
     A[Your prompt] --> B[poteto-mode]
-    B --> C[Read the Principles section]
+    B --> C[Set scope and completion]
     C --> D{Match the task}
     D -->|Read-only question| E[Investigation]
     D -->|Defect| F[Bug fix]
@@ -35,7 +35,7 @@ You don't write a spec. You say what's wrong or what you want, plus anything you
 $pstack:poteto-mode users get two notifications after a retry. repro first, then fix and verify.
 ```
 
-That's a Bug fix prompt. "repro first" is a real constraint, not politeness, and the playbook honors it. Watch the Bug fix phases appear in the Codex plan or progress updates. A skipped step stays visible with `skip: <reason>`.
+That's a Bug fix prompt. "repro first" is a real constraint, not politeness, and the playbook honors it. Watch the Bug fix phases appear in the Codex plan or progress updates. Only task-relevant phases need tracking.
 
 When the conversation already carries the context, the prompt shrinks to almost nothing. All of these are enough:
 
@@ -71,7 +71,7 @@ If you run several agents against one repository, they will fight over the worki
 $pstack:poteto-mode new task. branch off <base> in a fresh worktree, then port the parser change there.
 ```
 
-Each task in its own branch and worktree means no agent stomps another's files. The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) already works from a worktree for code changes, so mostly you only say this when a specific base or location matters.
+Each task in its own branch and worktree means no agent stomps another's files. The [collaboration contract](../../skills/poteto-mode/references/codex-tools.md) requires separate worktrees for concurrent repository writers. A single owner can use the requested checkout.
 
 Worktrees accumulate. When disk gets tight, ask:
 
@@ -89,7 +89,7 @@ When you step away, say what done means and go:
 $pstack:poteto-mode im stepping away. keep going until the migration check reports zero old callers. log your decisions.
 ```
 
-Work you'll review later routes through [`$pstack:figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases and keeps a [`$pstack:show-me-your-work`](../../skills/show-me-your-work/SKILL.md) decision log. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
+A substantial task with no suitable playbook routes through [`$pstack:figure-it-out`](../../skills/figure-it-out/SKILL.md). A request for a decision log uses [`$pstack:show-me-your-work`](../../skills/show-me-your-work/SKILL.md). Stepping away alone does not add either workflow. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
 
 **Pitfall:** don't enumerate skills in your prompt ("use $pstack:how, then $pstack:architect, then $pstack:arena..."). The playbook already sequences them, and a hand-written sequence usually reorders or drops steps the playbook would have kept. Name a skill only when you want to override a specific choice.
 

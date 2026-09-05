@@ -34,10 +34,10 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 - [ ] State the protocol and this plan to the operator, then stop. Start execution only on her explicit go.
 - [ ] On her go, record this finish condition in the plan. Create a goal only if the operator explicitly requests one. "<The plan path, the PR ids in order, the verification rule, who merges, and the done condition.>"
 - [ ] Resolve these paths at program start and record them in the plan. Re-read them at every tick.
-  - [ ] `<active pstack skill root>$pstack:poteto-mode/playbooks/<execution playbook>.md`
-  - [ ] `<active pstack skill root>$pstack:swarm/SKILL.md`
+  - [ ] `<active pstack skill root>/poteto-mode/playbooks/<execution playbook>.md`
+  - [ ] `<active pstack skill root>/swarm/SKILL.md`
   - [ ] `<active control skill path>`
-  - [ ] `<active pstack skill root>$pstack:poteto-mode/playbooks/opening-a-pr.md`
+  - [ ] `<active pstack skill root>/poteto-mode/playbooks/opening-a-pr.md`
   - [ ] `<active pstack skill root>/<each other leaf skill the program uses>/SKILL.md`
 - [ ] If recurring follow-ups are requested, create or update a thread heartbeat with the available automation tool. Follow the scheduling rules in the Codex collaboration contract and the operator's requested cadence.
 - [ ] Use this tick prompt, preserving any explicit request for periodic status updates. "Re-read the execution playbook from its recorded active skill path and the finish condition in the plan or active goal. Audit the operation against both and fix drift in this tick. Probe active lanes and verify progress through their outputs. Replace a stuck lane when the evidence warrants it. Stay quiet while nothing meaningful changes. On meaningful progress, completion, failure, or required operator action, report the queue of PR, owner, state, and head SHA, new verdicts, merges, open gates, and blockers. Stop this automation when the finish condition is met."
@@ -55,7 +55,8 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 
 ### PR mechanics, for every PR
 
-- [ ] Open the PR ready, never draft, with `gh pr create` and `draft: false`, or with Graphite `gt` for a stack.
+- [ ] Resolve the forge once. Default to `gh`; if `command -v origin` succeeds and Origin can resolve the repository, use `origin pr` for every PR operation. Record any fallback to `gh`. Never require `gt`.
+- [ ] Open the PR ready, never draft, with `origin pr create --status open --base <base-branch>` or `gh pr create --base <base-branch>` according to the resolved forge. A stack child targets its parent branch.
 - [ ] Run the repository's lint and typecheck once before the PR-facing push. Push with hooks on.
 - [ ] Remove dead compatibility paths and narrating comments before each commit. Run **no-comments** before review.
 - [ ] Triage every automated review comment per `../references/bugbot-triage.md`.
@@ -129,7 +130,7 @@ Each live lane runs in its own explicit worktree at the PR head. Create and reco
 - [ ] Root's clean verdict at the exact head SHA.
 - [ ] Automated-review triage done.
 - [ ] Rebased onto current trunk after the verdict, patch-id unchanged.
-- [ ] <The owner squash-merges its own PR, or the root appends the PR to the Graphite stack and the operator lands it.>
+- [ ] <The owner squash-merges its own PR, or the root appends the PR to the base-branch stack and the operator lands it bottom-up.>
 
 ## Close the program
 

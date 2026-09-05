@@ -1,6 +1,6 @@
 ---
 name: architect
-description: "Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use when $pstack:architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape."
+description: "Compare design candidates for consequential interface, type, or ownership decisions before implementation."
 ---
 
 # Architect
@@ -21,17 +21,17 @@ Keep one visible entry per phase throughout the run. Use the current mode's plan
 
 ## Phase A: Ground the problem
 
-Build a real mental model of every system the new code touches. Run the **how** skill over the relevant subsystems. Critique mode if existing structure is the constraint or the design must push back on it.
+Trace the affected callers and ownership. Reuse grounding already established in this task. Run **how** when the relevant behavior is still unclear; use critique mode when existing structure is the constraint.
 
-Naming a file isn't grounding. Produce the traced model `how` prescribes. If the design redefines ownership or layering, also run the **why** skill on the existing shape so the rationale becomes a constraint, not a guess.
+Name the observed constraints and evidence behind them. Use **why** when historical rationale could change the design decision.
 
-Skip Phase A only when the work is genuinely greenfield with no surrounding system to integrate.
+Avoid repeating a walkthrough whose relevant evidence is already available.
 
 ## Phase B: Sketch
 
 Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`: the caller's usage written first, then the type sketch, function signatures, module map, and prose rationale derived from it.
 
-Use the configured `architect runners` from `~/.codex/pstack-models.md`. Otherwise use valid available models or reasoning profiles that provide real diversity, and inherit the parent when no override is valid.
+Use the configured `architect runners` from `~/.codex/pstack-models.md`. Otherwise inherit the parent for independent candidates. Use validated model overrides when model diversity is requested or configured; different reasoning efforts alone are not model diversity.
 
 Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
 

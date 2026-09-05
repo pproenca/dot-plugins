@@ -20,10 +20,10 @@ codex plugin add pstack@dot-plugins
 
 ## get started
 
-two steps:
+start with poteto mode. model setup is optional:
 
-1. run [`$pstack:setup-pstack`](./skills/setup-pstack/SKILL.md) and choose which models you want.
-2. use [`$pstack:poteto-mode`](./skills/poteto-mode/SKILL.md) whenever you're doing anything that requires rigor.
+1. use [`$pstack:poteto-mode`](./skills/poteto-mode/SKILL.md) for substantial engineering work.
+2. run [`$pstack:setup-pstack`](./skills/setup-pstack/SKILL.md) when you want model or reasoning overrides. otherwise workers inherit your settings.
 
 new here? the [pstack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs.
 
@@ -65,7 +65,7 @@ morning.
 | [authoring a skill](./skills/poteto-mode/playbooks/authoring-a-skill.md) | writing or editing a SKILL.md. |
 | [eval](./skills/poteto-mode/playbooks/eval.md) | test how a skill or prompt change affects agent behavior, blinded. |
 | [babysit](./skills/poteto-mode/playbooks/babysit.md) | drive a pr or a stack to merge-ready: conflicts, review threads, ci. |
-| [shipping](./skills/poteto-mode/playbooks/shipping.md) | independently verify a green stack, then land the contiguous verified run with graphite merge-when-ready. |
+| [shipping](./skills/poteto-mode/playbooks/shipping.md) | independently verify a green stack, then land the contiguous verified run bottom-up with gh or optional Origin. |
 | [autonomous run](./skills/poteto-mode/playbooks/autonomous-run.md) | drive a long task to completion without stopping. |
 | [orchestrate](./skills/poteto-mode/playbooks/orchestrate.md) | a standing project handed to one coordinator chat: multi-day, many stacked prs, fleets of subagents. |
 | [autopilot-full](./skills/poteto-mode/playbooks/autopilot-full.md) | run independent prs to merged with one owner per pr and root verification of each merge-ready head. |
@@ -81,10 +81,10 @@ morning.
 
 when invoked it:
 
-1. keeps the playbook phases visible in the current planning capability or in normal progress updates. the first phase reads the inline principles index in the skill.
-2. matches your task to a [playbook](./skills/poteto-mode/playbooks/) and copies the steps in verbatim.
-3. routes to the other skills as the steps fire.
-4. writes unslopped replies framed for the consumer and the maintainer.
+1. handles small, clear changes directly and selects a [playbook](./skills/poteto-mode/playbooks/) for substantial work.
+2. reads supporting guidance only for the current decision.
+3. delegates independent work when it helps, within available concurrency.
+4. verifies the requested outcome and reports the evidence.
 
 the full rules and playbooks live in [`skills/poteto-mode/SKILL.md`](./skills/poteto-mode/SKILL.md).
 
@@ -114,12 +114,12 @@ $pstack:interrogate review this pr.
 | [`$pstack:why`](./skills/why/SKILL.md) | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
 | [`$pstack:recall`](./skills/recall/SKILL.md) | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
 | [`$pstack:blast-radius`](./skills/blast-radius/SKILL.md) | you have a small-looking change and want to know what else it could break, with the one fact it's safe because of proven by running code, not asserted. |
-| [`$pstack:architect`](./skills/architect/SKILL.md) | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
+| [`$pstack:architect`](./skills/architect/SKILL.md) | a consequential interface or ownership choice needs competing designs, with caller usage settled first. |
 | [`$pstack:arena`](./skills/arena/SKILL.md) | you want N parallel attempts at the same thing, then to grab the best parts of each. |
 | [`$pstack:swarm`](./skills/swarm/SKILL.md) | you want N parallel workers across different slices or races, then one aggregated report. |
 | [`$pstack:interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want several different models to try to break it, including a strict code-quality lens. |
 | [`$pstack:automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
-| [`$pstack:make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a local page or dashboard whose fixed actions start Codex tasks. |
+| [`$pstack:make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page that wakes one persistent bot task. requires webhook support; the skill explains missing capabilities before offering a substitute. |
 | [`$pstack:setup-pstack`](./skills/setup-pstack/SKILL.md) | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
 | [`$pstack:reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`$pstack:teach`](./skills/teach/SKILL.md) | you want to actually understand a change or subsystem, not just have it summarized. runs how + why and weaves one plain explanation, built up diagram by diagram. |
@@ -185,7 +185,7 @@ automate-me:       $pstack:automate-me
 
 ## collaboration subagents
 
-pstack tells ordinary collaboration workers to read [`poteto-mode`](./skills/poteto-mode/SKILL.md) before acting. routed skills such as `how`, `why`, `arena`, `swarm`, and `interrogate` define their own worker prompts.
+pstack gives each worker a bounded outcome, file ownership, and only the references it needs. routed skills such as `how`, `why`, `arena`, `swarm`, and `interrogate` define specialized worker prompts.
 
 the [Codex collaboration contract](./skills/poteto-mode/references/codex-tools.md) is the shared rule for capability discovery, model overrides, shared working directories, status, waiting, and interruption.
 
@@ -193,7 +193,7 @@ pstack also preserves [Comment Sicko](./com.cursor/agents/comment-sicko.md). [`$
 
 ## principles
 
-twenty-one short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
+twenty-one short skills, one principle each. the optional [principles index](./skills/poteto-mode/references/full-mode.md) points to them by decision. load the relevant principle when it helps.
 
 <details>
 <summary>all twenty-one principles</summary>
@@ -208,7 +208,7 @@ twenty-one short skills, one principle each. `poteto-mode` indexes them inline a
 | [outcome-oriented-execution](./skills/principle-outcome-oriented-execution/SKILL.md) | core | Apply during planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture; don't preserve smooth intermediate states with throwaway compatibility code. |
 | [experience-first](./skills/principle-experience-first/SKILL.md) | core | Choose user delight over implementation convenience; ship fewer polished features over more rough ones. |
 | [exhaust-the-design-space](./skills/principle-exhaust-the-design-space/SKILL.md) | core | Build 2-3 competing prototypes and compare side by side before committing. |
-| [build-the-lever](./skills/principle-build-the-lever/SKILL.md) | core | Apply to any non-trivial work, not just bulk work: edits, migrations, analyses, checks. Build the tool that does it or proves it (codemod, script, generator, or a skill your subagents follow) instead of working by hand. The tool is the artifact a reviewer can rerun. |
+| [build-the-lever](./skills/principle-build-the-lever/SKILL.md) | core | Automate repeated work or complex checks when a reusable tool improves consistency and reviewability. Reuse existing tools first. |
 | [model-the-domain](./skills/principle-model-the-domain/SKILL.md) | architecture | Encode the domain in a structure instead of scattered conditionals. |
 | [boundary-discipline](./skills/principle-boundary-discipline/SKILL.md) | architecture | Concentrate guards at system boundaries (CLI, config, network, external APIs); trust internal types and keep business logic in pure functions. |
 | [type-system-discipline](./skills/principle-type-system-discipline/SKILL.md) | architecture | Make illegal states unrepresentable, brand semantic primitives, parse external data at boundaries, refuse to lie to the compiler, exhaust variants, derive from authoritative schemas. |
@@ -251,6 +251,10 @@ models are configurable too. type [`$pstack:setup-pstack`](./skills/setup-pstack
 pstack also ships a dormant [benny automation pack](./com.cursor/automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
 
 the preserved pack is Cursor-specific source material. Codex recurring work uses thread heartbeat or cron automations. Port the pack's prompts into those automations when you need Benny on Codex; do not treat the Cursor files as active Codex configuration.
+
+## Codex adaptation
+
+The [upstream comparison and Astra tuning notes](./docs/codex-adaptation.md) record what is preserved, what changed, and how to validate future edits. Pstack inherits the parent model by default. The [collaboration contract](./skills/poteto-mode/references/codex-tools.md#choose-models-and-reasoning) gives workload-based effort guidance without changing your active task settings.
 
 ## license
 

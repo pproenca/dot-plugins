@@ -78,6 +78,8 @@ A dependency is a context relay, not just ordering: undeclared upstream context 
 
 #### Stack safety
 
+The bundled `orch frontier` commands support Graphite stacks only. Use them when the repository already uses Graphite or the user chooses it. For a stack managed through `gh` or Origin, use `playbooks/autopilot-stack.md` and `playbooks/shipping.md` for topology and landing, recording the ordered PRs, branch bases, head SHAs, and verification evidence in the program store. Do not call `orch frontier` or claim it supports another forge. The Graphite-specific rules below apply only to the Graphite path.
+
 - The frontier is a computed object, never narrative. Recompute `frontier.json` from `gt` after every merge and stack mutation because GitHub base refs drift mid-restack while gt tracking is authoritative: ordered PR list, branch names, head SHAs, a generation number, the lowest unmerged PR. Resolve it where gt knows the stack, normally the stacker's clone; a checkout whose gt metadata never saw the submits reports no PRs and the command errors rather than guessing.
 - Exactly one stacker per stack may run `gt`, serialized within its stack; record the holder in the standing orders. Run restacks in that stacker's isolated worktree. Cap concurrent restacks when repository load would make the host unstable.
 - Workers never rebase and never run `gt`. Babysitters follow `playbooks/babysit.md`, one per stack, scoped to one immutable frontier generation; they report conflicts to the stacker rather than restacking.

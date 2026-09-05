@@ -62,7 +62,7 @@ Reach for it when parallelism buys coverage or lets independent checks race. `$p
 $pstack:interrogate the whole branch, but skeptically. no nitpicks unless it's an actual bug or regression.
 ```
 
-[`$pstack:interrogate`](../../skills/interrogate/SKILL.md) sends the same diff, intent, and rubric to several reviewers on different model families. Model diversity is the point. Different models have different blind spots, so a finding two models raise independently is high-confidence signal. The lead sorts everything into `Act on`, `Consider`, `Noted`, and `Dismissed`, with a reason for each dismissal, and applies nothing automatically.
+[`$pstack:interrogate`](../../skills/interrogate/SKILL.md) sends the same diff, intent, and rubric to several reviewers on different model families. Model diversity is the point. Different models have different blind spots, so independent agreement helps prioritize checks. A lone reproducible defect outweighs shared speculation. The lead sorts everything into `Act on`, `Consider`, `Noted`, and `Dismissed`, with a reason for each dismissal, and applies fixes when the user requested them. A review-only request ends with the verdict.
 
 Read the dismissals too. The lead is a pragmatic senior engineer, not an oracle, and you can override it.
 
@@ -70,12 +70,12 @@ Read the dismissals too. The lead is a pragmatic senior engineer, not an oracle,
 
 You might be wondering whether every change needs this. No. Most changes need none of it. A rough ladder:
 
-- A small, finished change you're unsure about needs `$pstack:interrogate` alone.
-- A change that crosses function boundaries or moves ownership earns `$pstack:architect`, which brings `$pstack:arena` with it.
+- A small, finished change usually needs direct inspection and focused checks. Use `$pstack:interrogate` when an independent review would resolve a concern.
+- A consequential unresolved interface or ownership choice earns `$pstack:architect`, which brings `$pstack:arena` with it.
 - A standalone decision where independent attempts would help, like naming, formats, or an algorithm, is `$pstack:arena` directly.
 - A coverage matrix, set of parallel checks, or race with declared arms is `$pstack:swarm`.
 - A contested design that's expensive to reverse gets `$pstack:architect`, then `$pstack:interrogate` before shipping.
 
-`$pstack:poteto-mode` already applies this ladder. Boundary-crossing work triggers `$pstack:architect` on its own, so you reach for these directly mainly when you want more or less scrutiny than the default.
+`$pstack:poteto-mode` already applies this ladder. An ordinary function boundary does not trigger a design panel. Invoke these skills directly when you want a particular kind of scrutiny.
 
 Next: [Build and clean the change](./05-build-and-clean.md).

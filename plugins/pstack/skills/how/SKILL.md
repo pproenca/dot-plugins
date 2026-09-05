@@ -1,6 +1,6 @@
 ---
 name: how
-description: "Use when \"how does X work\", code walkthroughs before changing something, and placement / ownership / layering questions (\"where should this live\", \"which package owns this\", \"is this the right layer\"). Explains subsystem architecture, runtime flow, onboarding mental models. Can critique architecture. Use why for motivation."
+description: "Explain subsystem behavior, runtime flow, and code ownership. Use for code walkthroughs or architecture questions."
 ---
 
 # How
@@ -30,7 +30,7 @@ Identify the scope. If ambiguous, state your best-guess interpretation before ex
 **Assess complexity to decide the approach:**
 
 - **Simple** (a single module, a small utility, a narrow question like "how does function X work"): skip explorer agents; the explainer explores and explains in a single pass. Go to Step 2b.
-- **Complex** (a subsystem spanning multiple files/services, a cross-cutting feature, a full architectural overview): spawn parallel explorer agents first, then hand off to the explainer. Go to Step 2a.
+- **Complex** (a subsystem spanning multiple files/services, a cross-cutting feature, a full architectural overview): delegate independent exploration slices while you trace the central flow, then synthesize locally. Go to Step 2a.
 
 When in doubt, lean simple. You can always spawn explorers if the explainer hits a wall.
 
@@ -44,7 +44,7 @@ Decompose the question into 2-4 parallel exploration angles, each a distinct sli
 
 The right decomposition depends on the question. Use your judgment. Narrow questions: 2 explorers is fine. Broad subsystems: up to 4.
 
-Spawn all collaboration explorers together. Use the configured `how explorer` model from `~/.codex/pstack-models.md` when valid. Otherwise inherit the parent model. Give each explorer a read-only task and forbid file edits in the prompt.
+Launch independent explorers within the available concurrency limit, using waves as needed. Trace the central flow locally while they work. Use the configured `how explorer` model from `~/.codex/pstack-models.md` when valid. Otherwise inherit the parent model. Give each explorer a read-only task and forbid file edits in the prompt.
 
 Each explorer gets the same base prompt from `references/explorer-prompt.md` plus a specific exploration angle naming its slice. Each explorer should:
 - Search broadly for relevant directories, types, interfaces, and class names
@@ -59,21 +59,21 @@ Then proceed to Step 3.
 
 ### Step 2b. Direct Explain (simple questions)
 
-Spawn one collaboration subagent that explores and explains in one pass. Use the configured `how explainer` model from `~/.codex/pstack-models.md` when valid. Otherwise inherit the parent model. Give it a read-only task.
+Explore and explain locally. A narrow walkthrough does not need a serial agent handoff.
 
-The agent searches the repository for relevant files and symbols, reads the matching source, and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Use the same structure without explorer findings as input.
+Search for relevant files and symbols, read the matching source, and write the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Use the same structure without explorer findings as input.
 
 Proceed to Step 4.
 
 ### Step 3. Synthesize (complex questions only)
 
-Once all explorers return, spawn one collaboration subagent to synthesize their findings into a coherent explanation. Use the configured `how explainer` model when valid. Otherwise inherit the parent model. Give it a read-only task.
+Synthesize the explorer findings locally, checking their cited source and resolving contradictions. A separate explainer is useful only when its work can run alongside another necessary task; use the configured `how explainer` role for that case.
 
 The explainer gets all explorers' findings and writes the human-facing explanation (output format below). Read `references/explainer-prompt.md` for the full prompt template. The explainer reconciles overlapping findings, resolves contradictions, and weaves the slices into a unified picture.
 
 ### Step 4. Present
 
-Present the explainer's output to the user. You may lightly edit for clarity or add context from the conversation, but don't substantially rewrite. The explainer's communication is the product.
+Own the final explanation. Integrate verified findings at the level of detail the user needs.
 
 ### Output Format
 
@@ -99,11 +99,11 @@ Run the full explain flow above (Steps 1-4). You must understand the architectur
 
 ### Step 2. Spawn Critics
 
-After the explanation is complete, spawn one architectural critic per valid entry in the configured `how critics` list, all together. Without a configured list, use available models or reasoning efforts that provide real diversity.
+After the explanation is complete, spawn one architectural critic per valid entry in the configured `how critics` list, within the available concurrency limit, while you verify the supporting source. Without a configured list, use inherited settings for independent critics. Choose distinct validated models when model diversity is requested; different reasoning efforts alone are not model diversity.
 
 Report the models that actually ran. Different reasoning efforts on one model are same-model review. If every critic uses the same model after fallbacks, label model diversity `INCONCLUSIVE`.
 
-Give each critic one model and reasoning effort from the configured list. The lead may raise the reasoning effort when the architecture warrants it. Every critic is read-only and receives an explicit no-edits instruction.
+Apply validated role choices under the Codex collaboration contract, and size the panel to the question and available slots. Every critic is read-only and receives an explicit no-edits instruction.
 
 Read `references/critic-prompt.md` for the prompt template. Each critic gets:
 1. The explanation from Step 1 (so they don't re-explore)

@@ -60,7 +60,7 @@ You'll develop your own shorthand. The skill reads intent fine from terse prompt
 
 ## Strip the comments with `$pstack:no-comments`
 
-Comments need their own pass, and not from the agent that wrote them. An author defends its comments the way you'd defend yours. So before review, hand them to fresh eyes:
+Use an independent comment audit when you want fresh eyes on a comment-heavy diff or an unresolved constraint:
 
 ```text
 $pstack:no-comments the diff

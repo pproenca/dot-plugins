@@ -1,13 +1,13 @@
 ---
 name: interrogate
-description: "Use when \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
+description: "Run independent adversarial reviews of a change and synthesize evidence-backed findings."
 ---
 
 # Interrogate
 
-Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
+Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement helps prioritize investigation; a lone reproducible defect outweighs shared speculation.
 
-The deliverable is a synthesized verdict. Do NOT auto-apply changes.
+For a review request, deliver a synthesized verdict. If the user already asked to fix accepted findings, apply and verify those fixes within that scope.
 
 Before delegating, read the [Codex collaboration contract](../poteto-mode/references/codex-tools.md). This workflow requires independent collaboration agents. If the current turn does not expose or authorize delegation, report `BLOCKED`. If the current collaboration capability does not advertise validated model overrides, run the review with inherited settings and label model diversity `INCONCLUSIVE`.
 
@@ -34,7 +34,7 @@ Write one clear paragraph. Reviewers challenge whether the work achieves the int
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers together with the collaboration tools. Use the validated `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry. Otherwise spawn three reviewers that inherit the parent model. Label them Reviewer A, Reviewer B, and Reviewer C. Extend or shrink the labels to match a configured list.
+Launch reviewers within the available concurrency limit, using waves for larger panels. Inspect the diff yourself while they review. Use the validated `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry. Otherwise spawn three reviewers that inherit the parent model. Label them Reviewer A, Reviewer B, and Reviewer C. Extend or shrink the labels to match a configured list.
 
 For each reviewer, pass the configured model and reasoning effort when both are valid. Omit the model override for `inherit-parent` or `auto`. Give every reviewer a read-only task and forbid file edits in the prompt.
 
@@ -57,8 +57,8 @@ Each reviewer produces structured findings as described in the prompt template.
 As results come back, build a unified picture:
 
 1. **Parse all findings** from the reviewers
-2. **Identify consensus**. Findings raised by 2+ models independently are highest signal.
-3. **Identify lone-model findings**. Still worth reading, but weight accordingly.
+2. **Identify consensus**. Track independently raised findings, then verify the evidence and impact.
+3. **Identify lone-model findings**. Evaluate their evidence and impact without discounting them for vote count.
 4. **Deduplicate**. Different models may describe the same issue differently. Merge these and note which models raised it.
 5. **Note disagreements**. If one model flags something and another explicitly says the opposite, that's useful context for the verdict.
 

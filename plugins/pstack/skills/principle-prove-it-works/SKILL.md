@@ -27,6 +27,6 @@ When verifying delegated work, inspect the actual output artifact (git diff, fil
 
 ## Script the check when you can
 
-The strongest proof is a deterministic script that re-runs the same comparison, not a one-time eyeball. Write the script, run it, and keep its output as an artifact a reviewer can re-run instead of trusting your word. A script comparing the old and new compiled output catches what a glance misses.
+Prefer an existing reproducible check. Add a script when a repeated or complex comparison needs one. Match verification to the claim: documentation edits need content and link checks; runtime changes need behavior evidence. Once required checks and relevant evidence pass, repeat or broaden testing only for a new change, failure, or unresolved concern.
 
 Keep the artifact visible for the human. Commit it only for large or complex work where the trail has to be auditable later, like a big port or migration (the **show-me-your-work** skill). Most work just needs it visible, not committed.

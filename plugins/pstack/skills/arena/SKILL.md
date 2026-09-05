@@ -1,6 +1,6 @@
 ---
 name: arena
-description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use when $pstack:arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
+description: "Run competing design or implementation candidates, select a base, and integrate their useful parts."
 ---
 
 # Arena
@@ -31,11 +31,11 @@ The N candidates will receive the same prompt, so the prompt is the contract. Ge
 
 ## Phase B: Fan out
 
-Start all N collaboration agents together with unique task names. Give each agent the task, the shared grounding path, its own output path, and instructions to produce both the artifact and a short rationale. Continue non-overlapping local work. Check worker status only when needed, and wait only when the next phase requires a result.
+Start independent candidates with unique task names, using waves within the available concurrency limit. Give each agent the task, the shared grounding path, its own output path, and instructions to produce both the artifact and a short rationale. Continue non-overlapping local work. Check worker status only when needed, and wait only when the next phase requires a result.
 
 The rationale is mandatory. Without it, the parent cannot tell whether a candidate's structure is principled or accidental, which makes Phase E grafting unreliable. Each rationale names the alternatives the candidate considered and what it rejected.
 
-If a candidate fails to produce output, proceed with N-1 and note the dropout in the synthesis record.
+If a candidate fails to produce output, note the dropout and continue with the remaining candidates. With fewer than two completed candidates, report the comparison as incomplete; do not claim independent selection.
 
 ## Phase C: Cross-judge
 

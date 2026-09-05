@@ -1,21 +1,15 @@
 ### Feature
 
-**You own the design. Plan, review, verify.** Delegate implementation; stay in the lead.
+Build the requested behavior with a clear data model and evidence that it works.
 
-1. `how` over the affected subsystem.
-2. `architect` for parallel design exploration. Skipping stays as `architect skipped: <reason>`; do not fold the design decision silently into implementation.
-3. Write the throughput checkpoint as four todo items. A dimension that genuinely does not apply (single file, no fan-out) keeps its item with `n/a: <reason>` rather than being dropped:
-   - **Blocking first steps.** Gates run before fan-out.
-   - **Independent workstreams.** Disjoint files, services, or layers parallelize. Shared writes serialize.
-   - **Shared mutable state.** Default to splitting the target (the **separate-before-serializing-shared-state** principle skill). Serialize only for real invariants.
-   - **Smallest safe decomposition.** If one worker is best, name why.
-4. Delegate code-writing to a collaboration subagent using the configured `feature, refactoring` model from `~/.codex/pstack-models.md`, or inherit the parent. Give it exact paths, the named data shape, its organizing structure, and success criteria. Review its diff yourself. When several shapes are valid, delegate through **arena** so the runners expose the alternatives and the cross-judge guards the pick. Surgical edits, re-ground against the source for upstream-derived files. Port shared-primitive improvements to all consumers and verify each.
-5. Verify on the matching surface. "Inconclusive" or wrong-surface is not a pass; flag it.
-6. Rebase into small, ordered commits; stack follow-ups.
-   Use the **sequence-verifiable-units** principle skill, building, verifying, and committing each small unit before the next.
-7. If the design is contested, `interrogate` before shipping.
-8. Run **Opening a PR**.
+1. Inspect the affected entry points, callers, and existing conventions. Use **how** when the subsystem needs a deeper walkthrough.
+2. Settle the data shape and ownership before spreading logic across modules. Use **architect** when a consequential design choice has plausible competing answers.
+3. Identify blocking prerequisites and independent work. Delegate bounded work when it improves throughput or confidence while you do useful local work. Use the configured `feature, refactoring` role when valid. Keep coupled code with one owner and isolate concurrent writers under the Codex collaboration contract.
+4. Implement the smallest coherent change. Re-ground upstream-derived files against their source. Update affected consumers together and inspect delegated diffs yourself.
+5. Verify the changed behavior on the relevant artifact and run required repository checks. An untested integration is a stated limitation, not a passing result. Stop expanding tests once the required checks and behavior evidence are sufficient.
+6. Review the diff for unsupported guards, dead compatibility paths, unrelated changes, and comments that only narrate code. Use **interrogate** for unresolved consequential concerns.
+7. If PR delivery is in scope, run **Opening a PR**. Otherwise leave the verified changes ready for review.
 
-Code-coupled work (one feature, one migration) goes to a single owner with the checkpoint inline; that owner fans out internally after the blocking phase. Parent-level fan-out is for slices that produce independent artifacts (audits, cross-subsystem investigations, competing experiments). Rewrite the checkpoint at phase boundaries; spawn a fresh owner rather than chaining interrupts.
+For larger work, sequence small verifiable units. Record the dependency and ownership decisions that matter; a single-file change does not need a throughput worksheet.
 
-**Reply:** what you built, what you chose and why, open decisions. Tables for design alternatives.
+**Reply:** the resulting behavior, significant design choices, and verification.

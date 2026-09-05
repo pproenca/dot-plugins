@@ -1,36 +1,48 @@
 # Codex collaboration contract
 
-Use only the planning, questioning, and collaboration capabilities exposed in the current turn. Current tool descriptions and higher-priority instructions are authoritative. Never guess a missing operation, namespace, or field.
-
-## Keep workflow state visible
-
-- Keep the workflow phases visible throughout the run. Use the current mode's planning capability when available. Otherwise maintain the same phase list in progress updates.
-- Ask one concise question only when a product or preference decision cannot be settled through inspection or a reversible experiment.
-- Create a goal only when the user explicitly requests a goal. An execution go does not imply that request. Otherwise keep the finish condition in the plan or progress updates.
-
-## Schedule follow-ups
-
-When the user requests recurring work, monitoring, or a later follow-up, use the available automation tool to create or update a thread heartbeat. Reuse a matching automation and follow its current schema. If scheduling is unavailable, report that limitation without claiming future wakeups.
-
-Keep the heartbeat quiet while nothing meaningful changes, unless the user requests periodic status updates. Notify on meaningful progress, completion, failure, or required user action. Stop the automation when its finish condition is met.
-
-## Load routed skills explicitly
-
-Codex does not recursively load another skill because the current skill names it. When one pstack skill routes to another, resolve the routed skill's `SKILL.md` path and read it in full before following it. Do not assume that a bold name or prose mention injected the routed skill body.
+Use the tools and permissions exposed in the current turn. Their descriptions govern parameters, availability, context inheritance, and side effects.
 
 ## Delegate by outcome
 
-- A workflow that requires independent agents must say so explicitly. If the turn does not permit delegation, follow the workflow's declared local fallback or mark its independence gate `BLOCKED` or `INCONCLUSIVE`.
-- Start independent work in one wave. Give every worker a unique task name and a self-contained brief.
-- Continue non-overlapping local work while workers run. Check worker status only when needed. Wait only when the next step requires a result.
-- Codex collaboration agents share the parent filesystem and working directory. Give every worker that writes inside the repository its own worktree and branch. Workers that write only external artifacts may use unique output directories. Read-only workers may share the checkout.
-- Use the current collaboration descriptions for context inheritance, messages, follow-up work, status, waiting, and interruption.
-- Delegate only concrete, independent work that can run alongside useful local work. Scale worker counts and verification to the task. Do not add review waves or repeat passing checks without an unresolved concern.
+Use collaboration agents for concrete independent work that can run alongside useful local work. A brief names the outcome, relevant paths, write ownership, constraints, and acceptance evidence. Give workers only the skill references their assignment needs; do not make each worker restart the parent workflow.
 
-## Validate model choices
+Launch independent work up to the available concurrency limit, counting the parent and active descendants. Run larger panels in waves. Keep coupled edits with one owner. Read-only workers can share a checkout; concurrent repository writers need separate worktrees and branches. Artifact-only workers can use distinct output directories. A branch name alone does not isolate files. Shared browsers, servers, and other mutable resources need one owner or separate instances too.
 
-Use only model and reasoning overrides advertised by the current collaboration capability. Omit overrides when no validated choice exists so the worker inherits the parent settings. Never reuse an override merely because another host or an older session accepted it.
+Continue local work while agents run. Use current message and follow-up tools to steer them, preserving accepted constraints. Wait when the next step needs their results. Inspect their artifacts before integrating. Reuse an agent for related work when its context remains useful; start fresh for independent review or substantially different scope.
 
-When using `spawn_agent` with a model or reasoning override, set `fork_turns` to `"none"` or a supported numeric history count and provide a self-contained brief. Omitted `fork_turns` and `"all"` inherit the parent settings and cannot accompany overrides. Follow the current schema if these options change.
+When delegation is unavailable, ordinary work proceeds locally. Workflows whose purpose is independent candidates or review must report the missing independence instead of claiming it occurred. They may still prepare the brief, evidence, or a clearly labeled local assessment.
 
-Report the models that actually ran. Independent reviewers using the same model are same-model review, with model diversity `INCONCLUSIVE`. Different reasoning efforts alone do not establish cross-model diversity.
+## Choose models and reasoning
+
+Read relevant roles from `~/.codex/pstack-models.md` if it exists. Missing roles, `inherit-parent`, `auto`, and unavailable values omit both overrides. Preserve the user's model choices. Validate explicit model and effort values against the current collaboration metadata before each dispatch; another host's accepted values are not evidence here.
+
+Inherit the parent settings by default, including when the parent uses GPT-6 Astra. When the user requests tuning, or a configured role calls for it, use these starting heuristics within the advertised choices:
+
+| Work | Effort to consider |
+|---|---|
+| Bounded lookup, extraction, or mechanical edit with a clear check | `low` |
+| Routine implementation or investigation with several constraints | `medium` |
+| Ambiguous design, difficult diagnosis, or consequential correctness review | `high` |
+| Hard unresolved work after a lower-effort attempt, or an explicit user preference | Supported levels above `high` |
+
+These are workload heuristics, not measured performance claims. Keep a deliberate cheaper-model role for simple work. Higher effort does not require more agents, more output, or broader tests. Compare representative outcomes, latency, and usage before promoting a new default. Do not assume every model supports every effort; in particular, do not use `none` or `minimal` for Astra.
+
+With the current `spawn_agent` interface, explicit model or reasoning overrides require `fork_turns: "none"` or a supported numeric history count and a self-contained brief. Full-history forks inherit parent settings. Follow the live schema if it changes. A skill cannot change the active parent's model or reasoning through prose; child overrides and user-selected parent settings are separate controls.
+
+Report the models that actually ran when diversity matters. Independent workers on one model provide same-model review. Different effort levels do not establish model diversity. Validate findings by evidence and impact, not vote count.
+
+## Use Codex task capabilities
+
+Use collaboration agents for subtasks within the current request. Create a separate user-facing Codex task only when the user explicitly asks for one. Use task history and status tools for a requested handoff or pickup, and bounded waits when following an existing task.
+
+Use the current planning capability when it helps track dependencies. Otherwise give concise progress updates. Create a goal only on an explicit goal request. Scheduling a later continuation is distinct from working autonomously during the current turn.
+
+## Schedule follow-ups
+
+For requested recurring work, monitoring, or later follow-ups, create or update a matching thread heartbeat with the available automation tool. Follow its schema and the requested cadence. Stay quiet while nothing meaningful changes unless the user asks for periodic updates. Notify on a meaningful result, failure, or required action and stop the automation at its finish condition.
+
+If scheduling or a required persistent webhook capability is absent, state the gap. Do not claim future wakeups or substitute independent tasks for a persistent bot without the user's agreement.
+
+## Load routed skills
+
+Naming a skill does not load its body in Codex. Resolve and read a routed `SKILL.md` when that workflow applies. Reuse already loaded guidance and read only the supporting references needed for the current decision.

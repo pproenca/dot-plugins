@@ -8,6 +8,7 @@ from pathlib import Path
 CODEX_ONLY = {
     ".codex-plugin/plugin.json",
     "plugin.json",
+    "docs/codex-adaptation.md",
     "skills/poteto-mode/references/full-mode.md",
     "skills/poteto-mode/references/codex-tools.md",
 }
@@ -145,8 +146,8 @@ skills/why/SKILL.md""".splitlines()
 )
 
 EXPECTED_TRANSLATION_SOURCE_DIGEST = "81d73a4f15ee2e567542875b243742c66864f163493fb6cefecda754e713431f"
-EXPECTED_TRANSLATION_TARGET_DIGEST = "d3c526220da7fa9838d0b44682f0010c78631023e1beb18fe2df3a466a6e3148"
-EXPECTED_CODEX_ONLY_DIGEST = "d1cbeabf8cddaf4b589591677e598098940979a9a774e7fdb82bcb1f967c27c1"
+EXPECTED_TRANSLATION_TARGET_DIGEST = "2d66bfd12ad2d0da2b5d329d0d4d64eb30fcaeee899cb9c4e4f1a34146dd278a"
+EXPECTED_CODEX_ONLY_DIGEST = "b55b328c40dba4799cbf01b0c9c05fe858e68a25592caee356a13164f6bf2833"
 
 DEAD_CODEX_REFERENCES = {
     "~/.cursor/": "Cursor home path",

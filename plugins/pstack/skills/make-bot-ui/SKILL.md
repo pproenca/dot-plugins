@@ -1,6 +1,6 @@
 ---
 name: make-bot-ui
-description: Build a page or dashboard that wakes a persistent Codex task through an authenticated webhook when the environment supports that workflow. If it does not, explain the gap instead of silently replacing the bot with independent Codex tasks.
+description: "Build a UI that wakes a persistent bot through an authenticated webhook. Check host support before choosing a substitute."
 ---
 
 # Make a bot UI
