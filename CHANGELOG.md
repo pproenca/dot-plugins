@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.7
+
+### Other Changes
+
+- Document durable agent workspaces and deliverables by @pproenca in [b288ece4](https://github.com/pproenca/dot-plugins/commit/b288ece404280088ad623b0b8fe025f2c38672ce)
+
 ## 0.16.6
 
 ### Other Changes
