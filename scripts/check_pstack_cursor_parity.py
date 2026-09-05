@@ -92,6 +92,7 @@ docs/guide/09-make-it-yours.md
 docs/guide/10-recipes-and-pitfalls.md
 docs/guide/README.md
 skills/architect/SKILL.md
+skills/architect/references/runner-prompt.md
 skills/arena/SKILL.md
 skills/automate-me/SKILL.md
 skills/blast-radius/SKILL.md
@@ -166,9 +167,9 @@ skills/unslop/SKILL.md
 skills/why/SKILL.md""".splitlines()
 )
 
-EXPECTED_TRANSLATION_SOURCE_DIGEST = "1696e7a399c111c888cddde3e705c99993439306bb15752f3f2d0efed8a594b8"
-EXPECTED_TRANSLATION_TARGET_DIGEST = "ece8f7c3558bb7813acb964c81c7f1eb789fad1f0210a75d08e8ce462e7f122b"
-EXPECTED_CODEX_ONLY_DIGEST = "18e245692d09bde72d22c49cfab2427ba6d289519fc62c7114828b2d1046fc9f"
+EXPECTED_TRANSLATION_SOURCE_DIGEST = "86946c3ea45d71233e5e2cee3ad545d94daf24fb5df3df1df68924a4f84323bc"
+EXPECTED_TRANSLATION_TARGET_DIGEST = "bfa03beddf72751c2cbdd502eb159a951569aa46589caa0b80f64b4f427a8a2b"
+EXPECTED_CODEX_ONLY_DIGEST = "25b923afed243c1f78413cc06abf39c95539aaecd3a2798f84c74926c3546a83"
 
 DEAD_CODEX_REFERENCES = {
     "~/.cursor/": "Cursor home path",

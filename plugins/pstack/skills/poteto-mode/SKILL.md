@@ -37,7 +37,7 @@ If no playbook fits a substantial task, read [figure-it-out](../figure-it-out/SK
 
 ## Scale the work
 
-- Read supporting skills only when their guidance changes a current decision. The [principles index](references/full-mode.md) provides targeted routes; it is optional reference material.
+- Read supporting skills only when their guidance changes a current decision, and reuse unchanged guidance already loaded. The [principles index](references/full-mode.md) provides targeted routes; it is optional reference material. For large or noisy results, apply [Guard the Context Window](../principle-guard-the-context-window/SKILL.md) to narrow retrieval before returning output.
 - Use [architect](../architect/SKILL.md) for consequential, unresolved interface or ownership choices. Crossing a function boundary alone does not warrant competing designs.
 - Delegate concrete independent investigations, implementations, or reviews when they can save time or improve confidence alongside useful local work. Read the [Codex collaboration contract](references/codex-tools.md) before delegation, creating worktrees, or scheduling. Keep agent workspaces and deliverables in durable project locations. Use [swarm](../swarm/SKILL.md) for coverage and [arena](../arena/SKILL.md) for competing candidates when those workflows fit.
 - Run required repository checks and verify changed behavior on the relevant artifact. Add tests for a meaningful regression or uncovered contract. Broaden or repeat checks when failures, changes, or unresolved risks justify it.

@@ -4,9 +4,11 @@ Use the tools and permissions exposed in the current turn. Their descriptions go
 
 ## Delegate by outcome
 
-Use collaboration agents for concrete independent work that can run alongside useful local work. A brief names the outcome, relevant paths, write ownership, constraints, and acceptance evidence. Give workers only the skill references their assignment needs; do not make each worker restart the parent workflow.
+Give workers a bounded outcome, relevant paths and revision, write ownership, acceptance evidence, and constraints that could invalidate the result. Include phase exclusions directly in the brief. Supply only the skill references their assignment needs; workers should not restart the parent workflow.
 
-Launch independent work up to the available concurrency limit, counting the parent and active descendants. Run larger panels in waves. Keep coupled edits with one owner. Read-only workers can share a checkout; concurrent repository writers need separate worktrees and branches. Artifact-only workers can use distinct output directories. A branch name alone does not isolate files. Shared browsers, servers, and other mutable resources need one owner or separate instances too.
+For bounded assignments, prefer a self-contained brief with `fork_turns: "none"`. Inherit selected turns or full history when the assignment needs that context. Follow the live tool schema.
+
+Choose workers by independent outcomes, not by available slots. The concurrency limit is a ceiling; run larger justified panels in waves. Keep coupled edits with one owner and start dependent writers from the completed prerequisite revision. Read-only workers can share a checkout; concurrent repository writers need separate worktrees and branches. Artifact-only workers can use distinct output directories. A branch name alone does not isolate files. Shared browsers, servers, and other mutable resources need one owner or separate instances too.
 
 ## Keep agent work in durable locations
 
@@ -18,7 +20,9 @@ If a durable destination needs additional permission, request it instead of subs
 
 ## Coordinate ongoing work
 
-Continue local work while agents run. Use current message and follow-up tools to steer them, preserving accepted constraints. Wait when the next step needs their results. Inspect their artifacts before integrating. Reuse an agent for related work when its context remains useful; start fresh for independent review or substantially different scope.
+Continue local work while agents run. Use current message and follow-up tools to steer them, preserving accepted constraints. When a result becomes a dependency, use completion notifications or a bounded wait; do not repeatedly list agents or poll report files. Check progress when there is evidence of a stall or a decision needs it. Inspect completed artifacts before integrating. Reuse an agent for related work when its context remains useful; start fresh for independent review or substantially different scope.
+
+Give reviewers a distinct risk or the requested comparison rubric. Reuse them to check fixes against their findings and the changed diff. Add review for uncovered risks, unresolved disagreements, or an explicit requirement. Preserve independent review without repeating generic passes over settled questions.
 
 When delegation is unavailable, ordinary work proceeds locally. Workflows whose purpose is independent candidates or review must report the missing independence instead of claiming it occurred. They may still prepare the brief, evidence, or a clearly labeled local assessment.
 
@@ -55,4 +59,4 @@ If scheduling or a required persistent webhook capability is absent, state the g
 
 ## Load routed skills
 
-Naming a skill does not load its body in Codex. Resolve and read a routed `SKILL.md` when that workflow applies. Reuse already loaded guidance and read only the supporting references needed for the current decision.
+Read routed skills when their workflow applies. Reuse unchanged guidance already available in context; re-read when it changed, is unavailable, or a newly relevant section is needed. Apply the same rule to plans and model-role configuration instead of reloading them for every dispatch.

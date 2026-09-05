@@ -1,16 +1,14 @@
 ---
 name: principle-guard-the-context-window
-description: "Use when context is filling up: large outputs, long files, repeated reads, fan-out planning. Route bulk to subagents; keep summaries in the main thread, not raw payloads."
+description: "Keep retrieval and tool results focused when outputs are large, files are long, or reads repeat."
 ---
 
 # Guard the Context Window
 
-The context window is finite and non-renewable within a session. Every token that enters should earn its place.
+Retrieve the evidence needed for the current decision and keep tool results bounded.
 
-**Why:** Context overflow degrades reasoning quality, creates compression artifacts, and halts progress. Unlike compute or time, context spent inside a session cannot be reclaimed.
-
-**Pattern:**
-- **Isolate large payloads.** Route verbose outputs, screenshots, and large documents to subagents. The main context gets summaries, not raw data.
-- **Don't read what you won't use.** Read selectively based on relevance. If a file isn't needed for the current task, skip it.
-- **Keep frequently used content inline.** Templates and references used on every invocation belong in the skill file, not in separate files that cost a read each time.
-- **Size phases and cap scope.** Limit files per phase, set turn budgets, account for mechanism costs.
+- Search the owning directories first. Exclude dependencies, generated output, and build artifacts unless the question concerns them. Inspect the generator and a representative generated result before expanding to the full output.
+- Check file type and size before reading an unfamiliar executable or large file as text. Use metadata or the executable's documented inspection command for binaries.
+- Filter structured results and logs before returning them to the model. Request specific fields or bounded excerpts; keep full evidence in a durable project artifact when it needs to survive the task. If a result is truncated, narrow the query rather than repeatedly requesting the same large output.
+- Reuse unchanged source excerpts and instructions already available in context. Re-read when an edit or missing context makes it necessary.
+- Delegate interpretation when it is independent useful work, not merely to move a large dump into another agent. Give that worker the same retrieval limits and ask for findings with source locations.

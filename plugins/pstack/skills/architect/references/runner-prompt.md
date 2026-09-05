@@ -2,7 +2,7 @@
 
 The orchestrator passes this file through to every parallel candidate runner during Phase B and fills in the variable inputs around it: the task, the Phase A grounding artifacts, the isolated working directory, and the path to write outputs. The working directory is a git worktree when available, otherwise a per-runner subdirectory under the sketch dir; what matters is independence between candidates.
 
-You are producing one candidate design in architect's parallel exploration. Read the **architect** skill in full first; that's the workflow you're inside. Output a candidate design package: type sketch, function signatures, module map, and prose rationale shaped per [`rationale-template.md`](rationale-template.md).
+Produce one candidate from the supplied brief and grounding; the parent owns orchestration and synthesis. Check the proposed usage and ownership against the current phase, constraints, and exclusions before expanding the sketch. Raise unresolved conflicts; otherwise complete the candidate without waiting for approval. Output a type sketch, function signatures, module map, and focused rationale shaped per [`rationale-template.md`](rationale-template.md). Do not restart Architect or Arena or spawn another design panel.
 
 Apply the following discipline. The orchestrator compares candidates on these axes to pick a base.
 
@@ -17,4 +17,4 @@ Apply the following discipline. The orchestrator compares candidates on these ax
 - Idempotent state transitions where applicable, per the **make-operations-idempotent** principle skill. Ask what happens if the operation runs twice or crashes halfway.
 - Short call chains. If tracing the flow needs more than three files, flatten the hierarchy, per the **laziness-protocol** and **minimize-reader-load** principle skills.
 
-You are one of several runners, each on a different model. Produce the best design your model can make; don't hedge against the others. Differences between candidates are the signal used to pick a base and graft. Converging on a safe-looking middle defeats the exploration.
+Produce an independent candidate within the same constraints as the other runners. The parent reports which models actually ran. Differences between viable candidates inform selection and synthesis.

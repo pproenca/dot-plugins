@@ -24,7 +24,7 @@ Keep one visible entry per phase throughout the run. Use the current mode's plan
 
 The N candidates will receive the same prompt, so the prompt is the contract. Get it right before spawning anything.
 
-1. State the artifact each candidate is producing.
+1. State the artifact each candidate is producing, the current phase, and the constraints and exclusions every candidate must honor. Put these in the candidate brief itself.
 2. Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. Concrete: `Adds a --dry-run flag that skips writes`. Vague: `code is correct`. The rubric is the picker's tool in Phase D; candidates only see the task.
 3. Pick the runners. Read `arena runners` from `~/.codex/pstack-models.md` when present. Otherwise use available models from different families or capability tiers, and inherit the parent when no valid override exists. Spawn more when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive.
 4. Assign output paths using the durable locations in the Codex collaboration contract. Repository candidates get separate Git worktrees; standalone artifacts get project output directories such as `<project-root>/artifacts/arena-<slug>/candidate-<n>/`. Candidates must not share a writable location.
@@ -32,6 +32,8 @@ The N candidates will receive the same prompt, so the prompt is the contract. Ge
 ## Phase B: Fan out
 
 Start independent candidates with unique task names, using waves within the available concurrency limit. Give each agent the task, the shared grounding path, its own output path, and instructions to produce both the artifact and a short rationale. Continue non-overlapping local work. Check worker status only when needed, and wait only when the next phase requires a result.
+
+Before expanding a substantial design, check its proposed usage and ownership against the brief's phase boundaries and exclusions. Resolve mismatches while the sketch is small; raise only conflicts the candidate cannot settle from the brief. Continue through the full candidate without a routine approval pause. Keep the rationale focused on decisions the comparison needs.
 
 The rationale is mandatory. Without it, the parent cannot tell whether a candidate's structure is principled or accidental, which makes Phase E grafting unreliable. Each rationale names the alternatives the candidate considered and what it rejected.
 
