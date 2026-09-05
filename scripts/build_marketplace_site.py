@@ -14,6 +14,10 @@ CATALOG_PATH = ROOT / ".agents" / "plugins" / "marketplace.json"
 REPOSITORY_URL = "https://github.com/pproenca/dot-plugins"
 
 
+class MarketplaceVersionError(ValueError):
+    pass
+
+
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -51,7 +55,7 @@ def build_plugin(entry: dict, output_dir: Path) -> dict:
     }
 
 
-def build(output_dir: Path) -> None:
+def build(output_dir: Path, expected_version: str | None = None) -> None:
     if output_dir.exists():
         shutil.rmtree(output_dir)
     shutil.copytree(SOURCE_DIR, output_dir)
@@ -59,6 +63,12 @@ def build(output_dir: Path) -> None:
 
     catalog = load_json(CATALOG_PATH)
     plugins = [build_plugin(entry, output_dir) for entry in catalog["plugins"]]
+    versions = {plugin["version"] for plugin in plugins}
+    if expected_version is not None and versions != {expected_version}:
+        raise MarketplaceVersionError(
+            f"generated plugin versions {sorted(versions)} do not match expected release version {expected_version}"
+        )
+
     payload = {
         "marketplace": catalog.get("interface", {}).get("displayName", catalog["name"]),
         "repository": REPOSITORY_URL,
@@ -75,8 +85,12 @@ def build(output_dir: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=ROOT / "_site")
+    parser.add_argument("--expected-version")
     args = parser.parse_args()
-    build(args.output.resolve())
+    try:
+        build(args.output.resolve(), args.expected_version)
+    except MarketplaceVersionError as exc:
+        parser.error(str(exc))
 
 
 if __name__ == "__main__":
