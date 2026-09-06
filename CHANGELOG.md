@@ -1,6 +1,12 @@
 # Changelog
 
 All notable marketplace changes are recorded here by Craft.
+## 0.16.9
+
+### Other Changes
+
+- Scale pstack investigation and review to task evidence by @pproenca in [7b784dcc](https://github.com/pproenca/dot-plugins/commit/7b784dcc5649642ae2f7107ce50925c0f58c9d9d)
+
 ## 0.16.8
 
 ### Other Changes
