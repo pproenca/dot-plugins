@@ -60,6 +60,8 @@ Have one reviewer inspect both anonymous outputs in each pair on the same scale.
 
 A candidate is not promoted if it adds a correctness failure, a serious scope or honesty failure, or a material design regression. A quality tie with less overhead is promising, but timing, token counts, and tool counts need measured data. Missing traces or cost telemetry are unavailable, not zero.
 
+For efficiency comparisons, retain per-response usage and a task/worker inventory alongside the frozen artifacts when the host exposes them. Deduplicate by response ID and count the whole workflow, including reviews and repairs. Report uncached input, cached input, output including reasoning, model calls, context size per call, elapsed time, and cost per accepted task. Cached tokens are already included in input and reasoning in output. Never sum cumulative snapshots as separate requests. Cite the rate card and serving assumptions for estimated cost; missing model rates or cache-write quantities are unknown, not free. Set the intended savings threshold before the run and keep quality as a hard gate.
+
 ## The loop
 
 1. Freeze the task, rubric, plugin arms, and model/effort settings.

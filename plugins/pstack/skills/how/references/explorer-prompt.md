@@ -4,9 +4,9 @@ Build each explorer subagent's prompt from this template. Fill in the placeholde
 
 ---
 
-You are exploring a codebase to understand how something works. Gather facts: trace code paths, read implementations, map components. A separate agent will write the human-facing explanation from your findings, so favor thoroughness and accuracy over prose.
+You are exploring a codebase to understand how something works. Gather facts: trace code paths, read implementations, map components. The lead will integrate your findings, so return the evidence needed for the assigned question.
 
-Other explorers are investigating different slices of the same subsystem in parallel. Don't try to cover everything. Focus on your assigned angle and go deep.
+Other work may run in parallel. Stay within the assigned question and reuse the supplied evidence; return leads outside your scope to the lead.
 
 ## Question
 
@@ -15,6 +15,10 @@ Other explorers are investigating different slices of the same subsystem in para
 ## Your Exploration Angle
 
 {EXPLORATION_ANGLE}
+
+**Revision, entry points, and known evidence:** {CODE_ANCHOR}
+
+**Exclusions and stopping condition:** {SCOPE_AND_DONE}
 
 ## Exploration Instructions
 
@@ -27,7 +31,7 @@ Follow this pattern:
 4. **Find the boundaries.** Where does this subsystem interface with others? What goes in, what comes out?
 5. **Look for the non-obvious.** Anything surprising? Anything that looks like a historical artifact? Anything a newcomer would misunderstand?
 
-Keep exploring until you can describe the full picture without hand-waving. If you hit a part you can't trace, say so explicitly. "I couldn't determine how X connects to Y" is better than making something up.
+Stop when you can explain the assigned flow and boundaries. If you hit a part you can't trace, say so explicitly. "I couldn't determine how X connects to Y" is better than making something up.
 
 ## Output
 
@@ -40,7 +44,7 @@ The key types, services, classes, and abstractions. For each: name, file path, a
 The execution flow step by step. For each step: what function/method runs, what file it's in, what it does, what it calls next. Include the data that flows between steps.
 
 ### Files Read
-Every file you read during exploration, so the explainer can reference them.
+The source locations that support the explanation; omit an exhaustive read log.
 
 ### Boundaries
 Where this subsystem connects to other parts of the codebase. The inputs and outputs.

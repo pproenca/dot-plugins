@@ -28,6 +28,8 @@ Have one independent judge review both anonymous outputs on one scale, with the 
 
 Read only the exact run transcript or history the host exposes for these agents. Codex user-task tools do not necessarily expose collaboration-agent history. If traces, tool counts, tokens, or timing are unavailable, record that limitation. Infer neither instruction loading nor execution from the final answer alone.
 
+For efficiency changes, compare cost per accepted outcome, including the lead, workers, review, retries, and repairs. Record individual request usage, model, effort, elapsed time, and serving tier when exposed. Deduplicate response IDs; do not sum repeated cumulative counters. Cached input is part of input, and reasoning is part of output. Keep unpriced usage and unavailable fields explicit, and distinguish a published-rate estimate from an actual bill. Record input size per request as well as cache-hit rate: a well-cached large context can still dominate cost.
+
 ## Iterate and decide
 
 1. Compare each pair against the frozen quality gates. A correctness regression cannot be averaged away by a faster run elsewhere.

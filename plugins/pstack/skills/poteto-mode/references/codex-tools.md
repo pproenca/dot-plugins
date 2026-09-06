@@ -4,7 +4,7 @@ Use the tools and permissions exposed in the current turn. Their descriptions go
 
 ## Delegate by outcome
 
-Give workers a bounded outcome, relevant paths and revision, write ownership, acceptance evidence, and constraints that could invalidate the result. Include phase exclusions directly in the brief. Supply only the skill references their assignment needs; workers should not restart the parent workflow.
+Give workers a bounded outcome, relevant paths and revision, write ownership, acceptance evidence, and constraints that could invalidate the result. Include phase exclusions directly in the brief. Supply only the skill references their assignment needs; workers should not restart the parent workflow. Delegate when independent parallel work can save time or improve confidence, and keep the lead busy with a different necessary outcome.
 
 For bounded assignments, prefer a self-contained brief with `fork_turns: "none"`. Inherit selected turns or full history when the assignment needs that context. Follow the live tool schema.
 
@@ -24,6 +24,10 @@ Continue local work while agents run. Use current message and follow-up tools to
 
 Give reviewers a distinct risk or the requested comparison rubric. Reuse them to check fixes against their findings and the changed diff. Add review for uncovered risks, unresolved disagreements, or an explicit requirement. Preserve independent review without repeating generic passes over settled questions.
 
+Capture the task's base revision and owned paths before changes accumulate. Review scope includes task commits since that base and task-owned uncommitted changes; neither the entire shared working tree nor the last commit alone reliably describes it. Pass this scope and acceptance evidence to reviewers once, then identify changes since their last inspected revision.
+
+Batch independent reads and deterministic checks where the host supports it. Return bounded results with full failure evidence available by path. Use event notifications or bounded process waits for pending work; avoid model turns that repeatedly poll unchanged state. At a coherent phase boundary, retain the revision, decisions, evidence, and next action for continuation. Use host context management when needed rather than restarting tasks or reloading completed history solely to chase cache hits.
+
 When delegation is unavailable, ordinary work proceeds locally. Workflows whose purpose is independent candidates or review must report the missing independence instead of claiming it occurred. They may still prepare the brief, evidence, or a clearly labeled local assessment.
 
 ## Choose models and reasoning
@@ -40,6 +44,8 @@ Inherit the parent settings by default, including when the parent uses GPT-6 Ast
 | Hard unresolved work after a lower-effort attempt, or an explicit user preference | Supported levels above `high` |
 
 These are workload heuristics, not measured performance claims. Keep a deliberate cheaper-model role for simple work. Higher effort does not require more agents, more output, or broader tests. Compare representative outcomes, latency, and usage before promoting a new default. Do not assume every model supports every effort; in particular, do not use `none` or `minimal` for Astra.
+
+For bounded extraction or mechanical lookup with a clear check, use the configured `bounded lookup` role when present. Use the workflow role for routine implementation or exploration. Preserve stronger review and the configured `hardest tasks` role for consequential judgment or work that remains unresolved after a cheaper attempt. Treat an explicit user-selected model as a constraint. Keep the active parent's effective reasoning level unless the user requests a change; worker tuning does not require lowering Astra's reasoning or switching models mid-task.
 
 With the current `spawn_agent` interface, explicit model or reasoning overrides require `fork_turns: "none"` or a supported numeric history count and a self-contained brief. Full-history forks inherit parent settings. Follow the live schema if it changes. A skill cannot change the active parent's model or reasoning through prose; child overrides and user-selected parent settings are separate controls.
 

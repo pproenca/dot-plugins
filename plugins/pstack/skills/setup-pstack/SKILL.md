@@ -27,7 +27,7 @@ Show the relevant roles and apply choices the user has already authorized. Use t
 
 Use `inherit-parent` for roles that should follow the user's selected model, including GPT-6 Astra when available. Keep explicit overrides for intentional cost or review-diversity choices. Do not upgrade every worker solely because the parent model changed.
 
-A single role uses `<model>@<reasoning-effort>`. A panel role uses a comma-separated list. One collaboration agent runs per panel entry. `arena cross-judge pool` is a list from which Arena chooses a model different from the candidate models when possible.
+A single role uses `<model>@<reasoning-effort>`. A panel role uses a comma-separated list. The calling workflow determines whether entries are required candidates or available reviewer profiles; do not expand an ordinary review solely to consume every configured profile. `arena cross-judge pool` is a list from which Arena chooses a model different from the candidate models when possible.
 
 ### 4. Validate
 
@@ -42,6 +42,7 @@ Update `~/.codex/pstack-models.md` in place, preserving unrelated roles and comm
 
 Delete a line to inherit the parent. `inherit-parent` and `auto` omit model and reasoning overrides.
 
+bounded lookup: inherit-parent
 feature, refactoring: inherit-parent
 bug-fix: inherit-parent
 perf-issue: inherit-parent

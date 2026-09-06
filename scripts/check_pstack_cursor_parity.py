@@ -164,12 +164,15 @@ skills/teach/SKILL.md
 skills/technical-writing/SKILL.md
 skills/typescript-best-practices/SKILL.md
 skills/unslop/SKILL.md
-skills/why/SKILL.md""".splitlines()
+skills/why/SKILL.md
+skills/why/references/investigator-prompt.md
+skills/why/references/source-playbook.md
+skills/why/references/synthesizer-prompt.md""".splitlines()
 )
 
-EXPECTED_TRANSLATION_SOURCE_DIGEST = "86946c3ea45d71233e5e2cee3ad545d94daf24fb5df3df1df68924a4f84323bc"
-EXPECTED_TRANSLATION_TARGET_DIGEST = "bfa03beddf72751c2cbdd502eb159a951569aa46589caa0b80f64b4f427a8a2b"
-EXPECTED_CODEX_ONLY_DIGEST = "25b923afed243c1f78413cc06abf39c95539aaecd3a2798f84c74926c3546a83"
+EXPECTED_TRANSLATION_SOURCE_DIGEST = "88cf01a93aa243920330afc16de4bfe7f276bceaf2edc7db82e0f909d03bccbb"
+EXPECTED_TRANSLATION_TARGET_DIGEST = "e9454e65ba272e8f8b9d84f1f72742df2c9073996ac38604e5b42a05da3672c0"
+EXPECTED_CODEX_ONLY_DIGEST = "edecdb7441fcbee7e6e844b3f9537734111b7138ab5fab962405cb158617cecf"
 
 DEAD_CODEX_REFERENCES = {
     "~/.cursor/": "Cursor home path",
